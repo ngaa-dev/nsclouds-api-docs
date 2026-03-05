@@ -1,0 +1,654 @@
+components:
+  schemas:
+    ChatCompletionResponse:
+      properties:
+        choices:
+          items:
+            properties:
+              finish_reason:
+                type:
+                - string
+                - 'null'
+              index:
+                type: integer
+              message:
+                properties:
+                  content:
+                    type:
+                    - string
+                    - 'null'
+                  role:
+                    type: string
+                type: object
+            type: object
+          type: array
+        created:
+          type: integer
+        id:
+          type: string
+        model:
+          type: string
+        object:
+          type: string
+        usage:
+          properties:
+            completion_tokens:
+              type: integer
+            prompt_tokens:
+              type: integer
+            total_tokens:
+              type: integer
+          type: object
+      type: object
+    CompletionResponse:
+      properties:
+        choices:
+          items:
+            properties:
+              finish_reason:
+                type:
+                - string
+                - 'null'
+              index:
+                type: integer
+              logprobs:
+                type:
+                - object
+                - 'null'
+              text:
+                type: string
+            type: object
+          type: array
+        created:
+          type: integer
+        id:
+          type: string
+        model:
+          type: string
+        object:
+          type: string
+        usage:
+          properties:
+            completion_tokens:
+              type: integer
+            prompt_tokens:
+              type: integer
+            total_tokens:
+              type: integer
+          type: object
+      type: object
+    CreateChatCompletionRequest:
+      properties:
+        max_completion_tokens:
+          type: integer
+        messages:
+          items:
+            properties:
+              content:
+                oneOf:
+                - type: string
+                - items:
+                    oneOf:
+                    - properties:
+                        text:
+                          type: string
+                        type:
+                          enum:
+                          - text
+                          type: string
+                      required:
+                      - type
+                      - text
+                      type: object
+                    - properties:
+                        image_url:
+                          properties:
+                            url:
+                              type: string
+                          required:
+                          - url
+                          type: object
+                        type:
+                          enum:
+                          - image_url
+                          type: string
+                      required:
+                      - type
+                      - image_url
+                      type: object
+                  type: array
+              role:
+                enum:
+                - system
+                - user
+                - assistant
+                - tool
+                type: string
+            required:
+            - role
+            - content
+            type: object
+          type: array
+        model:
+          description: 要使用的模型 ID
+          type: string
+        n:
+          default: 1
+          type: integer
+        stream:
+          default: false
+          type: boolean
+        temperature:
+          default: 1
+          type: number
+      required:
+      - model
+      - messages
+      type: object
+    CreateCompletionRequest:
+      properties:
+        max_tokens:
+          type: integer
+        model:
+          description: 要使用的模型 ID
+          type: string
+        n:
+          default: 1
+          type: integer
+        prompt:
+          oneOf:
+          - type: string
+          - items:
+              type: string
+            type: array
+        stream:
+          default: false
+          type: boolean
+        temperature:
+          default: 1
+          type: number
+      required:
+      - model
+      - prompt
+      type: object
+    ErrorResponse:
+      properties:
+        error:
+          properties:
+            code:
+              type:
+              - string
+              - 'null'
+            message:
+              type: string
+            param:
+              type:
+              - string
+              - 'null'
+            type:
+              type: string
+          type: object
+      type: object
+  securitySchemes:
+    APIKeyHeader:
+      in: header
+      name: Authorization
+      type: apiKey
+info:
+  title: OpenAI 对话生成 API
+  description: OpenAI 对话生成 API 文档，完全兼容 OpenAI 格式。
+  version: 1.11.0
+  x-gitbook-description-document:
+    object: document
+    data:
+      schemaVersion: 9
+    nodes:
+      - object: block
+        type: paragraph
+        isVoid: false
+        data: {}
+        nodes:
+          - object: text
+            leaves:
+              - object: leaf
+                text: OpenAI 对话生成 API 文档，完全兼容 OpenAI 格式。
+                marks: []
+            key: QFOvTDrOzjun
+        key: LtH3fpLREm53
+    key: rH71NHG2ZECo
+  x-gitbook-description-html: <p>OpenAI 对话生成 API 文档，完全兼容 OpenAI 格式。</p>
+openapi: 3.1.0
+paths:
+  /v1/chat/completions:
+    post:
+      summary: 创建聊天补全
+      description: |-
+        基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
+
+        > 💡 **提示**：选择下方的请求示例后，请手动在响应示例区域选择同名的示例以查看对应的输出。
+      operationId: createChatCompletion
+      tags:
+        - Chat
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatCompletionRequest'
+            examples:
+              default:
+                summary: 基础
+                description: 一个简单的对话示例，包含系统提示和用户消息。
+                value:
+                  model: gpt-4
+                  messages:
+                    - role: system
+                      content: You are a helpful assistant.
+                    - role: user
+                      content: Hello!
+                  temperature: 1
+                  max_completion_tokens: 50
+                  'n': 1
+                  stream: false
+                x-gitbook-description-html: <p>一个简单的对话示例，包含系统提示和用户消息。</p>
+              streaming:
+                summary: 流式
+                description: '通过设置 stream: true 启用流式响应。'
+                value:
+                  model: gpt-4
+                  messages:
+                    - role: system
+                      content: You are a helpful assistant.
+                    - role: user
+                      content: Tell me a story.
+                  temperature: 0.7
+                  max_completion_tokens: 100
+                  stream: true
+                x-gitbook-description-html: '<p>通过设置 stream: true 启用流式响应。</p>'
+              image_input:
+                summary: 图像输入（多模态）
+                description: 使用支持视觉的模型分析图像。
+                value:
+                  model: gpt-4-vision-preview
+                  messages:
+                    - role: user
+                      content:
+                        - type: text
+                          text: What's in this image?
+                        - type: image_url
+                          image_url:
+                            url: https://example.com/cat.jpg
+                  max_completion_tokens: 300
+                x-gitbook-description-html: <p>使用支持视觉的模型分析图像。</p>
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础聊天请求的响应示例。
+                  value:
+                    id: chatcmpl-123
+                    object: chat.completion
+                    created: 1677652288
+                    model: gpt-4
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: Hello there! How can I assist you today?
+                        finish_reason: stop
+                    usage:
+                      prompt_tokens: 9
+                      completion_tokens: 12
+                      total_tokens: 21
+                  x-gitbook-description-html: <p>对应基础聊天请求的响应示例。</p>
+                image_input-response:
+                  summary: 图像输入响应
+                  description: 模型根据图像内容生成的描述。
+                  value:
+                    id: chatcmpl-789
+                    object: chat.completion
+                    created: 1677652300
+                    model: gpt-4-vision-preview
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: >-
+                            The image shows a cute cat sitting on a windowsill,
+                            looking outside.
+                        finish_reason: stop
+                    usage:
+                      prompt_tokens: 123
+                      completion_tokens: 15
+                      total_tokens: 138
+                  x-gitbook-description-html: <p>模型根据图像内容生成的描述。</p>
+            text/event-stream:
+              schema:
+                type: string
+                description: >-
+                  流式响应以 Server-Sent Events 格式返回，每个事件是一行以 'data: ' 开头的 JSON
+                  数据块，最后以 'data: [DONE]' 结束。
+                x-gitbook-description-html: >-
+                  <p>流式响应以 Server-Sent Events 格式返回，每个事件是一行以 'data: ' 开头的 JSON
+                  数据块，最后以 'data: [DONE]' 结束。</p>
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示流式聊天过程中陆续发送的事件。
+                  value: >-
+                    data:
+                    {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-4","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
+
+                    data:
+                    {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-4","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+
+                    data:
+                    {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-4","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
+
+                    data:
+                    {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-4","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+
+                    data: [DONE]
+                  x-gitbook-description-html: <p>展示流式聊天过程中陆续发送的事件。</p>
+          x-gitbook-description-html: <p>成功响应</p>
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+      x-gitbook-description-document:
+        object: document
+        data:
+          schemaVersion: 9
+        nodes:
+          - object: block
+            type: paragraph
+            isVoid: false
+            data: {}
+            nodes:
+              - object: text
+                leaves:
+                  - object: leaf
+                    text: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
+                    marks: []
+                key: sFaFVFYVHP2S
+            key: PB4Xqo9rR3Bc
+          - object: block
+            type: blockquote
+            isVoid: false
+            data: {}
+            nodes:
+              - object: block
+                type: paragraph
+                isVoid: false
+                data: {}
+                nodes:
+                  - object: text
+                    leaves:
+                      - object: leaf
+                        text: '💡 '
+                        marks: []
+                      - object: leaf
+                        text: 提示
+                        marks:
+                          - object: mark
+                            type: bold
+                            data: {}
+                      - object: leaf
+                        text: ：选择下方的请求示例后，请手动在响应示例区域选择同名的示例以查看对应的输出。
+                        marks: []
+                    key: v6UFaEsssCg9
+                key: I3vZKPHYGm0x
+            key: w1rStc9XtyQO
+        key: DJGbg3PWJGl5
+      x-gitbook-description-html: >-
+        <p>基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。</p><blockquote><p>💡
+        <strong>提示</strong>：选择下方的请求示例后，请手动在响应示例区域选择同名的示例以查看对应的输出。</p></blockquote>
+  /v1/completions:
+    post:
+      summary: 创建文本补全
+      description: |-
+        基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
+
+        > 💡 **提示**：选择下方的请求示例后，请手动在响应示例区域选择同名的示例以查看对应的输出。
+      operationId: createCompletion
+      tags:
+        - Completions
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompletionRequest'
+            examples:
+              default:
+                summary: 基础
+                description: 一个简单的文本补全示例。
+                value:
+                  model: gpt-3.5-turbo-instruct
+                  prompt: Once upon a time
+                  max_tokens: 50
+                  temperature: 0.7
+                  'n': 1
+                  stream: false
+                x-gitbook-description-html: <p>一个简单的文本补全示例。</p>
+              streaming:
+                summary: 流式
+                description: '通过设置 stream: true 启用流式响应。'
+                value:
+                  model: gpt-3.5-turbo-instruct
+                  prompt: The future of AI is
+                  max_tokens: 30
+                  temperature: 0.8
+                  stream: true
+                x-gitbook-description-html: '<p>通过设置 stream: true 启用流式响应。</p>'
+              logprobs:
+                summary: 带 logprobs
+                description: 返回每个 token 的对数概率。
+                value:
+                  model: gpt-3.5-turbo-instruct
+                  prompt: What is the capital of France?
+                  max_tokens: 10
+                  logprobs: 5
+                  echo: true
+                x-gitbook-description-html: <p>返回每个 token 的对数概率。</p>
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompletionResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础文本补全请求的响应示例。
+                  value:
+                    id: cmpl-123
+                    object: text_completion
+                    created: 1677652288
+                    model: gpt-3.5-turbo-instruct
+                    choices:
+                      - text: ' in a small village, there lived a young girl named Lily.'
+                        index: 0
+                        logprobs: null
+                        finish_reason: length
+                    usage:
+                      prompt_tokens: 4
+                      completion_tokens: 12
+                      total_tokens: 16
+                  x-gitbook-description-html: <p>对应基础文本补全请求的响应示例。</p>
+                logprobs-response:
+                  summary: 带 logprobs 响应
+                  description: 对应带 logprobs 请求的响应示例。
+                  value:
+                    id: cmpl-456
+                    object: text_completion
+                    created: 1677652290
+                    model: gpt-3.5-turbo-instruct
+                    choices:
+                      - text: |-
+
+
+                          The capital of France is Paris.
+                        index: 0
+                        logprobs:
+                          tokens:
+                            - |+
+
+                            - |+
+
+                            - The
+                            - ' capital'
+                            - ' of'
+                            - ' France'
+                            - ' is'
+                            - ' Paris'
+                            - .
+                          token_logprobs:
+                            - -0.5
+                            - -0.3
+                            - -1.2
+                            - -0.8
+                            - -0.4
+                            - -0.6
+                            - -0.9
+                            - -1.5
+                            - -0.2
+                          top_logprobs:
+                            - "\n": -0.5
+                              "\n\n": -1.1
+                            - "\n": -0.3
+                              "\n\n": -1
+                            - The: -1.2
+                              A: -2
+                            - ' capital': -1.5
+                            - ' of': -1.3
+                            - ' France': -1.4
+                            - ' is': -1.6
+                            - ' Paris': -2.2
+                            - .: -1
+                          text_offset:
+                            - 0
+                            - 1
+                            - 2
+                            - 5
+                            - 12
+                            - 15
+                            - 22
+                            - 25
+                            - 30
+                        finish_reason: stop
+                    usage:
+                      prompt_tokens: 7
+                      completion_tokens: 9
+                      total_tokens: 16
+                  x-gitbook-description-html: <p>对应带 logprobs 请求的响应示例。</p>
+            text/event-stream:
+              schema:
+                type: string
+                description: >-
+                  流式响应以 Server-Sent Events 格式返回，每个事件是一行以 'data: ' 开头的 JSON
+                  数据块，最后以 'data: [DONE]' 结束。
+                x-gitbook-description-html: >-
+                  <p>流式响应以 Server-Sent Events 格式返回，每个事件是一行以 'data: ' 开头的 JSON
+                  数据块，最后以 'data: [DONE]' 结束。</p>
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示流式文本补全过程中陆续发送的事件。
+                  value: >-
+                    data:
+                    {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":"The","index":0,"logprobs":null,"finish_reason":null}]}
+
+                    data:
+                    {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" future","index":0,"logprobs":null,"finish_reason":null}]}
+
+                    data:
+                    {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" of","index":0,"logprobs":null,"finish_reason":null}]}
+
+                    data:
+                    {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" AI","index":0,"logprobs":null,"finish_reason":null}]}
+
+                    data:
+                    {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" is","index":0,"logprobs":null,"finish_reason":null}]}
+
+                    data:
+                    {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" bright","index":0,"logprobs":null,"finish_reason":null}]}
+
+                    data:
+                    {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":".","index":0,"logprobs":null,"finish_reason":"length"}]}
+
+                    data: [DONE]
+                  x-gitbook-description-html: <p>展示流式文本补全过程中陆续发送的事件。</p>
+          x-gitbook-description-html: <p>成功响应</p>
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+      x-gitbook-description-document:
+        object: document
+        data:
+          schemaVersion: 9
+        nodes:
+          - object: block
+            type: paragraph
+            isVoid: false
+            data: {}
+            nodes:
+              - object: text
+                leaves:
+                  - object: leaf
+                    text: 基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
+                    marks: []
+                key: J7wIuKiwalf2
+            key: xWjYblKcCw1c
+          - object: block
+            type: blockquote
+            isVoid: false
+            data: {}
+            nodes:
+              - object: block
+                type: paragraph
+                isVoid: false
+                data: {}
+                nodes:
+                  - object: text
+                    leaves:
+                      - object: leaf
+                        text: '💡 '
+                        marks: []
+                      - object: leaf
+                        text: 提示
+                        marks:
+                          - object: mark
+                            type: bold
+                            data: {}
+                      - object: leaf
+                        text: ：选择下方的请求示例后，请手动在响应示例区域选择同名的示例以查看对应的输出。
+                        marks: []
+                    key: kcut0u0Lhnq8
+                key: D4tEcbcbqeNT
+            key: NuRPgAEjQGAK
+        key: lNqpqV0r6FOj
+      x-gitbook-description-html: >-
+        <p>基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API
+        兼容。</p><blockquote><p>💡
+        <strong>提示</strong>：选择下方的请求示例后，请手动在响应示例区域选择同名的示例以查看对应的输出。</p></blockquote>
+servers:
+  - url: https://aillm.sinocache.net
+    description: LiteLLM 网关服务器
+    x-gitbook-description-html: <p>LiteLLM 网关服务器</p>
