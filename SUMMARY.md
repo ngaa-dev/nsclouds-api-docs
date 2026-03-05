@@ -189,3 +189,13 @@
 ## hello
 
 * [test](hello/test.md)
+
+## 测试多级目录
+
+* ```yaml
+  props:
+    models: true
+    downloadLink: true
+    url: https://github.com/liujia-hbu/litellm-api/blob/main/docs/test-multilevel/openapi/openapi.yaml
+  type: builtin:openapi
+  ```

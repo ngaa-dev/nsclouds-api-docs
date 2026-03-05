@@ -1,0 +1,228 @@
+openapi: 3.1.0
+info:
+  title: 测试多级目录 API
+  description: 测试 GitBook 多级目录结构的 API 文档
+  version: 1.0.0
+servers:
+  - url: https://api.example.com
+    description: 测试服务器
+tags:
+  - name: everything
+    x-page-title: 所有功能
+    x-page-icon: layers
+    description: 所有 API 功能的总览
+  - name: chat
+    x-parent: everything
+    x-page-title: 对话生成
+    x-page-icon: message
+    description: 对话生成相关的 API
+  - name: embeddings
+    x-parent: everything
+    x-page-title: 向量嵌入
+    x-page-icon: database
+    description: 向量嵌入相关的 API
+  - name: images
+    x-parent: everything
+    x-page-title: 图像处理
+    x-page-icon: image
+    description: 图像处理相关的 API
+  - name: audio
+    x-parent: everything
+    x-page-title: 音频处理
+    x-page-icon: microphone
+    description: 音频处理相关的 API
+paths:
+  /v1/chat/completions:
+    post:
+      tags:
+        - chat
+      summary: 创建聊天补全
+      description: 基于输入的消息，生成模型回复
+      operationId: createChatCompletion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                model:
+                  type: string
+                messages:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      role:
+                        type: string
+                      content:
+                        type: string
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  object:
+                    type: string
+                  created:
+                    type: integer
+                  model:
+                    type: string
+                  choices:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        index:
+                          type: integer
+                        message:
+                          type: object
+                          properties:
+                            role:
+                              type: string
+                            content:
+                              type: string
+                        finish_reason:
+                          type: string
+                  usage:
+                    type: object
+                    properties:
+                      prompt_tokens:
+                        type: integer
+                      completion_tokens:
+                        type: integer
+                      total_tokens:
+                        type: integer
+  /v1/embeddings:
+    post:
+      tags:
+        - embeddings
+      summary: 创建嵌入向量
+      description: 获取给定输入的向量表示
+      operationId: createEmbedding
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                model:
+                  type: string
+                input:
+                  oneOf:
+                    - type: string
+                    - type: array
+                      items:
+                        type: string
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  object:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        object:
+                          type: string
+                        embedding:
+                          type: array
+                          items:
+                            type: number
+                        index:
+                          type: integer
+                  model:
+                    type: string
+                  usage:
+                    type: object
+                    properties:
+                      prompt_tokens:
+                        type: integer
+                      total_tokens:
+                        type: integer
+  /v1/images/generations:
+    post:
+      tags:
+        - images
+      summary: 创建图像
+      description: 根据文本提示生成图像
+      operationId: createImageGeneration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                model:
+                  type: string
+                prompt:
+                  type: string
+                n:
+                  type: integer
+                size:
+                  type: string
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  created:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+  /v1/audio/transcriptions:
+    post:
+      tags:
+        - audio
+      summary: 音频转录
+      description: 将音频文件转录为文本
+      operationId: createTranscription
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                model:
+                  type: string
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  text:
+                    type: string
+components:
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      name: Authorization
+      in: header
