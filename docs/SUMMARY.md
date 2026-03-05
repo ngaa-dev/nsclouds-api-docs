@@ -2,137 +2,137 @@
 
 * [介绍](README.md)
 
-## 对话生成
+## Chat Completions
 
 ### deepseek
-* [OpenAI 协议](对话生成/deepseek/openai/README.md)
-* [Anthropic 协议](对话生成/deepseek/Anthropic/README.md)
-* [Gemini 协议](对话生成/deepseek/Gemini/README.md)
+* [OpenAI 协议](chat.completions/deepseek/openai/README.md)
+* [Anthropic 协议](chat.completions/deepseek/Anthropic/README.md)
+* [Gemini 协议](chat.completions/deepseek/Gemini/README.md)
 
 ### zai
-* [OpenAI 协议](对话生成/zai/openai/README.md)
-* [Anthropic 协议](对话生成/zai/Anthropic/README.md)
-* [Gemini 协议](对话生成/zai/Gemini/README.md)
+* [OpenAI 协议](chat.completions/zai/openai/README.md)
+* [Anthropic 协议](chat.completions/zai/Anthropic/README.md)
+* [Gemini 协议](chat.completions/zai/Gemini/README.md)
 
 ### volengine
-* [OpenAI 协议](对话生成/volengine/openai/README.md)
-* [Anthropic 协议](对话生成/volengine/Anthropic/README.md)
-* [Gemini 协议](对话生成/volengine/Gemini/README.md)
+* [OpenAI 协议](chat.completions/volengine/openai/README.md)
+* [Anthropic 协议](chat.completions/volengine/Anthropic/README.md)
+* [Gemini 协议](chat.completions/volengine/Gemini/README.md)
 
 ### dashscope
-* [OpenAI 协议](对话生成/dashscope/openai/README.md)
-* [Anthropic 协议](对话生成/dashscope/Anthropic/README.md)
-* [Gemini 协议](对话生成/dashscope/Gemini/README.md)
+* [OpenAI 协议](chat.completions/dashscope/openai/README.md)
+* [Anthropic 协议](chat.completions/dashscope/Anthropic/README.md)
+* [Gemini 协议](chat.completions/dashscope/Gemini/README.md)
 
 ### openai
-* [OpenAI 协议](对话生成/openai/openai/README.md)
-* [Anthropic 协议](对话生成/openai/Anthropic/README.md)
-* [Gemini 协议](对话生成/openai/Gemini/README.md)
+* [OpenAI 协议](chat.completions/openai/openai/README.md)
+* [Anthropic 协议](chat.completions/openai/Anthropic/README.md)
+* [Gemini 协议](chat.completions/openai/Gemini/README.md)
 
-## 向量嵌入
+## Embeddings
 
 ### deepseek
-* [OpenAI 协议](向量嵌入/deepseek/openai/README.md)
-* [Anthropic 协议](向量嵌入/deepseek/Anthropic/README.md)
-* [Gemini 协议](向量嵌入/deepseek/Gemini/README.md)
+* [OpenAI 协议](embeddings/deepseek/openai/README.md)
+* [Anthropic 协议](embeddings/deepseek/Anthropic/README.md)
+* [Gemini 协议](embeddings/deepseek/Gemini/README.md)
 
 ### zai
-* [OpenAI 协议](向量嵌入/zai/openai/README.md)
-* [Anthropic 协议](向量嵌入/zai/Anthropic/README.md)
-* [Gemini 协议](向量嵌入/zai/Gemini/README.md)
+* [OpenAI 协议](embeddings/zai/openai/README.md)
+* [Anthropic 协议](embeddings/zai/Anthropic/README.md)
+* [Gemini 协议](embeddings/zai/Gemini/README.md)
 
 ### volengine
-* [OpenAI 协议](向量嵌入/volengine/openai/README.md)
-* [Anthropic 协议](向量嵌入/volengine/Anthropic/README.md)
-* [Gemini 协议](向量嵌入/volengine/Gemini/README.md)
+* [OpenAI 协议](embeddings/volengine/openai/README.md)
+* [Anthropic 协议](embeddings/volengine/Anthropic/README.md)
+* [Gemini 协议](embeddings/volengine/Gemini/README.md)
 
 ### dashscope
-* [OpenAI 协议](向量嵌入/dashscope/openai/README.md)
-* [Anthropic 协议](向量嵌入/dashscope/Anthropic/README.md)
-* [Gemini 协议](向量嵌入/dashscope/Gemini/README.md)
+* [OpenAI 协议](embeddings/dashscope/openai/README.md)
+* [Anthropic 协议](embeddings/dashscope/Anthropic/README.md)
+* [Gemini 协议](embeddings/dashscope/Gemini/README.md)
 
 ### openai
-* [OpenAI 协议](向量嵌入/openai/openai/README.md)
-* [Anthropic 协议](向量嵌入/openai/Anthropic/README.md)
-* [Gemini 协议](向量嵌入/openai/Gemini/README.md)
+* [OpenAI 协议](embeddings/openai/openai/README.md)
+* [Anthropic 协议](embeddings/openai/Anthropic/README.md)
+* [Gemini 协议](embeddings/openai/Gemini/README.md)
 
-## 图片生成
+## Image Generations
 
 ### deepseek
-* [OpenAI 协议](图片生成/deepseek/openai/README.md)
-* [Anthropic 协议](图片生成/deepseek/Anthropic/README.md)
-* [Gemini 协议](图片生成/deepseek/Gemini/README.md)
+* [OpenAI 协议](image.generations/deepseek/openai/README.md)
+* [Anthropic 协议](image.generations/deepseek/Anthropic/README.md)
+* [Gemini 协议](image.generations/deepseek/Gemini/README.md)
 
 ### zai
-* [OpenAI 协议](图片生成/zai/openai/README.md)
-* [Anthropic 协议](图片生成/zai/Anthropic/README.md)
-* [Gemini 协议](图片生成/zai/Gemini/README.md)
+* [OpenAI 协议](image.generations/zai/openai/README.md)
+* [Anthropic 协议](image.generations/zai/Anthropic/README.md)
+* [Gemini 协议](image.generations/zai/Gemini/README.md)
 
 ### volengine
-* [OpenAI 协议](图片生成/volengine/openai/README.md)
-* [Anthropic 协议](图片生成/volengine/Anthropic/README.md)
-* [Gemini 协议](图片生成/volengine/Gemini/README.md)
+* [OpenAI 协议](image.generations/volengine/openai/README.md)
+* [Anthropic 协议](image.generations/volengine/Anthropic/README.md)
+* [Gemini 协议](image.generations/volengine/Gemini/README.md)
 
 ### dashscope
-* [OpenAI 协议](图片生成/dashscope/openai/README.md)
-* [Anthropic 协议](图片生成/dashscope/Anthropic/README.md)
-* [Gemini 协议](图片生成/dashscope/Gemini/README.md)
+* [OpenAI 协议](image.generations/dashscope/openai/README.md)
+* [Anthropic 协议](image.generations/dashscope/Anthropic/README.md)
+* [Gemini 协议](image.generations/dashscope/Gemini/README.md)
 
 ### openai
-* [OpenAI 协议](图片生成/openai/openai/README.md)
-* [Anthropic 协议](图片生成/openai/Anthropic/README.md)
-* [Gemini 协议](图片生成/openai/Gemini/README.md)
+* [OpenAI 协议](image.generations/openai/openai/README.md)
+* [Anthropic 协议](image.generations/openai/Anthropic/README.md)
+* [Gemini 协议](image.generations/openai/Gemini/README.md)
 
-## 图片编辑
+## Image Edits
 
 ### deepseek
-* [OpenAI 协议](图片编辑/deepseek/openai/README.md)
-* [Anthropic 协议](图片编辑/deepseek/Anthropic/README.md)
-* [Gemini 协议](图片编辑/deepseek/Gemini/README.md)
+* [OpenAI 协议](image.edits/deepseek/openai/README.md)
+* [Anthropic 协议](image.edits/deepseek/Anthropic/README.md)
+* [Gemini 协议](image.edits/deepseek/Gemini/README.md)
 
 ### zai
-* [OpenAI 协议](图片编辑/zai/openai/README.md)
-* [Anthropic 协议](图片编辑/zai/Anthropic/README.md)
-* [Gemini 协议](图片编辑/zai/Gemini/README.md)
+* [OpenAI 协议](image.edits/zai/openai/README.md)
+* [Anthropic 协议](image.edits/zai/Anthropic/README.md)
+* [Gemini 协议](image.edits/zai/Gemini/README.md)
 
 ### volengine
-* [OpenAI 协议](图片编辑/volengine/openai/README.md)
-* [Anthropic 协议](图片编辑/volengine/Anthropic/README.md)
-* [Gemini 协议](图片编辑/volengine/Gemini/README.md)
+* [OpenAI 协议](image.edits/volengine/openai/README.md)
+* [Anthropic 协议](image.edits/volengine/Anthropic/README.md)
+* [Gemini 协议](image.edits/volengine/Gemini/README.md)
 
 ### dashscope
-* [OpenAI 协议](图片编辑/dashscope/openai/README.md)
-* [Anthropic 协议](图片编辑/dashscope/Anthropic/README.md)
-* [Gemini 协议](图片编辑/dashscope/Gemini/README.md)
+* [OpenAI 协议](image.edits/dashscope/openai/README.md)
+* [Anthropic 协议](image.edits/dashscope/Anthropic/README.md)
+* [Gemini 协议](image.edits/dashscope/Gemini/README.md)
 
 ### openai
-* [OpenAI 协议](图片编辑/openai/openai/README.md)
-* [Anthropic 协议](图片编辑/openai/Anthropic/README.md)
-* [Gemini 协议](图片编辑/openai/Gemini/README.md)
+* [OpenAI 协议](image.edits/openai/openai/README.md)
+* [Anthropic 协议](image.edits/openai/Anthropic/README.md)
+* [Gemini 协议](image.edits/openai/Gemini/README.md)
 
-## 音频转录
+## Audio Transcriptions
 
 ### deepseek
-* [OpenAI 协议](音频转录/deepseek/openai/README.md)
-* [Anthropic 协议](音频转录/deepseek/Anthropic/README.md)
-* [Gemini 协议](音频转录/deepseek/Gemini/README.md)
+* [OpenAI 协议](audio.transcriptions/deepseek/openai/README.md)
+* [Anthropic 协议](audio.transcriptions/deepseek/Anthropic/README.md)
+* [Gemini 协议](audio.transcriptions/deepseek/Gemini/README.md)
 
 ### zai
-* [OpenAI 协议](音频转录/zai/openai/README.md)
-* [Anthropic 协议](音频转录/zai/Anthropic/README.md)
-* [Gemini 协议](音频转录/zai/Gemini/README.md)
+* [OpenAI 协议](audio.transcriptions/zai/openai/README.md)
+* [Anthropic 协议](audio.transcriptions/zai/Anthropic/README.md)
+* [Gemini 协议](audio.transcriptions/zai/Gemini/README.md)
 
 ### volengine
-* [OpenAI 协议](音频转录/volengine/openai/README.md)
-* [Anthropic 协议](音频转录/volengine/Anthropic/README.md)
-* [Gemini 协议](音频转录/volengine/Gemini/README.md)
+* [OpenAI 协议](audio.transcriptions/volengine/openai/README.md)
+* [Anthropic 协议](audio.transcriptions/volengine/Anthropic/README.md)
+* [Gemini 协议](audio.transcriptions/volengine/Gemini/README.md)
 
 ### dashscope
-* [OpenAI 协议](音频转录/dashscope/openai/README.md)
-* [Anthropic 协议](音频转录/dashscope/Anthropic/README.md)
-* [Gemini 协议](音频转录/dashscope/Gemini/README.md)
+* [OpenAI 协议](audio.transcriptions/dashscope/openai/README.md)
+* [Anthropic 协议](audio.transcriptions/dashscope/Anthropic/README.md)
+* [Gemini 协议](audio.transcriptions/dashscope/Gemini/README.md)
 
 ### openai
-* [OpenAI 协议](音频转录/openai/openai/README.md)
-* [Anthropic 协议](音频转录/openai/Anthropic/README.md)
-* [Gemini 协议](音频转录/openai/Gemini/README.md)
+* [OpenAI 协议](audio.transcriptions/openai/openai/README.md)
+* [Anthropic 协议](audio.transcriptions/openai/Anthropic/README.md)
+* [Gemini 协议](audio.transcriptions/openai/Gemini/README.md)
