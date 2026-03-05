@@ -1,0 +1,151 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAI 音频转录 API",
+    "description": "OpenAI 音频转录 API 文档，完全兼容 OpenAI 格式。",
+    "version": "1.11.0"
+  },
+  "servers": [
+    {
+      "url": "https://aillm.sinocache.net",
+      "description": "LiteLLM 网关服务器"
+    }
+  ],
+  "paths": {
+    "/v1/audio/transcriptions": {
+      "post": {
+        "summary": "创建音频转录",
+        "description": "将音频文件转录为文本。与 OpenAI 的 Audio API (Create transcription) 兼容。",
+        "operationId": "createTranscription",
+        "tags": ["Audio"],
+        "security": [ { "APIKeyHeader": [] } ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": { "$ref": "#/components/schemas/CreateTranscriptionRequest" },
+              "examples": {
+                "default": {
+                  "summary": "基础",
+                  "description": "将音频文件转录为 JSON 格式。",
+                  "value": {
+                    "model": "whisper-1",
+                    "file": "(binary)",
+                    "response_format": "json"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TranscriptionResponse" },
+                "examples": {
+                  "json-response": {
+                    "summary": "JSON 响应",
+                    "description": "默认的 JSON 格式转录。",
+                    "value": {
+                      "text": "Hello, this is a test transcription."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ErrorResponse" },
+          "401": { "$ref": "#/components/responses/ErrorResponse" },
+          "429": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateTranscriptionRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "要使用的模型 ID"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary",
+            "description": "要转录的音频文件"
+          },
+          "response_format": {
+            "type": "string",
+            "enum": ["json", "text", "srt", "verbose_json", "vtt"]
+          },
+          "timestamp_granularities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["word", "segment"]
+            }
+          }
+        },
+        "required": ["model", "file"]
+      },
+      "TranscriptionResponse": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "task": {
+            "type": ["string", "null"]
+          },
+          "language": {
+            "type": ["string", "null"]
+          },
+          "duration": {
+            "type": ["number", "null"]
+          },
+          "words": {
+            "type": ["array", "null"],
+            "items": {
+              "type": "object",
+              "properties": {
+                "word": {
+                  "type": "string"
+                },
+                "start": {
+                  "type": "number"
+                },
+                "end": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": { "type": "string" },
+              "type": { "type": "string" },
+              "param": { "type": ["string", "null"] },
+              "code": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "DeepSeek 对话生成 API",
+    "description": "DeepSeek 对话生成 API 文档，兼容 OpenAI 格式。",
+    "version": "1.11.0"
+  },
+  "servers": [
+    {
+      "url": "https://aillm.sinocache.net",
+      "description": "LiteLLM 网关服务器"
+    }
+  ],
+  "paths": {
+    "/v1/chat/completions": {
+      "post": {
+        "summary": "创建聊天补全",
+        "description": "基于输入的消息，生成模型回复。兼容 OpenAI 的 Chat API 格式。",
+        "operationId": "createChatCompletion",
+        "tags": ["Chat"],
+        "security": [ { "APIKeyHeader": [] } ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateChatCompletionRequest" },
+              "examples": {
+                "default": {
+                  "summary": "基础",
+                  "description": "一个简单的对话示例，包含系统提示和用户消息。",
+                  "value": {
+                    "model": "deepseek-chat",
+                    "messages": [
+                      { "role": "system", "content": "You are a helpful assistant." },
+                      { "role": "user", "content": "Hello!" }
+                    ],
+                    "temperature": 1,
+                    "max_completion_tokens": 50,
+                    "n": 1,
+                    "stream": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ChatCompletionResponse" },
+                "examples": {
+                  "default-response": {
+                    "summary": "基础响应",
+                    "description": "对应基础聊天请求的响应示例。",
+                    "value": {
+                      "id": "chatcmpl-123",
+                      "object": "chat.completion",
+                      "created": 1677652288,
+                      "model": "deepseek-chat",
+                      "choices": [
+                        {
+                          "index": 0,
+                          "message": {
+                            "role": "assistant",
+                            "content": "Hello there! How can I assist you today?"
+                          },
+                          "finish_reason": "stop"
+                        }
+                      ],
+                      "usage": {
+                        "prompt_tokens": 9,
+                        "completion_tokens": 12,
+                        "total_tokens": 21
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ErrorResponse" },
+          "401": { "$ref": "#/components/responses/ErrorResponse" },
+          "429": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateChatCompletionRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "要使用的模型 ID"
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "enum": ["system", "user", "assistant", "tool"]
+                },
+                "content": {
+                  "type": "string"
+                }
+              },
+              "required": ["role", "content"]
+            }
+          },
+          "temperature": {
+            "type": "number",
+            "default": 1
+          },
+          "max_completion_tokens": {
+            "type": "integer"
+          },
+          "n": {
+            "type": "integer",
+            "default": 1
+          },
+          "stream": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": ["model", "messages"]
+      },
+      "ChatCompletionResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "object": { "type": "string" },
+          "created": { "type": "integer" },
+          "model": { "type": "string" },
+          "choices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": { "type": "integer" },
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "role": { "type": "string" },
+                    "content": { "type": ["string", "null"] }
+                  }
+                },
+                "finish_reason": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "prompt_tokens": { "type": "integer" },
+              "completion_tokens": { "type": "integer" },
+              "total_tokens": { "type": "integer" }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": { "type": "string" },
+              "type": { "type": "string" },
+              "param": { "type": ["string", "null"] },
+              "code": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}

@@ -1,0 +1,177 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAI 图片生成 API",
+    "description": "OpenAI 图片生成 API 文档，完全兼容 OpenAI 格式。",
+    "version": "1.11.0"
+  },
+  "servers": [
+    {
+      "url": "https://aillm.sinocache.net",
+      "description": "LiteLLM 网关服务器"
+    }
+  ],
+  "paths": {
+    "/v1/images/generations": {
+      "post": {
+        "summary": "创建图像",
+        "description": "根据文本提示生成图像。与 OpenAI 的 Images API (Create image) 完全兼容。",
+        "operationId": "createImageGeneration",
+        "tags": ["Images"],
+        "security": [ { "APIKeyHeader": [] } ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateImageGenerationRequest" },
+              "examples": {
+                "default": {
+                  "summary": "基础",
+                  "description": "生成一张 1024x1024 的图像。",
+                  "value": {
+                    "model": "dall-e-3",
+                    "prompt": "A cute cat sitting on a windowsill",
+                    "n": 1,
+                    "size": "1024x1024"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ImageResponse" },
+                "examples": {
+                  "default-response": {
+                    "summary": "基础响应",
+                    "description": "返回包含图像 URL 和可选字段的完整响应。",
+                    "value": {
+                      "created": 1680000000,
+                      "background": "opaque",
+                      "output_format": "png",
+                      "quality": "high",
+                      "size": "1024x1024",
+                      "data": [
+                        {
+                          "url": "https://example.com/images/cat.png",
+                          "revised_prompt": "A cute cat sitting on a windowsill, looking out at a garden"
+                        }
+                      ],
+                      "usage": {
+                        "total_tokens": 100,
+                        "input_tokens": 50,
+                        "output_tokens": 50,
+                        "input_tokens_details": {
+                          "text_tokens": 10,
+                          "image_tokens": 40
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ErrorResponse" },
+          "401": { "$ref": "#/components/responses/ErrorResponse" },
+          "429": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateImageGenerationRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "要使用的模型 ID"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "生成图像的文本提示"
+          },
+          "n": {
+            "type": "integer",
+            "default": 1
+          },
+          "size": {
+            "type": "string",
+            "enum": ["256x256", "512x512", "1024x1024", "1792x1024", "1024x1792"]
+          },
+          "quality": {
+            "type": "string",
+            "enum": ["standard", "hd"]
+          },
+          "response_format": {
+            "type": "string",
+            "enum": ["url", "b64_json"]
+          }
+        },
+        "required": ["model", "prompt"]
+      },
+      "ImageResponse": {
+        "type": "object",
+        "properties": {
+          "created": { "type": "integer" },
+          "background": { "type": "string" },
+          "output_format": { "type": "string" },
+          "quality": { "type": "string" },
+          "size": { "type": "string" },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": { "type": ["string", "null"] },
+                "b64_json": { "type": ["string", "null"] },
+                "revised_prompt": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "total_tokens": { "type": "integer" },
+              "input_tokens": { "type": "integer" },
+              "output_tokens": { "type": "integer" },
+              "input_tokens_details": {
+                "type": "object",
+                "properties": {
+                  "text_tokens": { "type": "integer" },
+                  "image_tokens": { "type": "integer" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": { "type": "string" },
+              "type": { "type": "string" },
+              "param": { "type": ["string", "null"] },
+              "code": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}

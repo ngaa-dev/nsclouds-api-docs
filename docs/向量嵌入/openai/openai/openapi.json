@@ -1,0 +1,171 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAI 向量嵌入 API",
+    "description": "OpenAI 向量嵌入 API 文档，完全兼容 OpenAI 格式。",
+    "version": "1.11.0"
+  },
+  "servers": [
+    {
+      "url": "https://aillm.sinocache.net",
+      "description": "LiteLLM 网关服务器"
+    }
+  ],
+  "paths": {
+    "/v1/embeddings": {
+      "post": {
+        "summary": "创建嵌入向量",
+        "description": "获取给定输入的向量表示，可用于相似度比较等任务。与 OpenAI 的 Embeddings API 兼容。",
+        "operationId": "createEmbedding",
+        "tags": ["Embeddings"],
+        "security": [ { "APIKeyHeader": [] } ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateEmbeddingRequest" },
+              "examples": {
+                "default": {
+                  "summary": "基础",
+                  "description": "对单个字符串输入生成嵌入向量。",
+                  "value": {
+                    "model": "text-embedding-ada-002",
+                    "input": "The quick brown fox jumps over the lazy dog"
+                  }
+                },
+                "multiple-inputs": {
+                  "summary": "多输入",
+                  "description": "对多个字符串输入生成嵌入向量。",
+                  "value": {
+                    "model": "text-embedding-ada-002",
+                    "input": [
+                      "Hello world",
+                      "OpenAI is amazing"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EmbeddingResponse" },
+                "examples": {
+                  "default-response": {
+                    "summary": "基础响应",
+                    "description": "对应单个输入的基础响应。",
+                    "value": {
+                      "object": "list",
+                      "data": [
+                        {
+                          "object": "embedding",
+                          "embedding": [
+                            -0.006929283495992422,
+                            -0.005336422007530928,
+                            -0.024047505110502243
+                          ],
+                          "index": 0
+                        }
+                      ],
+                      "model": "text-embedding-ada-002",
+                      "usage": {
+                        "prompt_tokens": 8,
+                        "total_tokens": 8
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ErrorResponse" },
+          "401": { "$ref": "#/components/responses/ErrorResponse" },
+          "429": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateEmbeddingRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "要使用的模型 ID"
+          },
+          "input": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "array", "items": { "type": "string" } }
+            ]
+          },
+          "encoding_format": {
+            "type": "string",
+            "enum": ["float", "base64"],
+            "default": "float"
+          },
+          "dimensions": {
+            "type": "integer"
+          }
+        },
+        "required": ["model", "input"]
+      },
+      "EmbeddingResponse": {
+        "type": "object",
+        "properties": {
+          "object": { "type": "string" },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": { "type": "string" },
+                "embedding": {
+                  "oneOf": [
+                    { "type": "array", "items": { "type": "number" } },
+                    { "type": "string" }
+                  ]
+                },
+                "index": { "type": "integer" }
+              }
+            }
+          },
+          "model": { "type": "string" },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "prompt_tokens": { "type": "integer" },
+              "total_tokens": { "type": "integer" }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": { "type": "string" },
+              "type": { "type": "string" },
+              "param": { "type": ["string", "null"] },
+              "code": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}

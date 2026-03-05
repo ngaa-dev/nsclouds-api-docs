@@ -1,0 +1,186 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAI 图片编辑 API",
+    "description": "OpenAI 图片编辑 API 文档，完全兼容 OpenAI 格式。",
+    "version": "1.11.0"
+  },
+  "servers": [
+    {
+      "url": "https://aillm.sinocache.net",
+      "description": "LiteLLM 网关服务器"
+    }
+  ],
+  "paths": {
+    "/v1/images/edits": {
+      "post": {
+        "summary": "编辑图像",
+        "description": "根据原始图像和文本提示创建编辑后的图像。与 OpenAI 的 Images API (Create image edit) 完全兼容。",
+        "operationId": "createImageEdit",
+        "tags": ["Images"],
+        "security": [ { "APIKeyHeader": [] } ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": { "$ref": "#/components/schemas/CreateImageEditRequest" },
+              "examples": {
+                "default": {
+                  "summary": "多图像编辑",
+                  "description": "使用两个图像文件进行编辑，并可选使用蒙版。",
+                  "value": {
+                    "model": "dall-e-2",
+                    "image[]": ["@body-lotion.png"],
+                    "mask": "@mask.png",
+                    "prompt": "Add hats to all people",
+                    "n": 1,
+                    "size": "1024x1024"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功响应",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ImageResponse" },
+                "examples": {
+                  "default-response": {
+                    "summary": "编辑响应",
+                    "description": "返回编辑后的图像及相关元数据。",
+                    "value": {
+                      "created": 1680000002,
+                      "background": "opaque",
+                      "output_format": "png",
+                      "quality": "high",
+                      "size": "1024x1024",
+                      "data": [
+                        {
+                          "url": "https://example.com/images/edited.png",
+                          "revised_prompt": "A person with a hat, standing in a sunny park"
+                        }
+                      ],
+                      "usage": {
+                        "total_tokens": 120,
+                        "input_tokens": 60,
+                        "output_tokens": 60,
+                        "input_tokens_details": {
+                          "text_tokens": 12,
+                          "image_tokens": 48
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/ErrorResponse" },
+          "401": { "$ref": "#/components/responses/ErrorResponse" },
+          "429": { "$ref": "#/components/responses/ErrorResponse" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateImageEditRequest": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": "string",
+            "description": "要使用的模型 ID"
+          },
+          "image[]": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          "mask": {
+            "type": "string",
+            "format": "binary"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "编辑图像的文本提示"
+          },
+          "n": {
+            "type": "integer",
+            "default": 1
+          },
+          "size": {
+            "type": "string",
+            "enum": ["256x256", "512x512", "1024x1024"]
+          },
+          "response_format": {
+            "type": "string",
+            "enum": ["url", "b64_json"]
+          }
+        },
+        "required": ["model", "image[]", "prompt"]
+      },
+      "ImageResponse": {
+        "type": "object",
+        "properties": {
+          "created": { "type": "integer" },
+          "background": { "type": "string" },
+          "output_format": { "type": "string" },
+          "quality": { "type": "string" },
+          "size": { "type": "string" },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": { "type": ["string", "null"] },
+                "b64_json": { "type": ["string", "null"] },
+                "revised_prompt": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "total_tokens": { "type": "integer" },
+              "input_tokens": { "type": "integer" },
+              "output_tokens": { "type": "integer" },
+              "input_tokens_details": {
+                "type": "object",
+                "properties": {
+                  "text_tokens": { "type": "integer" },
+                  "image_tokens": { "type": "integer" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": { "type": "string" },
+              "type": { "type": "string" },
+              "param": { "type": ["string", "null"] },
+              "code": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "APIKeyHeader": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}
