@@ -1,0 +1,439 @@
+openapi: 3.1.0
+info:
+  title: LiteLLM API 文档
+  description: 自建 LiteLLM 网关的 API 文档，完全兼容 OpenAI 格式。
+  version: 1.11.0
+servers:
+  - url: https://aillm.sinocache.net
+    description: LiteLLM 网关服务器
+
+tags:
+  # 顶级功能标签（作为厂家标签的父级）
+  - name: chat_completions
+    x-page-title: 对话生成
+    x-page-icon: message
+    description: 对话生成相关的 API，包括聊天补全和文本补全
+  - name: embeddings
+    x-page-title: 向量嵌入
+    x-page-icon: database
+    description: 向量嵌入相关的 API，用于生成文本的向量表示
+  - name: image_generations
+    x-page-title: 图片生成
+    x-page-icon: image
+    description: 图片生成相关的 API，根据文本提示生成图像
+  - name: image_edits
+    x-page-title: 图片编辑
+    x-page-icon: edit
+    description: 图片编辑相关的 API，根据原始图像和提示创建编辑后的图像
+  - name: audio_transcriptions
+    x-page-title: 音频转录
+    x-page-icon: microphone
+    description: 音频转录相关的 API，将音频文件转录为文本
+
+components:
+  schemas:
+    # 对话生成相关 schema
+    CreateChatCompletionRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: 要使用的模型 ID
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                enum:
+                  - system
+                  - user
+                  - assistant
+                  - tool
+              content:
+                oneOf:
+                  - type: string
+                  - type: array
+                    items:
+                      oneOf:
+                        - type: object
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                                - text
+                            text:
+                              type: string
+                          required:
+                            - type
+                            - text
+                        - type: object
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                                - image_url
+                            image_url:
+                              type: object
+                              properties:
+                                url:
+                                  type: string
+                              required:
+                                - url
+                          required:
+                            - type
+                            - image_url
+            required:
+              - role
+              - content
+        temperature:
+          type: number
+          default: 1
+        max_completion_tokens:
+          type: integer
+        n:
+          type: integer
+          default: 1
+        stream:
+          type: boolean
+          default: false
+      required:
+        - model
+        - messages
+    
+    ChatCompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+              message:
+                type: object
+                properties:
+                  role:
+                    type: string
+                  content:
+                    type:
+                      - string
+                      - 'null'
+              finish_reason:
+                type:
+                  - string
+                  - 'null'
+        usage:
+          type: object
+          properties:
+            prompt_tokens:
+              type: integer
+            completion_tokens:
+              type: integer
+            total_tokens:
+              type: integer
+    
+    CreateCompletionRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: 要使用的模型 ID
+        prompt:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        temperature:
+          type: number
+          default: 1
+        max_tokens:
+          type: integer
+        n:
+          type: integer
+          default: 1
+        stream:
+          type: boolean
+          default: false
+      required:
+        - model
+        - prompt
+    
+    CompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+              index:
+                type: integer
+              logprobs:
+                type:
+                  - object
+                  - 'null'
+              finish_reason:
+                type:
+                  - string
+                  - 'null'
+        usage:
+          type: object
+          properties:
+            prompt_tokens:
+              type: integer
+            completion_tokens:
+              type: integer
+            total_tokens:
+              type: integer
+    
+    # 向量嵌入相关 schema
+    CreateEmbeddingRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: 要使用的模型 ID
+        input:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        encoding_format:
+          type: string
+          enum:
+            - float
+            - base64
+          default: float
+        dimensions:
+          type: integer
+      required:
+        - model
+        - input
+    
+    EmbeddingResponse:
+      type: object
+      properties:
+        object:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              object:
+                type: string
+              embedding:
+                oneOf:
+                  - type: array
+                    items:
+                      type: number
+                  - type: string
+              index:
+                type: integer
+        model:
+          type: string
+        usage:
+          type: object
+          properties:
+            prompt_tokens:
+              type: integer
+            total_tokens:
+              type: integer
+    
+    # 图像处理相关 schema
+    CreateImageGenerationRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: 要使用的模型 ID
+        prompt:
+          type: string
+          description: 生成图像的文本提示
+        n:
+          type: integer
+          default: 1
+        size:
+          type: string
+          default: 1024x1024
+        quality:
+          type: string
+          enum:
+            - standard
+            - hd
+          default: standard
+        response_format:
+          type: string
+          enum:
+            - url
+            - b64_json
+          default: url
+      required:
+        - model
+        - prompt
+    
+    CreateImageEditRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: 要使用的模型 ID
+        image[]:
+          type: array
+          items:
+            type: string
+            format: binary
+          description: 要编辑的图像文件
+        mask:
+          type: string
+          format: binary
+          description: 可选的蒙版文件
+        prompt:
+          type: string
+          description: 编辑图像的文本提示
+        n:
+          type: integer
+          default: 1
+        size:
+          type: string
+          default: 1024x1024
+        response_format:
+          type: string
+          enum:
+            - url
+            - b64_json
+          default: url
+      required:
+        - model
+        - image[]
+        - prompt
+    
+    ImageResponse:
+      type: object
+      properties:
+        created:
+          type: integer
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              b64_json:
+                type: string
+              revised_prompt:
+                type: string
+        background:
+          type: string
+        output_format:
+          type: string
+        quality:
+          type: string
+        size:
+          type: string
+        usage:
+          type: object
+          properties:
+            total_tokens:
+              type: integer
+            input_tokens:
+              type: integer
+            output_tokens:
+              type: integer
+    
+    # 音频转录相关 schema
+    CreateTranscriptionRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: 要使用的模型 ID
+        file:
+          type: string
+          format: binary
+          description: 要转录的音频文件
+        language:
+          type: string
+          description: 音频的语言代码（可选）
+        prompt:
+          type: string
+          description: 可选的提示，用于指导模型的风格或内容
+        response_format:
+          type: string
+          enum:
+            - json
+            - text
+            - srt
+            - verbose_json
+            - vtt
+          default: json
+        temperature:
+          type: number
+          default: 0
+      required:
+        - model
+        - file
+    
+    TranscriptionResponse:
+      type: object
+      properties:
+        text:
+          type: string
+    
+    # 通用 schema
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            type:
+              type: string
+            param:
+              type:
+                - string
+                - 'null'
+            code:
+              type:
+                - string
+                - 'null'
+  
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      name: Authorization
+      in: header
+
+  responses:
+    ErrorResponse:
+      description: 错误响应
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

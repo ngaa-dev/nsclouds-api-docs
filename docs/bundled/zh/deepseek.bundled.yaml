@@ -1,0 +1,689 @@
+openapi: 3.1.0
+info:
+  title: LiteLLM API 文档
+  description: 自建 LiteLLM 网关的 API 文档，完全兼容 OpenAI 格式。
+  version: 1.11.0
+servers:
+  - url: 'https://aillm.sinocache.net'
+    description: LiteLLM 网关服务器
+tags:
+  - name: chat_completions
+    x-page-title: 对话生成
+    x-page-icon: message
+    description: 对话生成相关的 API，包括聊天补全和文本补全
+  - name: embeddings
+    x-page-title: 向量嵌入
+    x-page-icon: database
+    description: 向量嵌入相关的 API，用于生成文本的向量表示
+  - name: image_generations
+    x-page-title: 图片生成
+    x-page-icon: image
+    description: 图片生成相关的 API，根据文本提示生成图像
+  - name: image_edits
+    x-page-title: 图片编辑
+    x-page-icon: edit
+    description: 图片编辑相关的 API，根据原始图像和提示创建编辑后的图像
+  - name: audio_transcriptions
+    x-page-title: 音频转录
+    x-page-icon: microphone
+    description: 音频转录相关的 API，将音频文件转录为文本
+  - name: chat_completions_deepseek
+    x-parent: chat_completions
+    x-page-title: 深度求索
+    x-page-icon: brain
+    description: 深度求索（DeepSeek）的对话生成 API
+  - name: embeddings_deepseek
+    x-parent: embeddings
+    x-page-title: 深度求索
+    x-page-icon: brain
+    description: 深度求索（DeepSeek）的向量嵌入 API
+  - name: image_generations_deepseek
+    x-parent: image_generations
+    x-page-title: 深度求索
+    x-page-icon: brain
+    description: 深度求索（DeepSeek）的图片生成 API
+  - name: image_edits_deepseek
+    x-parent: image_edits
+    x-page-title: 深度求索
+    x-page-icon: brain
+    description: 深度求索（DeepSeek）的图片编辑 API
+  - name: audio_transcriptions_deepseek
+    x-parent: audio_transcriptions
+    x-page-title: 深度求索
+    x-page-icon: brain
+    description: 深度求索（DeepSeek）的音频转录 API
+  - name: chat_completions_deepseek_openai
+    x-parent: chat_completions_deepseek
+    x-page-title: OpenAI 协议
+    x-page-icon: check-circle
+    description: 深度求索（DeepSeek）支持 OpenAI 协议的对话生成 API
+  - name: embeddings_deepseek_openai
+    x-parent: embeddings_deepseek
+    x-page-title: OpenAI 协议
+    x-page-icon: check-circle
+    description: 深度求索（DeepSeek）支持 OpenAI 协议的向量嵌入 API
+  - name: image_generations_deepseek_openai
+    x-parent: image_generations_deepseek
+    x-page-title: OpenAI 协议
+    x-page-icon: check-circle
+    description: 深度求索（DeepSeek）支持 OpenAI 协议的图片生成 API
+  - name: image_edits_deepseek_openai
+    x-parent: image_edits_deepseek
+    x-page-title: OpenAI 协议
+    x-page-icon: check-circle
+    description: 深度求索（DeepSeek）支持 OpenAI 协议的图片编辑 API
+  - name: audio_transcriptions_deepseek_openai
+    x-parent: audio_transcriptions_deepseek
+    x-page-title: OpenAI 协议
+    x-page-icon: check-circle
+    description: 深度求索（DeepSeek）支持 OpenAI 协议的音频转录 API
+paths:
+  /v1/chat/completions:
+    post:
+      tags:
+        - chat_completions_deepseek
+        - chat_completions_deepseek_openai
+      summary: 创建聊天补全
+      description: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
+      operationId: createChatCompletion_deepseek
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatCompletionRequest'
+            examples:
+              default:
+                summary: 基础示例
+                value:
+                  model: deepseek-chat
+                  messages:
+                    - role: user
+                      content: Hello!
+                  temperature: 1
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/completions:
+    post:
+      tags:
+        - chat_completions_deepseek
+        - chat_completions_deepseek_openai
+      summary: 创建文本补全
+      description: 基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
+      operationId: createCompletion_deepseek
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompletionRequest'
+            examples:
+              default:
+                value:
+                  model: deepseek-chat
+                  prompt: Once upon a time
+                  max_tokens: 50
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompletionResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/embeddings:
+    post:
+      tags:
+        - embeddings_deepseek
+        - embeddings_deepseek_openai
+      summary: 创建嵌入向量
+      description: 获取给定输入的向量表示。与 OpenAI 的 Embeddings API 兼容。
+      operationId: createEmbedding_deepseek
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEmbeddingRequest'
+            examples:
+              default:
+                value:
+                  model: deepseek-embed
+                  input: Hello world
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmbeddingResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/images/generations:
+    post:
+      tags:
+        - image_generations_deepseek
+        - image_generations_deepseek_openai
+      summary: 创建图像
+      description: 根据文本提示生成图像。与 OpenAI 的 Images API 兼容。
+      operationId: createImageGeneration_deepseek
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateImageGenerationRequest'
+            examples:
+              default:
+                value:
+                  model: deepseek-image
+                  prompt: A cat sitting on a windowsill
+                  'n': 1
+                  size: 1024x1024
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/images/edits:
+    post:
+      tags:
+        - image_edits_deepseek
+        - image_edits_deepseek_openai
+      summary: 编辑图像
+      description: 根据原始图像和文本提示创建编辑后的图像。与 OpenAI 的 Images API 兼容。
+      operationId: createImageEdit_deepseek
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateImageEditRequest'
+            encoding:
+              images:
+                style: form
+                explode: true
+            examples:
+              default:
+                value:
+                  model: deepseek-image
+                  images:
+                    - (binary)
+                  prompt: Add a hat
+                  'n': 1
+                  size: 1024x1024
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/audio/transcriptions:
+    post:
+      tags:
+        - audio_transcriptions_deepseek
+        - audio_transcriptions_deepseek_openai
+      summary: 音频转录
+      description: 将音频文件转录为文本。与 OpenAI 的 Audio API 兼容。
+      operationId: createTranscription_deepseek
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateTranscriptionRequest'
+            examples:
+              default:
+                value:
+                  model: deepseek-whisper
+                  file: (binary)
+                  language: en
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranscriptionResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+components:
+  schemas:
+    CreateChatCompletionRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: 要使用的模型 ID
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                enum:
+                  - system
+                  - user
+                  - assistant
+                  - tool
+              content:
+                oneOf:
+                  - type: string
+                  - type: array
+                    items:
+                      oneOf:
+                        - type: object
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                                - text
+                            text:
+                              type: string
+                          required:
+                            - type
+                            - text
+                        - type: object
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                                - image_url
+                            image_url:
+                              type: object
+                              properties:
+                                url:
+                                  type: string
+                              required:
+                                - url
+                          required:
+                            - type
+                            - image_url
+            required:
+              - role
+              - content
+        temperature:
+          type: number
+          default: 1
+        max_completion_tokens:
+          type: integer
+        'n':
+          type: integer
+          default: 1
+        stream:
+          type: boolean
+          default: false
+      required:
+        - model
+        - messages
+    ChatCompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+              message:
+                type: object
+                properties:
+                  role:
+                    type: string
+                  content:
+                    type:
+                      - string
+                      - 'null'
+              finish_reason:
+                type:
+                  - string
+                  - 'null'
+        usage:
+          type: object
+          properties:
+            prompt_tokens:
+              type: integer
+            completion_tokens:
+              type: integer
+            total_tokens:
+              type: integer
+    CreateCompletionRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: 要使用的模型 ID
+        prompt:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        temperature:
+          type: number
+          default: 1
+        max_tokens:
+          type: integer
+        'n':
+          type: integer
+          default: 1
+        stream:
+          type: boolean
+          default: false
+      required:
+        - model
+        - prompt
+    CompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+              index:
+                type: integer
+              logprobs:
+                type:
+                  - object
+                  - 'null'
+              finish_reason:
+                type:
+                  - string
+                  - 'null'
+        usage:
+          type: object
+          properties:
+            prompt_tokens:
+              type: integer
+            completion_tokens:
+              type: integer
+            total_tokens:
+              type: integer
+    CreateEmbeddingRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: 要使用的模型 ID
+        input:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        encoding_format:
+          type: string
+          enum:
+            - float
+            - base64
+          default: float
+        dimensions:
+          type: integer
+      required:
+        - model
+        - input
+    EmbeddingResponse:
+      type: object
+      properties:
+        object:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              object:
+                type: string
+              embedding:
+                oneOf:
+                  - type: array
+                    items:
+                      type: number
+                  - type: string
+              index:
+                type: integer
+        model:
+          type: string
+        usage:
+          type: object
+          properties:
+            prompt_tokens:
+              type: integer
+            total_tokens:
+              type: integer
+    CreateImageGenerationRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: 要使用的模型 ID
+        prompt:
+          type: string
+          description: 生成图像的文本提示
+        'n':
+          type: integer
+          default: 1
+        size:
+          type: string
+          default: 1024x1024
+        quality:
+          type: string
+          enum:
+            - standard
+            - hd
+          default: standard
+        response_format:
+          type: string
+          enum:
+            - url
+            - b64_json
+          default: url
+      required:
+        - model
+        - prompt
+    CreateImageEditRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: 要使用的模型 ID
+        'image[]':
+          type: array
+          items:
+            type: string
+            format: binary
+          description: 要编辑的图像文件
+        mask:
+          type: string
+          format: binary
+          description: 可选的蒙版文件
+        prompt:
+          type: string
+          description: 编辑图像的文本提示
+        'n':
+          type: integer
+          default: 1
+        size:
+          type: string
+          default: 1024x1024
+        response_format:
+          type: string
+          enum:
+            - url
+            - b64_json
+          default: url
+      required:
+        - model
+        - 'image[]'
+        - prompt
+    ImageResponse:
+      type: object
+      properties:
+        created:
+          type: integer
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              b64_json:
+                type: string
+              revised_prompt:
+                type: string
+        background:
+          type: string
+        output_format:
+          type: string
+        quality:
+          type: string
+        size:
+          type: string
+        usage:
+          type: object
+          properties:
+            total_tokens:
+              type: integer
+            input_tokens:
+              type: integer
+            output_tokens:
+              type: integer
+    CreateTranscriptionRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: 要使用的模型 ID
+        file:
+          type: string
+          format: binary
+          description: 要转录的音频文件
+        language:
+          type: string
+          description: 音频的语言代码（可选）
+        prompt:
+          type: string
+          description: 可选的提示，用于指导模型的风格或内容
+        response_format:
+          type: string
+          enum:
+            - json
+            - text
+            - srt
+            - verbose_json
+            - vtt
+          default: json
+        temperature:
+          type: number
+          default: 0
+      required:
+        - model
+        - file
+    TranscriptionResponse:
+      type: object
+      properties:
+        text:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            type:
+              type: string
+            param:
+              type:
+                - string
+                - 'null'
+            code:
+              type:
+                - string
+                - 'null'
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      name: Authorization
+      in: header
+  responses:
+    ErrorResponse:
+      description: 错误响应
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
