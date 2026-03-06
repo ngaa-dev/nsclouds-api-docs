@@ -1,0 +1,101 @@
+openapi: 3.1.0
+info:
+  title: 测试 API (公共)
+  description: 仅用于测试跨文件引用
+  version: 1.0.0
+servers:
+  - url: 'https://aillm.sinocache.net'
+    description: 测试服务器
+tags:
+  - name: chat_completions_deepseek
+    x-page-title: 深度求索测试
+    x-page-icon: brain
+    description: 深度求索对话生成 API（测试）
+  - name: chat_completions_deepseek_openai
+    x-parent: chat_completions_deepseek
+    x-page-title: OpenAI 协议
+    x-page-icon: check-circle
+    description: OpenAI 协议（测试）
+paths:
+  /v1/chat/completions:
+    post:
+      tags:
+        - chat_completions_deepseek
+        - chat_completions_deepseek_openai
+      summary: 创建聊天补全（测试）
+      operationId: createChatCompletion_test
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                model:
+                  type: string
+                  example: deepseek-chat
+                messages:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      role:
+                        type: string
+                        enum:
+                          - system
+                          - user
+                          - assistant
+                      content:
+                        type: string
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  object:
+                    type: string
+                  created:
+                    type: integer
+                  model:
+                    type: string
+                  choices:
+                    type: array
+                    items:
+                      type: object
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            type:
+              type: string
+  responses:
+    ErrorResponse:
+      description: 错误响应
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      name: Authorization
+      in: header
