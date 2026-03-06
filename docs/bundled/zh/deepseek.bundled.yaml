@@ -52,37 +52,11 @@ tags:
     x-page-title: 深度求索
     x-page-icon: brain
     description: 深度求索（DeepSeek）的音频转录 API
-  - name: chat_completions_deepseek_openai
-    x-parent: chat_completions_deepseek
-    x-page-title: OpenAI 协议
-    x-page-icon: check-circle
-    description: 深度求索（DeepSeek）支持 OpenAI 协议的对话生成 API
-  - name: embeddings_deepseek_openai
-    x-parent: embeddings_deepseek
-    x-page-title: OpenAI 协议
-    x-page-icon: check-circle
-    description: 深度求索（DeepSeek）支持 OpenAI 协议的向量嵌入 API
-  - name: image_generations_deepseek_openai
-    x-parent: image_generations_deepseek
-    x-page-title: OpenAI 协议
-    x-page-icon: check-circle
-    description: 深度求索（DeepSeek）支持 OpenAI 协议的图片生成 API
-  - name: image_edits_deepseek_openai
-    x-parent: image_edits_deepseek
-    x-page-title: OpenAI 协议
-    x-page-icon: check-circle
-    description: 深度求索（DeepSeek）支持 OpenAI 协议的图片编辑 API
-  - name: audio_transcriptions_deepseek_openai
-    x-parent: audio_transcriptions_deepseek
-    x-page-title: OpenAI 协议
-    x-page-icon: check-circle
-    description: 深度求索（DeepSeek）支持 OpenAI 协议的音频转录 API
 paths:
   /v1/chat/completions:
     post:
       tags:
         - chat_completions_deepseek
-        - chat_completions_deepseek_openai
       summary: 创建聊天补全
       description: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
       operationId: createChatCompletion_deepseek
@@ -120,7 +94,6 @@ paths:
     post:
       tags:
         - chat_completions_deepseek
-        - chat_completions_deepseek_openai
       summary: 创建文本补全
       description: 基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
       operationId: createCompletion_deepseek
@@ -155,7 +128,6 @@ paths:
     post:
       tags:
         - embeddings_deepseek
-        - embeddings_deepseek_openai
       summary: 创建嵌入向量
       description: 获取给定输入的向量表示。与 OpenAI 的 Embeddings API 兼容。
       operationId: createEmbedding_deepseek
@@ -189,7 +161,6 @@ paths:
     post:
       tags:
         - image_generations_deepseek
-        - image_generations_deepseek_openai
       summary: 创建图像
       description: 根据文本提示生成图像。与 OpenAI 的 Images API 兼容。
       operationId: createImageGeneration_deepseek
@@ -225,7 +196,6 @@ paths:
     post:
       tags:
         - image_edits_deepseek
-        - image_edits_deepseek_openai
       summary: 编辑图像
       description: 根据原始图像和文本提示创建编辑后的图像。与 OpenAI 的 Images API 兼容。
       operationId: createImageEdit_deepseek
@@ -267,7 +237,6 @@ paths:
     post:
       tags:
         - audio_transcriptions_deepseek
-        - audio_transcriptions_deepseek_openai
       summary: 音频转录
       description: 将音频文件转录为文本。与 OpenAI 的 Audio API 兼容。
       operationId: createTranscription_deepseek

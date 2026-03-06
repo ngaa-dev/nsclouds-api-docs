@@ -1,16 +1,16 @@
 openapi: 3.1.0
 info:
-  $ref: ./_common.yaml#/info
+  $ref: ../_common.yaml#/info
 servers:
-  $ref: ./_common.yaml#/servers
+  $ref: ../_common.yaml#/servers
 
 tags:
   # 引用公共文件中的顶级功能标签（用于保持导航层级）
-  - $ref: ./_common.yaml#/tags/0   # chat_completions
-  - $ref: ./_common.yaml#/tags/1   # embeddings
-  - $ref: ./_common.yaml#/tags/2   # image_generations
-  - $ref: ./_common.yaml#/tags/3   # image_edits
-  - $ref: ./_common.yaml#/tags/4   # audio_transcriptions
+  - $ref: ../_common.yaml#/tags/0   # chat_completions
+  - $ref: ../_common.yaml#/tags/1   # embeddings
+  - $ref: ../_common.yaml#/tags/2   # image_generations
+  - $ref: ../_common.yaml#/tags/3   # image_edits
+  - $ref: ../_common.yaml#/tags/4   # audio_transcriptions
 
   # ========== 深度求索厂家标签 ==========
   - name: chat_completions_deepseek
@@ -299,4 +299,4 @@ paths:
           $ref: '#/components/responses/ErrorResponse'
 
 components:
-  $ref: ./_common.yaml#/components
+  $ref: ../_common.yaml#/components
