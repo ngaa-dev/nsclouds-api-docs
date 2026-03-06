@@ -18,9 +18,9 @@ info:
               - object: leaf
                 text: 自建 LiteLLM 网关的 API 文档，完全兼容 OpenAI 格式。
                 marks: []
-            key: QFOvTDrOzjun
-        key: LtH3fpLREm53
-    key: rH71NHG2ZECo
+            key: w2stUpTQgrqE
+        key: H26iKvLSn5z5
+    key: HId86NEfTvX3
   x-gitbook-description-html: <p>自建 LiteLLM 网关的 API 文档，完全兼容 OpenAI 格式。</p>
 servers:
   - url: https://aillm.sinocache.net
@@ -245,8 +245,8 @@ paths:
                   - object: leaf
                     text: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
                     marks: []
-                key: sFaFVFYVHP2S
-            key: PB4Xqo9rR3Bc
+                key: EB8gbmgijAcl
+            key: qgXjSzD6vWzj
           - object: block
             type: blockquote
             isVoid: false
@@ -271,10 +271,10 @@ paths:
                       - object: leaf
                         text: ：选择下方的请求示例后，请手动在响应示例区域选择同名的示例以查看对应的输出。
                         marks: []
-                    key: v6UFaEsssCg9
-                key: I3vZKPHYGm0x
-            key: w1rStc9XtyQO
-        key: DJGbg3PWJGl5
+                    key: r9ZBETRM96Hn
+                key: D5UopESl3gsm
+            key: wsu2o0ppdi0T
+        key: U4faaqv5z9a4
       x-gitbook-description-html: >-
         <p>基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。</p><blockquote><p>💡
         <strong>提示</strong>：选择下方的请求示例后，请手动在响应示例区域选择同名的示例以查看对应的输出。</p></blockquote>
@@ -484,8 +484,8 @@ paths:
                   - object: leaf
                     text: 基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
                     marks: []
-                key: J7wIuKiwalf2
-            key: xWjYblKcCw1c
+                key: EHtuapXXXdOB
+            key: pYzsszJeGbmQ
           - object: block
             type: blockquote
             isVoid: false
@@ -510,10 +510,10 @@ paths:
                       - object: leaf
                         text: ：选择下方的请求示例后，请手动在响应示例区域选择同名的示例以查看对应的输出。
                         marks: []
-                    key: kcut0u0Lhnq8
-                key: D4tEcbcbqeNT
-            key: NuRPgAEjQGAK
-        key: lNqpqV0r6FOj
+                    key: 1Y0UoDh0ZhFh
+                key: WtVCXYQlXbGa
+            key: YC5tzlUFtwim
+        key: 4Og49GdQzWft
       x-gitbook-description-html: >-
         <p>基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API
         兼容。</p><blockquote><p>💡
@@ -650,9 +650,9 @@ paths:
                   - object: leaf
                     text: 获取给定输入的向量表示，可用于相似度比较等任务。与 OpenAI 的 Embeddings API 兼容。
                     marks: []
-                key: yFSfvKSsn5Iz
-            key: D0ASCVJ4R6eu
-        key: 1gPnyEdP8Gsg
+                key: yqLWgZTTTX4P
+            key: W3QTwwsYfhVE
+        key: 2suTdBjFDkni
       x-gitbook-description-html: <p>获取给定输入的向量表示，可用于相似度比较等任务。与 OpenAI 的 Embeddings API 兼容。</p>
   /v1/models:
     get:
@@ -708,9 +708,9 @@ paths:
                   - object: leaf
                     text: 返回网关中可用模型的列表。与 OpenAI 的 List Models API 兼容。
                     marks: []
-                key: wPtXlFDpjSuX
-            key: x7vKVO7eqUG3
-        key: bwx2LhmKdzHN
+                key: CocU0mXplLao
+            key: E1s48FGailra
+        key: sMqjP4LT64JJ
       x-gitbook-description-html: <p>返回网关中可用模型的列表。与 OpenAI 的 List Models API 兼容。</p>
   /v1/models/{model}:
     get:
@@ -766,9 +766,9 @@ paths:
                   - object: leaf
                     text: 获取特定模型的详细信息。与 OpenAI 的 Retrieve Model API 兼容。
                     marks: []
-                key: dAPuMGcrkptH
-            key: Tp2CJROLV2yw
-        key: nhkz1xfYPGbJ
+                key: q1tHj5Clw1k9
+            key: qYmdRJaIilP2
+        key: BYlJARLcOUP1
       x-gitbook-description-html: <p>获取特定模型的详细信息。与 OpenAI 的 Retrieve Model API 兼容。</p>
   /v1/images/generations:
     post:
@@ -914,8 +914,8 @@ paths:
                   - object: leaf
                     text: 根据文本提示生成图像。与 OpenAI 的 Images API (Create image) 完全兼容。
                     marks: []
-                key: mOITbD3TjeUO
-            key: r6VSE0Zaz4fk
+                key: HvaVPHXkXfr1
+            key: aPIiiMLLxmkl
           - object: block
             type: blockquote
             isVoid: false
@@ -940,10 +940,10 @@ paths:
                       - object: leaf
                         text: ：选择下方的请求示例后，请手动在响应示例区域选择同名的示例以查看对应的输出。
                         marks: []
-                    key: 1fsEkmBAOoB4
-                key: tBktiNbAdFCe
-            key: KUM4GGNjGIlw
-        key: fOQQNYayicmY
+                    key: Wh7h7k7dZRBh
+                key: SL0Ey9o3kTwI
+            key: ziTh2yenMqkU
+        key: 4P8HrCQRj8ve
       x-gitbook-description-html: >-
         <p>根据文本提示生成图像。与 OpenAI 的 Images API (Create image)
         完全兼容。</p><blockquote><p>💡
@@ -960,8 +960,8 @@ paths:
 
         **图像引用方式**：
 
-        - 通过直接上传文件（本示例使用的方式），对应 curl 命令格式：`-F "images[]=@body-lotion.png" -F
-        "images[]=@bath-bomb.png" -F "mask=@mask.png"`
+        - 通过直接上传文件（本示例使用的方式），对应 curl 命令格式：`-F "image[]=@body-lotion.png" -F
+        "image[]=@bath-bomb.png" -F "mask=@mask.png"`
 
         - 通过已上传文件的 ID（`file_id`）
 
@@ -990,8 +990,9 @@ paths:
                 description: 使用两个图像文件进行编辑，并可选使用蒙版。
                 value:
                   model: dall-e-2
-                  image[]: '@body-lotion.png'
-                  mask: (binary)
+                  image[]:
+                    - '@body-lotion.png'
+                  mask: '@mask.png'
                   prompt: Add hats to all people
                   'n': 1
                   size: 1024x1024
@@ -1082,8 +1083,8 @@ paths:
                       根据原始图像和文本提示创建编辑后的图像。与 OpenAI 的 Images API (Create image
                       edit) 完全兼容。
                     marks: []
-                key: iVW89fpgp9eH
-            key: ObfciUovTVLs
+                key: rn71J40P3Fk2
+            key: 5JP6StsBeubb
           - object: block
             type: blockquote
             isVoid: false
@@ -1108,9 +1109,9 @@ paths:
                       - object: leaf
                         text: ：选择下方的请求示例后，请手动在响应示例区域选择同名的示例以查看对应的输出。
                         marks: []
-                    key: XOfGDqqkmMQk
-                key: tdCgvowfmr88
-            key: 9WIv5XM018uP
+                    key: DrZSKhFanlBU
+                key: cKIVmg0ctBOY
+            key: siiuTCYvvPrS
           - object: block
             type: paragraph
             isVoid: false
@@ -1127,8 +1128,8 @@ paths:
                   - object: leaf
                     text: ：
                     marks: []
-                key: DiJyxyoDKzs9
-            key: 2VFZOTY9Mdmx
+                key: jrMwtfThr3gD
+            key: FcZ5sd8LJQRY
           - object: block
             type: list-unordered
             isVoid: false
@@ -1151,15 +1152,15 @@ paths:
                             marks: []
                           - object: leaf
                             text: >-
-                              -F "images[]=@body-lotion.png" -F
-                              "images[]=@bath-bomb.png" -F "mask=@mask.png"
+                              -F "image[]=@body-lotion.png" -F
+                              "image[]=@bath-bomb.png" -F "mask=@mask.png"
                             marks:
                               - object: mark
                                 type: code
                                 data: {}
-                        key: mhzEASADdqMm
-                    key: h85Idg6enuvK
-                key: CzQCGhMEhFEA
+                        key: ITJUasSgafXP
+                    key: EGkxhFYsYT51
+                key: VtyMvVHh3UUZ
               - object: block
                 type: list-item
                 isVoid: false
@@ -1184,9 +1185,9 @@ paths:
                           - object: leaf
                             text: ）
                             marks: []
-                        key: cT6MKInd2K15
-                    key: sgiUAXzQJ80P
-                key: BPzW0nkkFBnk
+                        key: iljU5AmPaN63
+                    key: 6JR2ccQuC2DW
+                key: 90dXdDuFoQYz
               - object: block
                 type: list-item
                 isVoid: false
@@ -1211,10 +1212,10 @@ paths:
                           - object: leaf
                             text: ）
                             marks: []
-                        key: Rk4Zw9lulV8w
-                    key: hoEAbsHpXwCr
-                key: v49aeSWSnVAI
-            key: GKVgpuNyvLLc
+                        key: A934yDVPVbyg
+                    key: bZPK9JAlL1RF
+                key: 0af1xRYsLGoL
+            key: Pm3mxrbCuhCQ
           - object: block
             type: paragraph
             isVoid: false
@@ -1225,15 +1226,15 @@ paths:
                   - object: leaf
                     text: 最大文件大小：20 MB，图像需为正方形 PNG 格式。
                     marks: []
-                key: e38dmEqPOe13
-            key: vtxJ561rsLPr
-        key: 7UTAeYbfPdfp
+                key: oIIe1BZdvQEk
+            key: luxwksvuIUTQ
+        key: AsB5skMiiCTf
       x-gitbook-description-html: >-
         <p>根据原始图像和文本提示创建编辑后的图像。与 OpenAI 的 Images API (Create image edit)
         完全兼容。</p><blockquote><p>💡
         <strong>提示</strong>：选择下方的请求示例后，请手动在响应示例区域选择同名的示例以查看对应的输出。</p></blockquote><p><strong>图像引用方式</strong>：</p><ul><li>通过直接上传文件（本示例使用的方式），对应
-        curl 命令格式：<code>-F "images[]=@body-lotion.png" -F
-        "images[]=@bath-bomb.png" -F "mask=@mask.png"</code></li><li>通过已上传文件的
+        curl 命令格式：<code>-F "image[]=@body-lotion.png" -F
+        "image[]=@bath-bomb.png" -F "mask=@mask.png"</code></li><li>通过已上传文件的
         ID（<code>file_id</code>）</li><li>通过图像
         URL（<code>image_url</code>）</li></ul><p>最大文件大小：20 MB，图像需为正方形 PNG 格式。</p>
   /v1/audio/transcriptions:
@@ -1383,9 +1384,9 @@ paths:
                   - object: leaf
                     text: 将音频文件转录为文本。与 OpenAI 的 Audio API (Create transcription) 兼容。
                     marks: []
-                key: kcNS4vS9kdS8
-            key: yMQc1nQaLtiw
-        key: LKrJOlLXOwEZ
+                key: klPNYKypaTU3
+            key: h4wBBrStZiGe
+        key: JEpKhvUguWj7
       x-gitbook-description-html: <p>将音频文件转录为文本。与 OpenAI 的 Audio API (Create transcription) 兼容。</p>
 components:
   securitySchemes:
@@ -2250,3 +2251,4 @@ components:
                 type: number
               end:
                 type: number
+
