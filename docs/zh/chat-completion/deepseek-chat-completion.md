@@ -10,9 +10,10 @@
 
 **模型列表：**
 
-* `deepseek-v3`
 * `deepseek-v3.1`
-* `deepseek-r1`
+* `deepseek-v3.2`
+* `volcengine/deepseek-v3-1-terminus`
+* `volcengine/deepseek-r1-250528`
 
 ### 功能验证说明
 
