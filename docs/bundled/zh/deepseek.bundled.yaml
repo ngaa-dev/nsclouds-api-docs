@@ -1166,8 +1166,7 @@ components:
     APIKeyHeader:
       type: http
       scheme: bearer
-      description: 使用 Bearer 令牌进行认证，格式：'Bearer YOUR_API_KEY'
-      x-gitbook-description-html: <p>使用 Bearer 令牌进行认证，格式：<code>Bearer YOUR_API_KEY</code></p>
+      description: 使用 Bearer 令牌进行认证，格式：'Bearer YOUR_SECRET_TOKEN'
   responses:
     ErrorResponse:
       description: 错误响应
