@@ -261,15 +261,6 @@ paths:
                   max_tokens: 30
                   temperature: 0.8
                   stream: true
-              logprobs:
-                summary: 带 logprobs
-                description: 返回每个 token 的对数概率。
-                value:
-                  model: gpt-3.5-turbo-instruct
-                  prompt: What is the capital of France?
-                  max_tokens: 10
-                  logprobs: 5
-                  echo: true
       responses:
         '200':
           description: 成功响应
@@ -289,76 +280,10 @@ paths:
                     choices:
                       - text: ' in a small village, there lived a young girl named Lily.'
                         index: 0
-                        logprobs: null
                         finish_reason: length
                     usage:
                       prompt_tokens: 4
                       completion_tokens: 12
-                      total_tokens: 16
-                logprobs-response:
-                  summary: 带 logprobs 响应
-                  description: 对应带 logprobs 请求的响应示例。
-                  value:
-                    id: cmpl-456
-                    object: text_completion
-                    created: 1677652290
-                    model: gpt-3.5-turbo-instruct
-                    choices:
-                      - text: |-
-
-
-                          The capital of France is Paris.
-                        index: 0
-                        logprobs:
-                          tokens:
-                            - |+
-
-                            - |+
-
-                            - The
-                            - ' capital'
-                            - ' of'
-                            - ' France'
-                            - ' is'
-                            - ' Paris'
-                            - .
-                          token_logprobs:
-                            - -0.5
-                            - -0.3
-                            - -1.2
-                            - -0.8
-                            - -0.4
-                            - -0.6
-                            - -0.9
-                            - -1.5
-                            - -0.2
-                          top_logprobs:
-                            - "\n": -0.5
-                            - "\n\n": -1.1
-                            - "\n": -0.3
-                            - "\n\n": -1
-                            - The: -1.2
-                            - A: -2
-                            - ' capital': -1.5
-                            - ' of': -1.3
-                            - ' France': -1.4
-                            - ' is': -1.6
-                            - ' Paris': -2.2
-                            - .: -1
-                          text_offset:
-                            - 0
-                            - 1
-                            - 2
-                            - 5
-                            - 12
-                            - 15
-                            - 22
-                            - 25
-                            - 30
-                        finish_reason: stop
-                    usage:
-                      prompt_tokens: 7
-                      completion_tokens: 9
                       total_tokens: 16
             text/event-stream:
               schema:
@@ -369,13 +294,13 @@ paths:
                   summary: 流式响应示例
                   description: 展示流式文本补全过程中陆续发送的事件。
                   value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":"The","index":0,"logprobs":null,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" future","index":0,"logprobs":null,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" of","index":0,"logprobs":null,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" AI","index":0,"logprobs":null,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" is","index":0,"logprobs":null,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" bright","index":0,"logprobs":null,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":".","index":0,"logprobs":null,"finish_reason":"length"}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":"The","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" future","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" of","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" AI","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" is","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" bright","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'
@@ -941,10 +866,6 @@ components:
                 type: string
               index:
                 type: integer
-              logprobs:
-                type:
-                  - object
-                  - 'null'
               finish_reason:
                 type:
                   - string

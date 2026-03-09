@@ -23,7 +23,6 @@
 | 流式响应 | ✅ 已验证 | 所有模型支持 |
 | 图像输入 | ✅ 已验证 | deepseek-v3.1 支持 |
 | 函数调用 | ✅ 已验证 | deepseek-v3.1 支持 |
-| logprobs | ❌ 不支持 | 参数不支持 |
 | completions 接口 | ⚠️ 部分支持 | 仅 volcengine/deepseek-v3-1-terminus 支持 |
 
 ### 2.接口详情

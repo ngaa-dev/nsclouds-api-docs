@@ -36,7 +36,19 @@ cat test_openapi/model_info.json | python3 -c "import json,sys; data=json.load(s
 
 ### 2. 验证端点功能
 
-根据模型的 `mode` 字段验证对应端点：
+根据模型的 `mode` 字段验证对应端点。从 `model_info.json` 中提取模型的 `mode` 字段，确定需要验证的端点：
+
+**提取模型及其 mode：**
+```bash
+cat test_openapi/model_info.json | python3 -c "import json,sys; data=json.load(sys.stdin); models=[(d['model_name'], d.get('mode','')) for d in data['data'] if '{vendor}' in d['model_name'].lower()]; print('\n'.join([f'{m[0]}: {m[1]}' for m in models]))"
+```
+
+常见 mode 类型及对应端点：
+- `chat` → `/v1/chat/completions` 和 `/v1/completions`（两者都需要验证）
+- `completion` → `/v1/completions`  
+- `embedding` → `/v1/embeddings`
+- `image_generation` → `/v1/images/generations`
+- `audio_transcription` → `/v1/audio/transcriptions`
 
 #### 2.1 Chat 模式验证 `/v1/chat/completions`
 
@@ -138,23 +150,6 @@ curl -X POST "https://devaillm.nscloud.ai/v1/chat/completions" \
   }'
 ```
 
-**logprobs 测试（检查是否支持）：**
-
-```bash
-curl -X POST "https://devaillm.nscloud.ai/v1/chat/completions" \
-  -H "Authorization: Bearer $NGAA_LLM_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "{model_name}",
-    "messages": [
-      {"role": "user", "content": "Hello!"}
-    ],
-    "max_completion_tokens": 10,
-    "logprobs": true,
-    "top_logprobs": 2
-  }'
-```
-
 #### 2.2 Completion 模式验证 `/v1/completions`
 
 ```bash
@@ -167,6 +162,41 @@ curl -X POST "https://devaillm.nscloud.ai/v1/completions" \
     "max_tokens": 7,
     "temperature": 0
   }'
+```
+
+#### 2.3 Embedding 模式验证 `/v1/embeddings`
+
+```bash
+curl -X POST "https://devaillm.nscloud.ai/v1/embeddings" \
+  -H "Authorization: Bearer $NGAA_LLM_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "{model_name}",
+    "input": "The food was delicious and the waiter was very friendly."
+  }'
+```
+
+#### 2.4 Image Generation 模式验证 `/v1/images/generations`
+
+```bash
+curl -X POST "https://devaillm.nscloud.ai/v1/images/generations" \
+  -H "Authorization: Bearer $NGAA_LLM_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "{model_name}",
+    "prompt": "A cat wearing a hat",
+    "n": 1,
+    "size": "1024x1024"
+  }'
+```
+
+#### 2.5 Audio Transcription 模式验证 `/v1/audio/transcriptions`
+
+```bash
+curl -X POST "https://devaillm.nscloud.ai/v1/audio/transcriptions" \
+  -H "Authorization: Bearer $NGAA_LLM_API_KEY" \
+  -F "model={model_name}" \
+  -F "file=@/path/to/audio.mp3"
 ```
 
 ### 3. 记录测试结果
@@ -232,8 +262,10 @@ curl -X POST "https://devaillm.nscloud.ai/v1/completions" \
 | 流式响应 | ✅/❌ | 说明 |
 | 图像输入 | ✅/❌ | 说明 |
 | 函数调用 | ✅/❌ | 说明 |
-| logprobs | ✅/❌ | 说明 |
 | completions 接口 | ✅/❌ | 说明 |
+| embeddings 接口 | ✅/❌ | 说明 |
+| image generations 接口 | ✅/❌ | 说明 |
+| audio transcriptions 接口 | ✅/❌ | 说明 |
 
 ## 各模型详细验证
 
@@ -245,8 +277,10 @@ curl -X POST "https://devaillm.nscloud.ai/v1/completions" \
 | chat/completions 流式 | ✅/❌ |
 | chat/completions 图像输入 | ✅/❌ |
 | chat/completions 函数调用 | ✅/❌ |
-| chat/completions logprobs | ✅/❌ |
 | completions | ✅/❌ |
+| embeddings | ✅/❌ |
+| image generations | ✅/❌ |
+| audio transcriptions | ✅/❌ |
 
 ---
 
@@ -270,31 +304,47 @@ curl -X POST "https://devaillm.nscloud.ai/v1/completions" \
 
 - 使用真实测试数据替换所有 examples
 - 使用实际可用的模型名称
-- 移除不支持的参数（如 logprobs）
 - 确保响应数据与实际测试结果一致
+- **数据展示优化**：如果真实数据特别大（如流式响应的完整事件流或 embedding 的完整向量），examples 可以省略部分数据，使用 `...` 表示省略，确保文档简洁易读
 
 **关键更新点：**
 
-1. **Chat Completions 端点**：
+1. **Chat Completions 端点**（如果存在 chat 模式模型）：
    - 基础请求 example
    - 流式响应 example
    - 图像输入 example（如果支持）
    - 函数调用 example（如果支持）
 
-2. **Completions 端点**（如果支持）：
+2. **Completions 端点**（如果存在 completion 模式模型）：
    - 基础请求 example
    - 流式响应 example
 
-3. **移除不支持的 features**：
-   - 删除 logprobs 相关 examples（如果不支持）
+3. **Embeddings 端点**（如果存在 embedding 模式模型）：
+   - 基础请求 example
 
-#### 4.2 更新 `{vendor}-chat-completion.md`
+4. **Image Generations 端点**（如果存在 image_generation 模式模型）：
+   - 基础请求 example
 
-更新 `docs/zh/chat-completion/{vendor}-chat-completion.md`：
+5. **Audio Transcriptions 端点**（如果存在 audio_transcription 模式模型）：
+   - 基础请求 example
 
+#### 4.2 更新厂家说明文档
+
+根据模型类型，更新对应的功能点文档：
+
+| 功能点 | 文档路径 | 说明 |
+|--------|----------|------|
+| 对话生成 | `docs/zh/chat-completion/{vendor}-chat-completion.md` | 更新 chat 模式模型和功能 |
+| 文本补全 | `docs/zh/completions/{vendor}-completions.md` | 更新 completion 模式模型和功能 |
+| 向量嵌入 | `docs/zh/embeddings/{vendor}-embeddings.md` | 更新 embedding 模式模型和功能 |
+| 图像生成 | `docs/zh/image-generations/{vendor}-image-generations.md` | 更新 image_generation 模式模型和功能 |
+| 音频转录 | `docs/zh/audio-transcriptions/{vendor}-audio-transcriptions.md` | 更新 audio_transcription 模式模型和功能 |
+
+**更新内容：**
 - 更新模型列表为实际可用的模型
-- 更新功能验证说明表格
+- 更新功能验证说明表格，标记支持/不支持的功能
 - 移除不支持的参数说明
+- 添加实际测试结果和示例
 
 #### 4.3 更新 Authorization 格式
 
@@ -369,13 +419,16 @@ git push origin main
 ## 验证检查清单
 
 - [ ] 获取并保存 model_info.json
-- [ ] 提取目标厂家所有模型
-- [ ] 验证 chat/completions 基础请求
-- [ ] 验证 chat/completions 流式响应
-- [ ] 验证图像输入（如果支持）
-- [ ] 验证函数调用（如果支持）
-- [ ] 验证 logprobs 支持情况
-- [ ] 验证 completions 端点（如果有模型支持）
+- [ ] 提取目标厂家所有模型及其 mode 类型
+- [ ] 根据 mode 类型确定需要验证的端点
+- [ ] 验证 chat/completions 基础请求（chat 模式）
+- [ ] 验证 chat/completions 流式响应（chat 模式）
+- [ ] 验证图像输入（chat 模式，如果支持）
+- [ ] 验证函数调用（chat 模式，如果支持）
+- [ ] 验证 completions 端点（completion 模式）
+- [ ] 验证 embeddings 端点（embedding 模式）
+- [ ] 验证 image generations 端点（image_generation 模式）
+- [ ] 验证 audio transcriptions 端点（audio_transcription 模式）
 - [ ] 记录所有测试命令和结果到 test_{vendor}.md
 - [ ] 更新 {vendor}.yaml 中的 examples
 - [ ] 移除不支持的参数 examples

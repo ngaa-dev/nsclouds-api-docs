@@ -1,0 +1,515 @@
+openapi: 3.1.0
+info:
+  $ref: ./_common.yaml#/info
+servers:
+  $ref: ./_common.yaml#/servers
+
+tags:
+  # 引用公共文件中的顶级功能标签（用于保持导航层级）
+  - $ref: ./_common.yaml#/tags/0   # chat_completions
+  - $ref: ./_common.yaml#/tags/1   # embeddings
+  - $ref: ./_common.yaml#/tags/2   # image_generations
+  - $ref: ./_common.yaml#/tags/3   # image_edits
+  - $ref: ./_common.yaml#/tags/4   # audio_transcriptions
+
+  # ========== 字节豆包厂家标签 ==========
+  - name: chat_completions_volcengine
+    x-parent: chat_completions
+    x-page-title: 字节豆包
+    x-page-icon: brain
+    description: 字节豆包（volcengine）的对话生成 API
+  - name: embeddings_volcengine
+    x-parent: embeddings
+    x-page-title: 字节豆包
+    x-page-icon: brain
+    description: 字节豆包（volcengine）的向量嵌入 API
+  - name: image_generations_volcengine
+    x-parent: image_generations
+    x-page-title: 字节豆包
+    x-page-icon: brain
+    description: 字节豆包（volcengine）的图片生成 API
+  - name: image_edits_volcengine
+    x-parent: image_edits
+    x-page-title: 字节豆包
+    x-page-icon: brain
+    description: 字节豆包（volcengine）的图片编辑 API
+  - name: audio_transcriptions_volcengine
+    x-parent: audio_transcriptions
+    x-page-title: 字节豆包
+    x-page-icon: brain
+    description: 字节豆包（volcengine）的音频转录 API
+
+  # ========== 字节豆包协议标签（以 OpenAI 协议为例） ==========
+  # - name: chat_completions_volcengine_openai
+  #   x-parent: chat_completions_volcengine
+  #   x-page-title: OpenAI 协议
+  #   x-page-icon: check-circle
+  #   description: 字节豆包（volcengine）支持 OpenAI 协议的对话生成 API
+  # - name: embeddings_volcengine_openai
+  #   x-parent: embeddings_volcengine
+  #   x-page-title: OpenAI 协议
+  #   x-page-icon: check-circle
+  #   description: 字节豆包（volcengine）支持 OpenAI 协议的向量嵌入 API
+
+paths:
+  # ========== 对话生成 ==========
+  /v1/chat/completions:
+    post:
+      tags:
+        - chat_completions_volcengine
+        # - chat_completions_volcengine_openai
+      summary: 创建对话补全
+      description: 基于提供的消息历史，生成对话补全。与 OpenAI 的 Chat Completions API 兼容。
+      operationId: createChatCompletion_volcengine
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatCompletionRequest'
+            examples:
+              default:
+                summary: 基础
+                description: 一个简单的对话补全示例。
+                value:
+                  model: volcengine/doubao-seed-1-8-251228
+                  messages:
+                    - role: user
+                      content: Hello!
+                  max_completion_tokens: 50
+                  temperature: 0.7
+                  'n': 1
+                  stream: false
+              streaming:
+                summary: 流式
+                description: "通过设置 stream: true 启用流式响应。"
+                value:
+                  model: volcengine/doubao-seed-1-8-251228
+                  messages:
+                    - role: user
+                      content: Hello!
+                  stream: true
+              image_input:
+                summary: 图像输入（多模态）
+                description: 使用支持视觉的模型分析图像。
+                value:
+                  model: volcengine/doubao-seed-1-8-251228
+                  messages:
+                    - role: user
+                      content:
+                        - type: text
+                          text: What is in this image?
+                        - type: image_url
+                          image_url:
+                            url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
+                  max_completion_tokens: 300
+              functions:
+                summary: 函数调用
+                description: 定义工具（函数）并让模型决定是否调用。
+                value:
+                  model: volcengine/doubao-seed-1-8-251228
+                  messages:
+                    - role: user
+                      content: What is the weather in Boston?
+                  tools:
+                    - type: function
+                      function:
+                        name: get_current_weather
+                        description: Get the current weather in a given location
+                        parameters:
+                          type: object
+                          properties:
+                            location:
+                              type: string
+                              description: The city and state, e.g. San Francisco, CA
+                            unit:
+                              type: string
+                              enum:
+                                - celsius
+                                - fahrenheit
+                          required:
+                            - location
+                  tool_choice: auto
+                  max_completion_tokens: 150
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础对话补全请求的响应示例。
+                  value:
+                    id: 021772864435690b7e0a86771f3aae54bdc5a127ef95baa9c2b48
+                    object: chat.completion
+                    created: 1772864438
+                    model: volcengine/doubao-seed-1-8-251228
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: Hello there! 😊 How can I assist you today?
+                          reasoning_content: 用户说"Hello!"，我需要回应一个友好的问候。首先，保持自然亲切，比如"Hello there! 😊 How can I assist you today?"这样既回应了问候，又表达了愿意帮忙的态度，符合AI的角色设定。检查一下，语言简洁友好，带有表情符号更生动，应该没问题。
+                        finish_reason: stop
+                    usage:
+                      prompt_tokens: 50
+                      completion_tokens: 83
+                      total_tokens: 133
+                    service_tier: default
+                image_input-response:
+                  summary: 图像输入响应
+                  description: 模型根据图像内容生成的描述。
+                  value:
+                    id: 021772864507442454c0d8025bd4547674d07aeb10e65a37260a1
+                    object: chat.completion
+                    created: 1772864518
+                    model: volcengine/doubao-seed-1-8-251228
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: "This is a futuristic, surreal, cyberpunk-style digital or 3D-rendered artwork:\n1.  The central subject is a humanoid figure, appearing feminine, posed dynamically with their head tilted back, arms outstretched, in front of a simple studio white backdrop on black support rigs.\n2.  The figure is covered in a **glossy, reflective liquid chrome/silver metallic substance** that forms an organic, fragmented \"garment\" with sharp, tendril-like, drippy edges, and also coats their head, forming spiky, wet-look \"hair\", arms, and hands. The material looks like it's in a state of transformation, as if melting or solidifying onto the body.\n3.  The bright studio lighting emphasizes the highly reflective, polished surface of the metallic coating, creating strong highlights and deep shadows that give the material a viscous, molten appearance.\n4.  The overall aesthetic is sci-fi, futuristic high-fashion, with a biomechanical, otherworldly, almost \"liquid metal being\" vibe, recalling cyborg or synthetic entity concepts."
+                          reasoning_content: "Got it, let's break down this image. First, it's a futuristic, cyberpunk-style 3D (or AI-generated) art piece of a figure (appears to be a woman) in a studio setting, in front of a white backdrop stand.\n\nThe figure is covered in a **liquid-like, reflective metallic (silver/chrome) substance** that forms a fragmented, organic \"dress\" with sharp, tendril-like, drippy edges, and also covers her head (spiky, wet-looking chrome hair/coating) and parts of her arms. Her pose is dramatic: head tilted back, arms outstretched, looking upward, giving a sense of transformation or a futuristic, otherworldly vibe.\n\nThe lighting is bright, studio-style, highlighting the reflective, glossy surface of the chrome material, creating strong highlights and shadows that emphasize the liquid, sculpted texture. The overall aesthetic is sci-fi, futuristic fashion, with a surreal, biomechanical/liquid metal feel, like a being made of or covered in a shifting, molten chrome substance."
+                        finish_reason: stop
+                    usage:
+                      prompt_tokens: 540
+                      completion_tokens: 452
+                      total_tokens: 992
+                    service_tier: default
+                functions-response:
+                  summary: 函数调用响应
+                  description: 模型返回一个函数调用请求。
+                  value:
+                    id: 02177286456308318cc8b35e794a1d5ce66758b690d3ae1fd30df
+                    object: chat.completion
+                    created: 1772864571
+                    model: volcengine/doubao-seed-1-8-251228
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: ""
+                          tool_calls:
+                            - id: call_xlu24zqz1ptz3git9mwjmn9x
+                              type: function
+                              function:
+                                name: get_current_weather
+                                arguments: ' {"location": "Boston, MA"}'
+                          reasoning_content: "Got it, let's see. The user is asking about the weather in Boston. The function available is get_current_weather, which requires location and optionally unit. The location here is Boston, so I need to specify that. Wait, do I need to include state? The example uses \"San Francisco, CA\", but Boston is in Massachusetts, so maybe \"Boston, MA\" is better, but maybe just \"Boston\" works too? Wait, the function's location parameter says city and state, but maybe if I just put Boston, it might still get it, but to be precise, I should include MA. Also, the unit isn't specified by the user, so I can either leave it out (since it's not required) or ask? Wait no, the required parameter is location, so unit is optional. So I can call the function with location \"Boston, MA\" and maybe not include unit, or let it default? Wait the function parameters say unit is optional, so I can omit it, but maybe the user would prefer a specific unit? But since they didn't ask, I just call with location first. Let me structure the function call correctly. So the function name is get_current_weather, parameters location is \"Boston, MA\". Let me write that in the required format."
+                        finish_reason: tool_calls
+                    usage:
+                      prompt_tokens: 459
+                      completion_tokens: 301
+                      total_tokens: 760
+                    service_tier: default
+            text/event-stream:
+              schema:
+                type: string
+                description: "流式响应以 Server-Sent Events 格式返回，每个事件是一行以 'data: ' 开头的 JSON 数据块，最后以 'data: [DONE]' 结束。"
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示流式聊天过程中陆续发送的事件。
+                  value: |
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"doubao-1.5-pro-256k","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"doubao-1.5-pro-256k","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"doubao-1.5-pro-256k","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"doubao-1.5-pro-256k","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+                    data: [DONE]
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+
+  /v1/completions:
+    post:
+      tags:
+        - chat_completions_volcengine
+        # - chat_completions_volcengine_openai
+      summary: 创建文本补全
+      description: 基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
+      operationId: createCompletion_volcengine
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompletionRequest'
+            examples:
+              default:
+                summary: 基础
+                description: 一个简单的文本补全示例。
+                value:
+                  model: volcengine/doubao-seed-1-8-251228
+                  prompt: Say this is a test
+                  max_tokens: 7
+                  temperature: 0
+                  'n': 1
+                  stream: false
+              streaming:
+                summary: 流式
+                description: "通过设置 stream: true 启用流式响应。"
+                value:
+                  model: volcengine/doubao-seed-1-8-251228
+                  prompt: The future of AI is
+                  max_tokens: 30
+                  temperature: 0.8
+                  stream: true
+
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompletionResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础文本补全请求的响应示例。
+                  value:
+                    id: 0217728646073678cf12c1a4b092384500fba0fc49677b04d2fb3
+                    object: text_completion
+                    created: 1772864610
+                    model: volcengine/doubao-seed-1-8-251228
+                    choices:
+                      - text: This is a test
+                        index: 0
+                        logprobs: null
+                        finish_reason: stop
+                    usage:
+                      prompt_tokens: 53
+                      completion_tokens: 119
+                      total_tokens: 172
+
+            text/event-stream:
+              schema:
+                type: string
+                description: "流式响应以 Server-Sent Events 格式返回，每个事件是一行以 'data: ' 开头的 JSON 数据块，最后以 'data: [DONE]' 结束。"
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示流式文本补全过程中陆续发送的事件。
+                  value: |
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":"The","index":0,"logprobs":null,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":" future","index":0,"logprobs":null,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":" of","index":0,"logprobs":null,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":" AI","index":0,"logprobs":null,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":" is","index":0,"logprobs":null,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":" bright","index":0,"logprobs":null,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":".","index":0,"logprobs":null,"finish_reason":"length"}]}
+                    data: [DONE]
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+
+  # ========== 向量嵌入 ==========
+  /v1/embeddings:
+    post:
+      tags:
+        - embeddings_volcengine
+        # - embeddings_volcengine_openai
+      summary: 创建嵌入向量
+      description: 获取给定输入的向量表示。与 OpenAI 的 Embeddings API 兼容。
+      operationId: createEmbedding_volcengine
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEmbeddingRequest'
+            examples:
+              default:
+                summary: 基础
+                description: 一个简单的嵌入向量示例。
+                value:
+                  model: volcengine/doubao-embedding-vision-250615
+                  input: "The food was delicious and the waiter was very friendly."
+                  encoding_format: float
+              batch:
+                summary: 批量嵌入
+                description: 批量处理多个输入的嵌入向量示例。
+                value:
+                  model: volcengine/doubao-embedding-vision-250615
+                  input:
+                    - "The food was delicious"
+                    - "The waiter was very friendly"
+                  encoding_format: float
+
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmbeddingResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础嵌入向量请求的响应示例。
+                  value:
+                    object: list
+                    data:
+                      - object: embedding
+                        embedding: [0.0023064255, -0.009327292, 0.015797372, ...]
+                        index: 0
+                    model: volcengine/doubao-embedding-vision-250615
+                    usage:
+                      prompt_tokens: 8
+                      total_tokens: 8
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+
+  # ========== 图像生成 ==========
+  /v1/images/generations:
+    post:
+      tags:
+        - image_generations_volcengine
+      summary: 生成图像
+      description: 根据文本提示生成图像。与 OpenAI 的 Images API 兼容。
+      operationId: createImage_volcengine
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateImageGenerationRequest'
+            examples:
+              default:
+                summary: 基础
+                description: 一个简单的图像生成示例。
+                value:
+                  model: doubao-image-1.0
+                  prompt: A cat wearing a hat
+                  n: 1
+                  size: 1024x1024
+
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础图像生成请求的响应示例。
+                  value:
+                    created: 1677825464
+                    data:
+                      - url: "https://example.com/cat-hat.png"
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+
+  # ========== 图像编辑 ==========
+  /v1/images/edits:
+    post:
+      tags:
+        - image_edits_volcengine
+      summary: 编辑图像
+      description: 编辑和扩展图像。与 OpenAI 的 Images API 兼容。
+      operationId: createImageEdit_volcengine
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateImageEditRequest'
+            examples:
+              default:
+                summary: 基础图像编辑
+                description: 编辑图像的基础示例。
+                value:
+                  model: volcengine/doubao-seedream-4-5-251128
+                  image[]: ["@/path/to/image.png"]
+                  prompt: "Add a hat to the cat"
+                  size: "1024x1024"
+
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础图像编辑请求的响应示例。
+                  value:
+                    created: 1677825464
+                    data:
+                      - url: "https://example.com/edited-image.png"
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+
+  # ========== 音频转录 ==========
+  /v1/audio/transcriptions:
+    post:
+      tags:
+        - audio_transcriptions_volcengine
+      summary: 转录音频
+      description: 将音频转录为文本。与 OpenAI 的 Audio API 兼容。
+      operationId: createTranscription_volcengine
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateTranscriptionRequest'
+
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranscriptionResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础音频转录请求的响应示例。
+                  value:
+                    text: "Hello, this is a test recording."
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+
+components:
+  $ref: ./_common.yaml#/components

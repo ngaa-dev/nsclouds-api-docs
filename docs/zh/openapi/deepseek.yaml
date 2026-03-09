@@ -297,7 +297,6 @@ paths:
                     choices:
                       - text: This is a test.
                         index: 0
-                        logprobs: null
                         finish_reason: stop
                     usage:
                       prompt_tokens: 10
@@ -313,11 +312,11 @@ paths:
                   summary: 流式响应示例
                   description: 展示流式文本补全过程中陆续发送的事件。
                   value: |
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"volcengine/deepseek-v3-1-terminus","choices":[{"text":"This","index":0,"logprobs":null,"finish_reason":null}]}
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"volcengine/deepseek-v3-1-terminus","choices":[{"text":" is","index":0,"logprobs":null,"finish_reason":null}]}
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"volcengine/deepseek-v3-1-terminus","choices":[{"text":" a","index":0,"logprobs":null,"finish_reason":null}]}
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"volcengine/deepseek-v3-1-terminus","choices":[{"text":" test","index":0,"logprobs":null,"finish_reason":null}]}
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"volcengine/deepseek-v3-1-terminus","choices":[{"text":".","index":0,"logprobs":null,"finish_reason":"stop"}]}
+                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"volcengine/deepseek-v3-1-terminus","choices":[{"text":"This","index":0,"finish_reason":null}]}
+                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"volcengine/deepseek-v3-1-terminus","choices":[{"text":" is","index":0,"finish_reason":null}]}
+                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"volcengine/deepseek-v3-1-terminus","choices":[{"text":" a","index":0,"finish_reason":null}]}
+                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"volcengine/deepseek-v3-1-terminus","choices":[{"text":" test","index":0,"finish_reason":null}]}
+                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"volcengine/deepseek-v3-1-terminus","choices":[{"text":".","index":0,"finish_reason":"stop"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'

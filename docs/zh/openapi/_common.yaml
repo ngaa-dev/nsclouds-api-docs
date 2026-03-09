@@ -190,10 +190,6 @@ components:
                 type: string
               index:
                 type: integer
-              logprobs:
-                type:
-                  - object
-                  - 'null'
               finish_reason:
                 type:
                   - string
