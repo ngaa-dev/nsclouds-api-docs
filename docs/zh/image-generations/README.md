@@ -4,6 +4,6 @@
 
 ## 支持的厂家
 
-* [深度求索(DeepSeek)](deepseek-image-generations.md)
-* [字节豆包(volcengine)](volcengine-image-generations.md)
-* [OpenAI](openai-image-generations.md)
+- [深度求索(DeepSeek)](deepseek-image-generations.md)
+- [字节豆包(volcengine)](volcengine-image-generations.md)
+- [OpenAI](openai-image-generations.md)

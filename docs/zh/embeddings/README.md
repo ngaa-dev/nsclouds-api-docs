@@ -4,6 +4,6 @@
 
 ## 支持的厂家
 
-* [深度求索(DeepSeek)](deepseek-embeddings.md)
-* [字节豆包(volcengine)](volcengine-embeddings.md)
-* [OpenAI](openai-embeddings.md)
+- [深度求索(DeepSeek)](deepseek-embeddings.md)
+- [字节豆包(volcengine)](volcengine-embeddings.md)
+- [OpenAI](openai-embeddings.md)

@@ -4,6 +4,6 @@
 
 ## 支持的厂家
 
-* [深度求索(DeepSeek)](deepseek-completions.md)
-* [字节豆包(volcengine)](volcengine-completions.md)
-* [OpenAI](openai-completions.md)
+- [深度求索(DeepSeek)](deepseek-completions.md)
+- [字节豆包(volcengine)](volcengine-completions.md)
+- [OpenAI](openai-completions.md)

@@ -4,6 +4,6 @@
 
 ## 支持的厂家
 
-* [深度求索(DeepSeek)](deepseek-audio-transcriptions.md)
-* [字节豆包(volcengine)](volcengine-audio-transcriptions.md)
-* [OpenAI](openai-audio-transcriptions.md)
+- [深度求索(DeepSeek)](deepseek-audio-transcriptions.md)
+- [字节豆包(volcengine)](volcengine-audio-transcriptions.md)
+- [OpenAI](openai-audio-transcriptions.md)
