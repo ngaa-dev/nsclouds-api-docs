@@ -12,8 +12,6 @@
 
 * `deepseek-v3.1`
 * `deepseek-v3.2`
-* `volcengine/deepseek-v3-1-terminus`
-* `volcengine/deepseek-r1-250528`
 
 ### 功能验证说明
 
@@ -23,7 +21,6 @@
 | 流式响应 | ✅ 已验证 | 所有模型支持 |
 | 图像输入 | ✅ 已验证 | deepseek-v3.1 支持 |
 | 函数调用 | ✅ 已验证 | deepseek-v3.1 支持 |
-| completions 接口 | ⚠️ 部分支持 | 仅 volcengine/deepseek-v3-1-terminus 支持 |
 
 ### 2.接口详情
 

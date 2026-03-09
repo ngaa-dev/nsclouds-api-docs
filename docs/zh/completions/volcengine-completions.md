@@ -13,8 +13,6 @@
 * `volcengine/doubao-seed-1-8-251228`
 * `volcengine/doubao-seed-1-6-251015`
 * `volcengine/doubao-seed-1-6-lite-251015`
-* `volcengine/doubao-seedream-4-5-251128`
-* `volcengine/doubao-seedream-4-0-250828`
 
 ### 功能验证说明
 

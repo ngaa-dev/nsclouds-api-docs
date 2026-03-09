@@ -13,10 +13,6 @@
 * `volcengine/doubao-seed-1-8-251228`（推荐，支持多模态、函数调用）
 * `volcengine/doubao-seed-1-6-251015`
 * `volcengine/doubao-seed-1-6-lite-251015`
-* `volcengine/doubao-seedream-4-5-251128`
-* `volcengine/doubao-embedding-vision-250615`（嵌入模型）
-* `volcengine/doubao-seedream-4-0-250828`
-* `volcengine/doubao-asr-flash-1-6-251015`
 
 ### 功能验证说明
 
@@ -26,10 +22,6 @@
 | 流式响应 | ✅ 已验证 | 支持 |
 | 图像输入 | ✅ 已验证 | `volcengine/doubao-seed-1-8-251228` 支持 |
 | 函数调用 | ✅ 已验证 | 支持 |
-| completions 接口 | ✅ 已验证 | 支持 |
-| embeddings 接口 | ⏳ 待验证 | `volcengine/doubao-embedding-vision-250615` 支持 |
-| 图像生成 | ⏳ 待验证 | 待验证 |
-| 图像编辑 | ⏳ 待验证 | 待验证 |
 
 ### 2.接口详情
 
