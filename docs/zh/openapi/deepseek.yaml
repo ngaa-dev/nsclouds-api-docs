@@ -79,7 +79,7 @@ paths:
       security:
         - APIKeyHeader: []
       x-codeSamples:
-        - lang: HTTP
+        - lang: http
           label: HTTP
           source: |
             POST /v1/chat/completions HTTP/1.1
@@ -98,7 +98,7 @@ paths:
               "max_completion_tokens": 50,
               "temperature": 1
             }
-        - lang: curl
+        - lang: bash
           label: curl
           source: |
             curl -X POST "https://aillm.sinocache.net/v1/chat/completions" \
@@ -115,7 +115,7 @@ paths:
                 "max_completion_tokens": 50,
                 "temperature": 1
               }'
-        - lang: Python
+        - lang: python
           label: Python SDK
           source: |
             from openai import OpenAI
@@ -130,7 +130,7 @@ paths:
                 temperature=1
             )
             print(response.choices[0].message.content)
-        - lang: JavaScript
+        - lang: javascript
           label: JavaScript
           source: |
             const axios = require('axios');
