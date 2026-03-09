@@ -63,6 +63,42 @@ paths:
       security:
         - APIKeyHeader: []
       x-codeSamples:
+        - lang: HTTP
+          label: HTTP
+          source: |
+            POST /v1/chat/completions HTTP/1.1
+            Host: aillm.sinocache.net
+            Content-Type: application/json
+            Authorization: Bearer your-api-key
+
+            {
+              "model": "deepseek-v3.1",
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "Hello!"
+                }
+              ],
+              "max_completion_tokens": 50,
+              "temperature": 1
+            }
+        - lang: curl
+          label: curl
+          source: |
+            curl -X POST "https://aillm.sinocache.net/v1/chat/completions" \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer your-api-key" \
+              -d '{
+                "model": "deepseek-v3.1",
+                "messages": [
+                  {
+                    "role": "user",
+                    "content": "Hello!"
+                  }
+                ],
+                "max_completion_tokens": 50,
+                "temperature": 1
+              }'
         - lang: Python
           label: Python SDK
           source: |
@@ -72,10 +108,43 @@ paths:
                 api_key="your-api-key"
             )
             response = client.chat.completions.create(
-                model="deepseek-chat",
-                messages=[{"role": "user", "content": "Hello!"}]
+                model="deepseek-v3.1",
+                messages=[{"role": "user", "content": "Hello!"}],
+                max_completion_tokens=50,
+                temperature=1
             )
             print(response.choices[0].message.content)
+        - lang: JavaScript
+          label: JavaScript
+          source: |
+            const axios = require('axios');
+
+            async function createChatCompletion() {
+              try {
+                const response = await axios.post(
+                  'https://aillm.sinocache.net/v1/chat/completions',
+                  {
+                    model: 'deepseek-v3.1',
+                    messages: [
+                      { role: 'user', content: 'Hello!' }
+                    ],
+                    max_completion_tokens: 50,
+                    temperature: 1
+                  },
+                  {
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer your-api-key'
+                    }
+                  }
+                );
+                console.log(response.data.choices[0].message.content);
+              } catch (error) {
+                console.error('Error:', error);
+              }
+            }
+
+            createChatCompletion();
       requestBody:
         required: true
         content:
