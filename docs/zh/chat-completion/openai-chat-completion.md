@@ -16,6 +16,6 @@ OpenAI 是全球领先的 AI 研究机构，提供强大的 GPT 系列大语言�
 
 ### 2.接口详情
 
-{% openapi-operation spec="openai" path="/v1/chat/completions" method="post" %}
+{% openapi-operation spec="openai-zh" path="/v1/chat/completions" method="post" %}
 [OpenAPI openai](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/zh/openai.bundled.yaml)
 {% endopenapi-operation %}

@@ -23,6 +23,6 @@
 
 ### 2. 接口详情
 
-{% openapi-operation spec="volcengine" path="/v1/completions" method="post" %}
+{% openapi-operation spec="volcengine-zh" path="/v1/completions" method="post" %}
 [OpenAPI volcengine](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/zh/volcengine.bundled.yaml)
 {% endopenapi-operation %}

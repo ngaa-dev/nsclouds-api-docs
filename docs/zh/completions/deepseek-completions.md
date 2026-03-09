@@ -21,6 +21,6 @@
 
 ### 2. 接口详情
 
-{% openapi-operation spec="deepseek" path="/v1/completions" method="post" %}
+{% openapi-operation spec="deepseek-zh" path="/v1/completions" method="post" %}
 [OpenAPI deepseek](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/zh/deepseek.bundled.yaml)
 {% endopenapi-operation %}

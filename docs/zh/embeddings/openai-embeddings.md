@@ -22,6 +22,6 @@ OpenAI 的向量嵌入 API，与 OpenAI 接口格式兼容。
 
 ### 2. 接口详情
 
-{% openapi-operation spec="openai" path="/v1/embeddings" method="post" %}
+{% openapi-operation spec="openai-zh" path="/v1/embeddings" method="post" %}
 [OpenAPI openai](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/zh/openai.bundled.yaml)
 {% endopenapi-operation %}
