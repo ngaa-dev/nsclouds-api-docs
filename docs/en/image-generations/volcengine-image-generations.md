@@ -28,6 +28,6 @@ This API is compatible with OpenAI interface format.
 
 ### 2. API Details
 
-{% openapi-operation spec="volcengine_en" path="/v1/images/generations" method="post" %}
+{% openapi-operation spec="volcengine-en" path="/v1/images/generations" method="post" %}
 [OpenAPI volcengine](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/en/volcengine.bundled.yaml)
 {% endopenapi-operation %}

@@ -31,6 +31,6 @@ This API is compatible with OpenAI interface format.
 
 ### 2. API Details
 
-{% openapi-operation spec="deepseek_en" path="/v1/chat/completions" method="post" %}
+{% openapi-operation spec="deepseek-en" path="/v1/chat/completions" method="post" %}
 [OpenAPI deepseek](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/en/deepseek.bundled.yaml)
 {% endopenapi-operation %}

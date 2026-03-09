@@ -23,6 +23,6 @@ This API is compatible with OpenAI interface format.
 
 ### 2. API Details
 
-{% openapi-operation spec="openai_en" path="/v1/chat/completions" method="post" %}
+{% openapi-operation spec="openai-en" path="/v1/chat/completions" method="post" %}
 [OpenAPI openai](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/en/openai.bundled.yaml)
 {% endopenapi-operation %}
