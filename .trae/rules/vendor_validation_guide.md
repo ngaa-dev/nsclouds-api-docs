@@ -4,7 +4,7 @@
 
 ## 前提条件
 
-- 已有基础 OpenAPI 文件：`docs/zh/openapi/openai.yaml`
+- 已有基础 OpenAPI 文件：`docs/zh/openapi/example.yaml`
 - 已创建厂家特定文件：`docs/zh/openapi/{vendor}.yaml`
 - 测试环境地址已配置
 - API Key 已设置到环境变量 `$NGAA_LLM_API_KEY`
@@ -31,7 +31,7 @@ curl -X GET "https://devaillm.nscloud.ai/v1/model/info" \
 提取目标厂家模型：
 
 ```bash
-cat test_openapi/model_info.json | python3 -c "import json,sys; data=json.load(sys.stdin); models=[d['model_name'] for d in data['data'] if '{vendor}' in d['model_name'].lower()]; print('\n'.join(models))"
+cat test_openapi/model_info.json | python3 -c "import json,sys; data=json.load(sys.stdin); models=[d['model_name'] for d in data['data'] if '{vendor}' in d['model_name'].lower() and '/' not in d['model_name']]; print('\n'.join(models))"
 ```
 
 ### 2. 验证端点功能
@@ -40,7 +40,7 @@ cat test_openapi/model_info.json | python3 -c "import json,sys; data=json.load(s
 
 **提取模型及其 mode：**
 ```bash
-cat test_openapi/model_info.json | python3 -c "import json,sys; data=json.load(sys.stdin); models=[(d['model_name'], d.get('mode','')) for d in data['data'] if '{vendor}' in d['model_name'].lower()]; print('\n'.join([f'{m[0]}: {m[1]}' for m in models]))"
+cat test_openapi/model_info.json | python3 -c "import json,sys; data=json.load(sys.stdin); models=[(d['model_name'], d.get('mode','')) for d in data['data'] if '{vendor}' in d['model_name'].lower() and '/' not in d['model_name']]; print('\n'.join([f'{m[0]}: {m[1]}' for m in models]))"
 ```
 
 常见 mode 类型及对应端点：
@@ -445,3 +445,12 @@ git push origin main
 - 模型信息：`test_openapi/model_info.json`
 - API 文档：`docs/zh/openapi/deepseek.yaml`
 - 说明文档：`docs/zh/chat-completion/deepseek-chat-completion.md`
+
+## OpenAI 模型说明
+
+根据测试环境 `devaillm.nscloud.ai` 的验证，OpenAI 模型包括：
+- `gpt-5`
+- `gpt-5.2`
+- `gpt-image-1`
+- `gpt-5.3-codex`（额外增加）
+- `gpt-5.4`（额外增加）

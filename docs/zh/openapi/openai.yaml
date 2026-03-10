@@ -61,7 +61,7 @@ paths:
                 summary: 基础
                 description: 一个简单的对话示例，包含系统提示和用户消息。
                 value:
-                  model: gpt-4
+                  model: gpt-5
                   messages:
                     - role: system
                       content: You are a helpful assistant.
@@ -75,7 +75,7 @@ paths:
                 summary: 流式
                 description: "通过设置 stream: true 启用流式响应。"
                 value:
-                  model: gpt-4
+                  model: gpt-5.2
                   messages:
                     - role: system
                       content: You are a helpful assistant.
@@ -88,7 +88,7 @@ paths:
                 summary: 图像输入（多模态）
                 description: 使用支持视觉的模型分析图像。
                 value:
-                  model: gpt-4-vision-preview
+                  model: gpt-5.4
                   messages:
                     - role: user
                       content:
@@ -102,7 +102,7 @@ paths:
                 summary: 函数调用
                 description: 定义工具（函数）并让模型决定是否调用。
                 value:
-                  model: gpt-4
+                  model: gpt-5.3-codex
                   messages:
                     - role: user
                       content: What's the weather in Boston?
@@ -141,7 +141,7 @@ paths:
                     id: chatcmpl-123
                     object: chat.completion
                     created: 1677652288
-                    model: gpt-4
+                    model: gpt-5
                     choices:
                       - index: 0
                         message:
@@ -159,7 +159,7 @@ paths:
                     id: chatcmpl-789
                     object: chat.completion
                     created: 1677652300
-                    model: gpt-4-vision-preview
+                    model: gpt-5.4
                     choices:
                       - index: 0
                         message:
@@ -177,7 +177,7 @@ paths:
                     id: chatcmpl-abc
                     object: chat.completion
                     created: 1677652310
-                    model: gpt-4
+                    model: gpt-5.3-codex
                     choices:
                       - index: 0
                         message:
@@ -203,10 +203,10 @@ paths:
                   summary: 流式响应示例
                   description: 展示流式聊天过程中陆续发送的事件。
                   value: |
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-4","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-4","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-4","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-4","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5.2","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5.2","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5.2","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5.2","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'
@@ -235,7 +235,7 @@ paths:
                 summary: 基础
                 description: 一个简单的文本补全示例。
                 value:
-                  model: gpt-3.5-turbo-instruct
+                  model: gpt-5
                   prompt: Once upon a time
                   max_tokens: 50
                   temperature: 0.7
@@ -245,7 +245,7 @@ paths:
                 summary: 流式
                 description: "通过设置 stream: true 启用流式响应。"
                 value:
-                  model: gpt-3.5-turbo-instruct
+                  model: gpt-5.2
                   prompt: The future of AI is
                   max_tokens: 30
                   temperature: 0.8
@@ -265,7 +265,7 @@ paths:
                     id: cmpl-123
                     object: text_completion
                     created: 1677652288
-                    model: gpt-3.5-turbo-instruct
+                    model: gpt-5
                     choices:
                       - text: ' in a small village, there lived a young girl named Lily.'
                         index: 0
@@ -283,13 +283,13 @@ paths:
                   summary: 流式响应示例
                   description: 展示流式文本补全过程中陆续发送的事件。
                   value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":".","index":0,"finish_reason":"length"}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":"The","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":" future","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":" of","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":" AI","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":" is","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":" bright","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'
@@ -319,13 +319,13 @@ paths:
                 summary: 基础
                 description: 对单个字符串输入生成嵌入向量。
                 value:
-                  model: text-embedding-ada-002
+                  model: gpt-5
                   input: The quick brown fox jumps over the lazy dog
               multiple-inputs:
                 summary: 多输入
                 description: 对多个字符串输入生成嵌入向量。
                 value:
-                  model: text-embedding-ada-002
+                  model: gpt-5.2
                   input:
                     - Hello world
                     - OpenAI is amazing
@@ -333,14 +333,14 @@ paths:
                 summary: Base64 格式
                 description: 以 base64 编码返回嵌入向量。
                 value:
-                  model: text-embedding-3-small
+                  model: gpt-5.3-codex
                   input: Example text
                   encoding_format: base64
               with-dimensions:
                 summary: 指定维度
                 description: 指定输出维度。
                 value:
-                  model: text-embedding-3-small
+                  model: gpt-5.4
                   input: Example text
                   dimensions: 256
       responses:
@@ -363,7 +363,7 @@ paths:
                           - -0.005336422007530928
                           - -0.024047505110502243
                         index: 0
-                    model: text-embedding-ada-002
+                    model: gpt-5
                     usage:
                       prompt_tokens: 8
                       total_tokens: 8
@@ -385,7 +385,7 @@ paths:
                           - 0.5
                           - 0.6
                         index: 1
-                    model: text-embedding-ada-002
+                    model: gpt-5.2
                     usage:
                       prompt_tokens: 6
                       total_tokens: 6
@@ -398,7 +398,7 @@ paths:
                       - object: embedding
                         embedding: "YmFzZTY0X2VuY29kZWRfZGF0YQ=="
                         index: 0
-                    model: text-embedding-3-small
+                    model: gpt-5.3-codex
                     usage:
                       prompt_tokens: 2
                       total_tokens: 2
@@ -430,7 +430,7 @@ paths:
                 summary: 基础
                 description: 生成一张 1024x1024 的图像。
                 value:
-                  model: dall-e-3
+                  model: gpt-image-1
                   prompt: A cute cat sitting on a windowsill
                   'n': 1
                   size: 1024x1024
@@ -438,7 +438,7 @@ paths:
                 summary: 高清质量
                 description: 生成高清质量的图像。
                 value:
-                  model: dall-e-3
+                  model: gpt-image-1
                   prompt: A futuristic cityscape at sunset
                   'n': 1
                   quality: hd
@@ -447,7 +447,7 @@ paths:
                 summary: Base64 格式
                 description: 返回 base64 编码的图像数据。
                 value:
-                  model: dall-e-2
+                  model: gpt-image-1
                   prompt: A beautiful landscape
                   'n': 2
                   size: 512x512
@@ -531,7 +531,7 @@ paths:
                 summary: 带蒙版
                 description: 使用图像、蒙版和提示进行编辑。
                 value:
-                  model: dall-e-2
+                  model: gpt-image-1
                   images:
                     - '@person.png'
                   mask: '@mask.png'
@@ -542,7 +542,7 @@ paths:
                 summary: 无蒙版
                 description: 仅使用图像和提示进行编辑。
                 value:
-                  model: dall-e-2
+                  model: gpt-image-1
                   images:
                     - '@body-lotion.png'
                   prompt: Change the background to a beach
@@ -603,14 +603,14 @@ paths:
                 summary: 基础
                 description: 将音频文件转录为 JSON 格式。
                 value:
-                  model: whisper-1
+                  model: gpt-5
                   file: (binary)
                   response_format: json
               with-timestamps:
                 summary: 带时间戳
                 description: 获取包含单词级时间戳的详细转录。
                 value:
-                  model: whisper-1
+                  model: gpt-5.2
                   file: (binary)
                   response_format: verbose_json
                   timestamp_granularities:
@@ -619,7 +619,7 @@ paths:
                 summary: SRT 字幕
                 description: 以 SRT 字幕格式返回转录。
                 value:
-                  model: whisper-1
+                  model: gpt-5.4
                   file: (binary)
                   response_format: srt
       responses:
