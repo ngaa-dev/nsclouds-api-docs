@@ -20,6 +20,6 @@ Google's text completion API, compatible with OpenAI interface format.
 
 ### 2. API Details
 
-{% openapi-operation spec="google" path="/v1/completions" method="post" %}
+{% openapi-operation spec="google-en" path="/v1/completions" method="post" %}
 [OpenAPI Google](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/en/google.bundled.yaml)
 {% endopenapi-operation %}

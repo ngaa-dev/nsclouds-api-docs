@@ -22,6 +22,6 @@ Google 的对话生成 API，与 OpenAI 接口格式兼容。
 
 ### 2. 接口详情
 
-{% openapi-operation spec="google" path="/v1/chat/completions" method="post" %}
+{% openapi-operation spec="google-zh" path="/v1/chat/completions" method="post" %}
 [OpenAPI Google](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/zh/google.bundled.yaml)
 {% endopenapi-operation %}
