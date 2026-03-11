@@ -4,6 +4,10 @@
 
 Google's text completion API, compatible with OpenAI interface format.
 
+{% hint style="success" %}
+This API is compatible with OpenAI interface format.
+{% endhint %}
+
 **Model List:**
 
 * `gemini-2.5-flash` (completion mode)

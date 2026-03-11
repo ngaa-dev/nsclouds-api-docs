@@ -4,6 +4,10 @@
 
 Google 的对话生成 API，与 OpenAI 接口格式兼容。
 
+{% hint style="success" %}
+本 API 与 OpenAI 接口格式兼容。
+{% endhint %}
+    
 **模型列表：**
 
 * `gemini-2.5-flash` (chat 模式)

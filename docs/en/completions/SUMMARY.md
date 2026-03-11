@@ -10,6 +10,6 @@ The text completion API allows you to generate text content, suitable for scenar
 
 ## Supported Vendors
 
-- [DeepSeek](deepseek-completions.md)
-- [ByteDance Doubao (volcengine)](volcengine-completions.md)
+- [Google](google-completions.md)
+- [Anthropic](anthropic-completions.md)
 - [OpenAI](openai-completions.md)
