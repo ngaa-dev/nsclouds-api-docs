@@ -10,6 +10,4 @@ The audio transcription API allows you to convert audio files into text.
 
 ## Supported Vendors
 
-- [DeepSeek](deepseek-audio-transcriptions.md)
-- [ByteDance Doubao (volcengine)](volcengine-audio-transcriptions.md)
 - [OpenAI](openai-audio-transcriptions.md)

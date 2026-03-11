@@ -8,3 +8,4 @@
 - [Anthropic](anthropic-completions.md)
 - [Moonshot AI](moonshotai-completions.md)
 - [OpenAI](openai-completions.md)   
+- [MiniMax](minimax-completions.md)

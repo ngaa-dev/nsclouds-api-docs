@@ -5,3 +5,4 @@
 ## 支持的厂家
 
 - [OpenAI](openai-image-generations.md)
+- [Google](google-image-generations.md)
