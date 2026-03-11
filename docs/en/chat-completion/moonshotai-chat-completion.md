@@ -20,6 +20,6 @@ Moonshot AI's chat completion API, compatible with OpenAI interface format.
 
 ### 2. API Details
 
-{% openapi-operation spec="moonshotai" path="/v1/chat/completions" method="post" %}
+{% openapi-operation spec="moonshotai-en" path="/v1/chat/completions" method="post" %}
 [OpenAPI Moonshot AI](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/en/moonshotai.bundled.yaml)
 {% endopenapi-operation %}
