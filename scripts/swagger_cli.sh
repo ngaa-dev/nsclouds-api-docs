@@ -6,6 +6,8 @@ swagger-cli bundle docs/zh/openapi/openai.yaml -o docs/bundled/zh/openai.bundled
 swagger-cli validate docs/bundled/zh/openai.bundled.yaml
 swagger-cli bundle docs/zh/openapi/volcengine.yaml -o docs/bundled/zh/volcengine.bundled.yaml -t yaml
 swagger-cli validate docs/bundled/zh/volcengine.bundled.yaml
+swagger-cli bundle docs/zh/openapi/google.yaml -o docs/bundled/zh/google.bundled.yaml -t yaml
+swagger-cli validate docs/bundled/zh/google.bundled.yaml
 
 # English version
 swagger-cli bundle docs/en/openapi/deepseek.yaml -o docs/bundled/en/deepseek.bundled.yaml -t yaml
@@ -16,3 +18,5 @@ swagger-cli bundle docs/en/openapi/openai.yaml -o docs/bundled/en/openai.bundled
 swagger-cli validate docs/bundled/en/openai.bundled.yaml
 swagger-cli bundle docs/en/openapi/volcengine.yaml -o docs/bundled/en/volcengine.bundled.yaml -t yaml
 swagger-cli validate docs/bundled/en/volcengine.bundled.yaml
+swagger-cli bundle docs/en/openapi/google.yaml -o docs/bundled/en/google.bundled.yaml -t yaml
+swagger-cli validate docs/bundled/en/google.bundled.yaml
