@@ -496,3 +496,18 @@ git push origin main
 - 模型信息：`test_openapi/model_info.json`
 - API 文档：`docs/zh/openapi/deepseek.yaml`
 - 说明文档：`docs/zh/chat-completion/deepseek-chat-completion.md`
+
+## 9. Moonshot AI 模型说明
+
+根据测试环境 `devaillm.nscloud.ai` 的验证，Moonshot AI 模型包括：
+- `kimi-k2.5`
+- `kimi-k2-thinking`
+
+所有 Moonshot AI 模型均为 chat 模式，支持：
+- `/v1/chat/completions` 端点（基础请求和流式响应）
+
+不支持：
+- `/v1/completions` 端点（模型不支持 OpenAI 兼容模式）
+- `/v1/chat/completions` 图像输入（模型无法识别图像）
+
+## 10. Anthropic 模型说明

@@ -1,0 +1,1128 @@
+openapi: 3.1.0
+info:
+  title: LiteLLM API Documentation
+  description: 'Self-hosted LiteLLM gateway API documentation, fully compatible with OpenAI format.'
+  version: 1.11.0
+servers:
+  - url: 'https://aillm.sinocache.net'
+    description: LiteLLM Gateway Server
+tags:
+  - name: chat_completions
+    x-page-title: Chat Completions
+    x-page-icon: message
+    description: 'Chat completion related APIs, including chat completions and text completions'
+  - name: embeddings
+    x-page-title: Embeddings
+    x-page-icon: database
+    description: Embedding related APIs for generating vector representations of text
+  - name: image_generations
+    x-page-title: Image Generations
+    x-page-icon: image
+    description: Image generation related APIs for creating images from text prompts
+  - name: image_edits
+    x-page-title: Image Edits
+    x-page-icon: edit
+    description: Image editing related APIs for creating edited images from original images and prompts
+  - name: audio_transcriptions
+    x-page-title: Audio Transcriptions
+    x-page-icon: microphone
+    description: Audio transcription related APIs for transcribing audio files to text
+  - name: chat_completions_moonshotai
+    x-parent: chat_completions
+    x-page-title: Example
+    x-page-icon: brain
+    description: Example 的对话生成 API
+  - name: embeddings_moonshotai
+    x-parent: embeddings
+    x-page-title: Example
+    x-page-icon: brain
+    description: Example 的向量嵌入 API
+  - name: image_generations_moonshotai
+    x-parent: image_generations
+    x-page-title: Example
+    x-page-icon: brain
+    description: Example 的图片生成 API
+  - name: image_edits_moonshotai
+    x-parent: image_edits
+    x-page-title: Example
+    x-page-icon: brain
+    description: Example 的图片编辑 API
+  - name: audio_transcriptions_moonshotai
+    x-parent: audio_transcriptions
+    x-page-title: Example
+    x-page-icon: brain
+    description: Example 的音频转录 API
+paths:
+  /v1/chat/completions:
+    post:
+      tags:
+        - chat_completions_moonshotai
+      summary: 创建聊天补全
+      description: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
+      operationId: createChatCompletion_moonshotai
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatCompletionRequest'
+            examples:
+              default:
+                summary: 基础
+                description: 一个简单的对话示例，包含系统提示和用户消息。
+                value:
+                  model: kimi-k2.5
+                  messages:
+                    - role: system
+                      content: You are a helpful assistant.
+                    - role: user
+                      content: Hello!
+                  temperature: 1
+                  max_completion_tokens: 50
+                  'n': 1
+                  stream: false
+              streaming:
+                summary: 流式
+                description: '通过设置 stream: true 启用流式响应。'
+                value:
+                  model: kimi-k2.5
+                  messages:
+                    - role: system
+                      content: You are a helpful assistant.
+                    - role: user
+                      content: Tell me a story.
+                  temperature: 0.7
+                  max_completion_tokens: 100
+                  stream: true
+              image_input:
+                summary: 图像输入（多模态）
+                description: 使用支持视觉的模型分析图像。
+                value:
+                  model: kimi-k2.5
+                  messages:
+                    - role: user
+                      content:
+                        - type: text
+                          text: What's in this image?
+                        - type: image_url
+                          image_url:
+                            url: 'https://example.com/cat.jpg'
+                  max_completion_tokens: 300
+              functions:
+                summary: 函数调用
+                description: 定义工具（函数）并让模型决定是否调用。
+                value:
+                  model: gpt-4
+                  messages:
+                    - role: user
+                      content: What's the weather in Boston?
+                  tools:
+                    - type: function
+                      function:
+                        name: get_current_weather
+                        description: Get the current weather in a given location
+                        parameters:
+                          type: object
+                          properties:
+                            location:
+                              type: string
+                              description: 'The city and state, e.g. San Francisco, CA'
+                            unit:
+                              type: string
+                              enum:
+                                - celsius
+                                - fahrenheit
+                          required:
+                            - location
+                  tool_choice: auto
+                  max_completion_tokens: 150
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础聊天请求的响应示例。
+                  value:
+                    id: chatcmpl-8415e78a-7989-99de-9e4f-2b0ec895f35f
+                    object: chat.completion
+                    created: 1773224824
+                    model: kimi-k2.5
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: "Hello! How can I help you today? \U0001F60A"
+                          reasoning_content: ''
+                        finish_reason: stop
+                        provider_specific_fields: {}
+                    usage:
+                      prompt_tokens: 11
+                      completion_tokens: 12
+                      total_tokens: 23
+                      completion_tokens_details:
+                        text_tokens: 12
+                      prompt_tokens_details:
+                        cached_tokens: 0
+                        text_tokens: 11
+                image_input-response:
+                  summary: 图像输入响应
+                  description: 模型根据图像内容生成的描述。
+                  value:
+                    id: chatcmpl-789
+                    object: chat.completion
+                    created: 1677652300
+                    model: gpt-4-vision-preview
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: 'The image shows a cute cat sitting on a windowsill, looking outside.'
+                        finish_reason: stop
+                    usage:
+                      prompt_tokens: 123
+                      completion_tokens: 15
+                      total_tokens: 138
+                functions-response:
+                  summary: 函数调用响应
+                  description: 模型返回一个函数调用请求。
+                  value:
+                    id: chatcmpl-abc
+                    object: chat.completion
+                    created: 1677652310
+                    model: gpt-4
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: null
+                          tool_calls:
+                            - id: call_123
+                              type: function
+                              function:
+                                name: get_current_weather
+                                arguments: '{"location": "Boston, MA", "unit": "fahrenheit"}'
+                        finish_reason: tool_calls
+                    usage:
+                      prompt_tokens: 50
+                      completion_tokens: 20
+                      total_tokens: 70
+            text/event-stream:
+              schema:
+                type: string
+                description: '流式响应以 Server-Sent Events 格式返回，每个事件是一行以 ''data: '' 开头的 JSON 数据块，最后以 ''data: [DONE]'' 结束。'
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示流式聊天过程中陆续发送的事件。
+                  value: |
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.5","choices":[{"index":0,"delta":{"content":"Hello","role":"assistant"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.5","choices":[{"index":0,"delta":{"content":" there"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.5","choices":[{"index":0,"delta":{"content":"!"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.5","choices":[{"index":0,"delta":{"content":" How"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.5","choices":[{"index":0,"delta":{"content":" can"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.5","choices":[{"index":0,"delta":{"content":" I"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.5","choices":[{"index":0,"delta":{"content":" help"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.5","choices":[{"index":0,"delta":{"content":" you"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.5","choices":[{"index":0,"delta":{"content":" today"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.5","choices":[{"index":0,"delta":{"content":"?"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.5","choices":[{"finish_reason":"stop","index":0,"delta":{}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: [DONE]
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/completions:
+    post:
+      tags:
+        - chat_completions_moonshotai
+      summary: 创建文本补全
+      description: 基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
+      operationId: createCompletion_moonshotai
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompletionRequest'
+            examples:
+              default:
+                summary: 基础
+                description: 一个简单的文本补全示例。
+                value:
+                  model: gpt-3.5-turbo-instruct
+                  prompt: Once upon a time
+                  max_tokens: 50
+                  temperature: 0.7
+                  'n': 1
+                  stream: false
+              streaming:
+                summary: 流式
+                description: '通过设置 stream: true 启用流式响应。'
+                value:
+                  model: gpt-3.5-turbo-instruct
+                  prompt: The future of AI is
+                  max_tokens: 30
+                  temperature: 0.8
+                  stream: true
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompletionResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础文本补全请求的响应示例。
+                  value:
+                    id: cmpl-123
+                    object: text_completion
+                    created: 1677652288
+                    model: gpt-3.5-turbo-instruct
+                    choices:
+                      - text: ' in a small village, there lived a young girl named Lily.'
+                        index: 0
+                        finish_reason: length
+                    usage:
+                      prompt_tokens: 4
+                      completion_tokens: 12
+                      total_tokens: 16
+            text/event-stream:
+              schema:
+                type: string
+                description: '流式响应以 Server-Sent Events 格式返回，每个事件是一行以 ''data: '' 开头的 JSON 数据块，最后以 ''data: [DONE]'' 结束。'
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示流式文本补全过程中陆续发送的事件。
+                  value: |
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":"The","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" future","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" of","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" AI","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" is","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" bright","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":".","index":0,"finish_reason":"length"}]}
+                    data: [DONE]
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/embeddings:
+    post:
+      tags:
+        - embeddings_moonshotai
+      summary: 创建嵌入向量
+      description: 获取给定输入的向量表示。与 OpenAI 的 Embeddings API 兼容。
+      operationId: createEmbedding_moonshotai
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEmbeddingRequest'
+            examples:
+              default:
+                summary: 基础
+                description: 对单个字符串输入生成嵌入向量。
+                value:
+                  model: text-embedding-ada-002
+                  input: The quick brown fox jumps over the lazy dog
+              multiple-inputs:
+                summary: 多输入
+                description: 对多个字符串输入生成嵌入向量。
+                value:
+                  model: text-embedding-ada-002
+                  input:
+                    - Hello world
+                    - OpenAI is amazing
+              base64-format:
+                summary: Base64 格式
+                description: 以 base64 编码返回嵌入向量。
+                value:
+                  model: text-embedding-3-small
+                  input: Example text
+                  encoding_format: base64
+              with-dimensions:
+                summary: 指定维度
+                description: 指定输出维度。
+                value:
+                  model: text-embedding-3-small
+                  input: Example text
+                  dimensions: 256
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmbeddingResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应单个输入的基础响应。
+                  value:
+                    object: list
+                    data:
+                      - object: embedding
+                        embedding:
+                          - -0.006929283495992422
+                          - -0.005336422007530928
+                          - -0.024047505110502243
+                        index: 0
+                    model: text-embedding-ada-002
+                    usage:
+                      prompt_tokens: 8
+                      total_tokens: 8
+                multiple-inputs-response:
+                  summary: 多输入响应
+                  description: 对应多个输入的响应，包含多个嵌入向量。
+                  value:
+                    object: list
+                    data:
+                      - object: embedding
+                        embedding:
+                          - 0.1
+                          - 0.2
+                          - 0.3
+                        index: 0
+                      - object: embedding
+                        embedding:
+                          - 0.4
+                          - 0.5
+                          - 0.6
+                        index: 1
+                    model: text-embedding-ada-002
+                    usage:
+                      prompt_tokens: 6
+                      total_tokens: 6
+                base64-response:
+                  summary: Base64 响应
+                  description: 嵌入向量以 base64 编码返回。
+                  value:
+                    object: list
+                    data:
+                      - object: embedding
+                        embedding: YmFzZTY0X2VuY29kZWRfZGF0YQ==
+                        index: 0
+                    model: text-embedding-3-small
+                    usage:
+                      prompt_tokens: 2
+                      total_tokens: 2
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/images/generations:
+    post:
+      tags:
+        - image_generations_moonshotai
+      summary: 创建图像
+      description: 根据文本提示生成图像。与 OpenAI 的 Images API 兼容。
+      operationId: createImageGeneration_moonshotai
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateImageGenerationRequest'
+            examples:
+              default:
+                summary: 基础
+                description: 生成一张 1024x1024 的图像。
+                value:
+                  model: dall-e-3
+                  prompt: A cute cat sitting on a windowsill
+                  'n': 1
+                  size: 1024x1024
+              hd-quality:
+                summary: 高清质量
+                description: 生成高清质量的图像。
+                value:
+                  model: dall-e-3
+                  prompt: A futuristic cityscape at sunset
+                  'n': 1
+                  quality: hd
+                  size: 1792x1024
+              b64-json:
+                summary: Base64 格式
+                description: 返回 base64 编码的图像数据。
+                value:
+                  model: dall-e-2
+                  prompt: A beautiful landscape
+                  'n': 2
+                  size: 512x512
+                  response_format: b64_json
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 返回包含图像 URL 和可选字段的完整响应。
+                  value:
+                    created: 1680000000
+                    background: opaque
+                    output_format: png
+                    quality: high
+                    size: 1024x1024
+                    data:
+                      - url: 'https://example.com/images/cat.png'
+                        revised_prompt: 'A cute cat sitting on a windowsill, looking out at a garden'
+                    usage:
+                      total_tokens: 100
+                      input_tokens: 50
+                      output_tokens: 50
+                      input_tokens_details:
+                        text_tokens: 10
+                        image_tokens: 40
+                b64-response:
+                  summary: Base64 响应
+                  description: 返回包含 base64 编码图像数据和可选字段的响应。
+                  value:
+                    created: 1680000001
+                    background: opaque
+                    output_format: png
+                    quality: high
+                    size: 1024x1024
+                    data:
+                      - b64_json: iVBORw0KGgoAAAANSUhEUgAA...
+                        revised_prompt: A beautiful landscape with mountains and a lake
+                      - b64_json: iVBORw0KGgoAAAANSUhEUgAA...
+                    usage:
+                      total_tokens: 200
+                      input_tokens: 100
+                      output_tokens: 100
+                      input_tokens_details:
+                        text_tokens: 20
+                        image_tokens: 80
+            text/event-stream:
+              schema:
+                type: string
+                description: '流式响应以 Server-Sent Events 格式返回，每个事件由 ''event:'' 和 ''data:'' 行组成。'
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示图像生成过程中的中间和最终事件。
+                  value: |
+                    event: image_generation.partial_image
+
+                    data: {"type":"image_generation.partial_image","b64_json":"iVBORw0K...","partial_image_index":0}
+
+
+                    event: image_generation.completed
+
+                    data: {"type":"image_generation.completed","b64_json":"iVBORw0K...","usage":{"total_tokens":100,"input_tokens":50,"output_tokens":50,"input_tokens_details":{"text_tokens":10,"image_tokens":40}}}
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/images/edits:
+    post:
+      tags:
+        - image_edits_moonshotai
+      summary: 编辑图像
+      description: 根据原始图像和文本提示创建编辑后的图像。与 OpenAI 的 Images API 兼容。
+      operationId: createImageEdit_moonshotai
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateImageEditRequest'
+            encoding:
+              images:
+                style: form
+                explode: true
+            examples:
+              with-mask:
+                summary: 带蒙版
+                description: 使用图像、蒙版和提示进行编辑。
+                value:
+                  model: dall-e-2
+                  images:
+                    - '@person.png'
+                  mask: '@mask.png'
+                  prompt: Add a hat to the person
+                  'n': 1
+                  size: 1024x1024
+              no-mask:
+                summary: 无蒙版
+                description: 仅使用图像和提示进行编辑。
+                value:
+                  model: dall-e-2
+                  images:
+                    - '@body-lotion.png'
+                  prompt: Change the background to a beach
+                  'n': 1
+                  size: 1024x1024
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+              examples:
+                default-response:
+                  summary: 编辑响应
+                  description: 返回编辑后的图像及相关元数据。
+                  value:
+                    created: 1680000002
+                    background: opaque
+                    output_format: png
+                    quality: high
+                    size: 1024x1024
+                    data:
+                      - url: 'https://example.com/images/edited.png'
+                        revised_prompt: 'A person with a hat, standing in a sunny park'
+                    usage:
+                      total_tokens: 120
+                      input_tokens: 60
+                      output_tokens: 60
+                      input_tokens_details:
+                        text_tokens: 12
+                        image_tokens: 48
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/audio/transcriptions:
+    post:
+      tags:
+        - audio_transcriptions_moonshotai
+      summary: 音频转录
+      description: 将音频文件转录为文本。与 OpenAI 的 Audio API 兼容。
+      operationId: createTranscription_moonshotai
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateTranscriptionRequest'
+            examples:
+              default:
+                summary: 基础
+                description: 将音频文件转录为 JSON 格式。
+                value:
+                  model: whisper-1
+                  file: (binary)
+                  response_format: json
+              with-timestamps:
+                summary: 带时间戳
+                description: 获取包含单词级时间戳的详细转录。
+                value:
+                  model: whisper-1
+                  file: (binary)
+                  response_format: verbose_json
+                  timestamp_granularities:
+                    - word
+              srt-format:
+                summary: SRT 字幕
+                description: 以 SRT 字幕格式返回转录。
+                value:
+                  model: whisper-1
+                  file: (binary)
+                  response_format: srt
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranscriptionResponse'
+              examples:
+                json-response:
+                  summary: JSON 响应
+                  description: 默认的 JSON 格式转录。
+                  value:
+                    text: 'Hello, this is a test transcription.'
+                verbose-json-response:
+                  summary: 详细 JSON 响应
+                  description: 包含单词级时间戳的详细转录。
+                  value:
+                    task: transcribe
+                    language: english
+                    duration: 2.95
+                    text: 'Hello, this is a test transcription.'
+                    words:
+                      - word: Hello
+                        start: 0.1
+                        end: 0.5
+                      - word: this
+                        start: 0.6
+                        end: 0.8
+                      - word: is
+                        start: 0.9
+                        end: 1
+                      - word: a
+                        start: 1.1
+                        end: 1.2
+                      - word: test
+                        start: 1.3
+                        end: 1.8
+                      - word: transcription
+                        start: 1.9
+                        end: 2.8
+            application/x-srt:
+              schema:
+                type: string
+                description: SRT 字幕格式的转录。
+              examples:
+                srt-response:
+                  summary: SRT 响应
+                  value: |
+                    1
+                    00:00:00,100 --> 00:00:00,500
+                    Hello
+
+                    2
+                    00:00:00,600 --> 00:00:00,800
+                    this
+
+                    3
+                    00:00:00,900 --> 00:00:01,000
+                    is
+
+                    4
+                    00:00:01,100 --> 00:00:01,200
+                    a
+
+                    5
+                    00:00:01,300 --> 00:00:01,800
+                    test
+
+                    6
+                    00:00:01,900 --> 00:00:02,800
+                    transcription
+            text/plain:
+              schema:
+                type: string
+                description: 纯文本格式的转录。
+              examples:
+                text-response:
+                  summary: 纯文本响应
+                  value: 'Hello, this is a test transcription.'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+components:
+  schemas:
+    CreateChatCompletionRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: The model ID to use
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                enum:
+                  - system
+                  - user
+                  - assistant
+                  - tool
+              content:
+                oneOf:
+                  - type: string
+                  - type: array
+                    items:
+                      oneOf:
+                        - type: object
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                                - text
+                            text:
+                              type: string
+                          required:
+                            - type
+                            - text
+                        - type: object
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                                - image_url
+                            image_url:
+                              type: object
+                              properties:
+                                url:
+                                  type: string
+                              required:
+                                - url
+                          required:
+                            - type
+                            - image_url
+            required:
+              - role
+              - content
+        temperature:
+          type: number
+          default: 1
+        max_completion_tokens:
+          type: integer
+        'n':
+          type: integer
+          default: 1
+        stream:
+          type: boolean
+          default: false
+      required:
+        - model
+        - messages
+    ChatCompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              index:
+                type: integer
+              message:
+                type: object
+                properties:
+                  role:
+                    type: string
+                  content:
+                    type:
+                      - string
+                      - 'null'
+              finish_reason:
+                type:
+                  - string
+                  - 'null'
+        usage:
+          type: object
+          properties:
+            prompt_tokens:
+              type: integer
+            completion_tokens:
+              type: integer
+            total_tokens:
+              type: integer
+    CreateCompletionRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: The model ID to use
+        prompt:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        temperature:
+          type: number
+          default: 1
+        max_tokens:
+          type: integer
+        'n':
+          type: integer
+          default: 1
+        stream:
+          type: boolean
+          default: false
+      required:
+        - model
+        - prompt
+    CompletionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+        created:
+          type: integer
+        model:
+          type: string
+        choices:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+              index:
+                type: integer
+              finish_reason:
+                type:
+                  - string
+                  - 'null'
+        usage:
+          type: object
+          properties:
+            prompt_tokens:
+              type: integer
+            completion_tokens:
+              type: integer
+            total_tokens:
+              type: integer
+    CreateEmbeddingRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: The model ID to use
+        input:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        encoding_format:
+          type: string
+          enum:
+            - float
+            - base64
+          default: float
+        dimensions:
+          type: integer
+      required:
+        - model
+        - input
+    EmbeddingResponse:
+      type: object
+      properties:
+        object:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              object:
+                type: string
+              embedding:
+                oneOf:
+                  - type: array
+                    items:
+                      type: number
+                  - type: string
+              index:
+                type: integer
+        model:
+          type: string
+        usage:
+          type: object
+          properties:
+            prompt_tokens:
+              type: integer
+            total_tokens:
+              type: integer
+    CreateImageGenerationRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: The model ID to use
+        prompt:
+          type: string
+          description: Text prompt for image generation
+        'n':
+          type: integer
+          default: 1
+        size:
+          type: string
+          default: 1024x1024
+        quality:
+          type: string
+          enum:
+            - standard
+            - hd
+          default: standard
+        response_format:
+          type: string
+          enum:
+            - url
+            - b64_json
+          default: url
+      required:
+        - model
+        - prompt
+    CreateImageEditRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: The model ID to use
+        'image[]':
+          type: array
+          items:
+            type: string
+            format: binary
+          description: Image file to edit
+        mask:
+          type: string
+          format: binary
+          description: Optional mask file
+        prompt:
+          type: string
+          description: Text prompt for image editing
+        'n':
+          type: integer
+          default: 1
+        size:
+          type: string
+          default: 1024x1024
+        response_format:
+          type: string
+          enum:
+            - url
+            - b64_json
+          default: url
+      required:
+        - model
+        - 'image[]'
+        - prompt
+    ImageResponse:
+      type: object
+      properties:
+        created:
+          type: integer
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              b64_json:
+                type: string
+              revised_prompt:
+                type: string
+        background:
+          type: string
+        output_format:
+          type: string
+        quality:
+          type: string
+        size:
+          type: string
+        usage:
+          type: object
+          properties:
+            total_tokens:
+              type: integer
+            input_tokens:
+              type: integer
+            output_tokens:
+              type: integer
+    CreateTranscriptionRequest:
+      type: object
+      properties:
+        model:
+          type: string
+          description: The model ID to use
+        file:
+          type: string
+          format: binary
+          description: Audio file to transcribe
+        language:
+          type: string
+          description: Language code for the audio (optional)
+        prompt:
+          type: string
+          description: Optional prompt to guide the model's style or content
+        response_format:
+          type: string
+          enum:
+            - json
+            - text
+            - srt
+            - verbose_json
+            - vtt
+          default: json
+        temperature:
+          type: number
+          default: 0
+      required:
+        - model
+        - file
+    TranscriptionResponse:
+      type: object
+      properties:
+        text:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            type:
+              type: string
+            param:
+              type:
+                - string
+                - 'null'
+            code:
+              type:
+                - string
+                - 'null'
+  securitySchemes:
+    APIKeyHeader:
+      type: http
+      scheme: bearer
+      description: 'Authenticate using Bearer token format: ''Bearer YOUR_SECRET_TOKEN'''
+  responses:
+    ErrorResponse:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

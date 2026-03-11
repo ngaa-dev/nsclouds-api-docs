@@ -4,6 +4,7 @@
 * [对话生成(chat.completion)](docs/zh/chat-completion/README.md)
   * [Google](docs/zh/chat-completion/google-chat-completion.md)
   * [Anthropic](docs/zh/chat-completion/anthropic-chat-completion.md)
+  * [Moonshot AI](docs/zh/chat-completion/moonshotai-chat-completion.md)
   * [OpenAI](docs/zh/chat-completion/openai-chat-completion.md)
 * [文本补全(completions)](docs/zh/completions/README.md)
   * [Google](docs/zh/completions/google-completions.md)
