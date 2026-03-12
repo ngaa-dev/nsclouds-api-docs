@@ -5,48 +5,48 @@ servers:
   $ref: ./_common.yaml#/servers
 
 tags:
-  # 引用公共文件中的顶级功能标签（用于保持导航层级）
+  # Reference top-level function tags from common file (to maintain navigation hierarchy)
   - $ref: ./_common.yaml#/tags/0   # chat_completions
   - $ref: ./_common.yaml#/tags/1   # embeddings
   - $ref: ./_common.yaml#/tags/2   # image_generations
   - $ref: ./_common.yaml#/tags/3   # image_edits
   - $ref: ./_common.yaml#/tags/4   # audio_transcriptions
 
-  # ========== Example 厂家标签 ==========
+  # ========== Anthropic vendor tags ==========
   - name: chat_completions_anthropic
     x-parent: chat_completions
-    x-page-title: Example
+    x-page-title: Anthropic
     x-page-icon: brain
-    description: Example 的对话生成 API
+    description: Anthropic's chat completion API
   - name: embeddings_anthropic
     x-parent: embeddings
-    x-page-title: Example
+    x-page-title: Anthropic
     x-page-icon: brain
-    description: Example 的向量嵌入 API
+    description: Anthropic's vector embedding API
   - name: image_generations_anthropic
     x-parent: image_generations
-    x-page-title: Example
+    x-page-title: Anthropic
     x-page-icon: brain
-    description: Example 的图片生成 API
+    description: Anthropic's image generation API
   - name: image_edits_anthropic
     x-parent: image_edits
-    x-page-title: Example
+    x-page-title: Anthropic
     x-page-icon: brain
-    description: Example 的图片编辑 API
+    description: Anthropic's image editing API
   - name: audio_transcriptions_anthropic
     x-parent: audio_transcriptions
-    x-page-title: Example
+    x-page-title: Anthropic
     x-page-icon: brain
-    description: Example 的音频转录 API
+    description: Anthropic's audio transcription API
 
 paths:
-  # ========== 对话生成 ==========
+  # ========== Chat Completion ==========
   /v1/chat/completions:
     post:
       tags:
         - chat_completions_anthropic
-      summary: 创建聊天补全
-      description: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
+      summary: Create Chat Completion
+      description: Generate model responses based on input messages. Fully compatible with OpenAI's Chat API.
       operationId: createChatCompletion_anthropic
       security:
         - APIKeyHeader: []
@@ -58,8 +58,8 @@ paths:
               $ref: '#/components/schemas/CreateChatCompletionRequest'
             examples:
               default:
-                summary: 基础
-                description: 一个简单的对话示例，包含系统提示和用户消息。
+                summary: Basic
+                description: A simple conversation example with system prompt and user message.
                 value:
                   model: claude-opus-4.6
                   messages:
@@ -72,8 +72,8 @@ paths:
                   'n': 1
                   stream: false
               streaming:
-                summary: 流式
-                description: "通过设置 stream: true 启用流式响应。"
+                summary: Streaming
+                description: Enable streaming response by setting stream True.
                 value:
                   model: claude-opus-4.6
                   messages:
@@ -85,10 +85,10 @@ paths:
                   max_completion_tokens: 100
                   stream: true
               image_input:
-                summary: 图像输入（多模态）
-                description: 使用支持视觉的模型分析图像。
+                summary: Image Input (Multimodal)
+                description: Use vision-enabled models to analyze images.
                 value:
-                  model: gpt-4-vision-preview
+                  model: claude-opus-4.6
                   messages:
                     - role: user
                       content:
@@ -99,10 +99,10 @@ paths:
                             url: https://example.com/cat.jpg
                   max_completion_tokens: 300
               functions:
-                summary: 函数调用
-                description: 定义工具（函数）并让模型决定是否调用。
+                summary: Function Calling
+                description: Define tools (functions) and let the model decide whether to call them.
                 value:
-                  model: gpt-4
+                  model: claude-opus-4.6
                   messages:
                     - role: user
                       content: What's the weather in Boston?
@@ -128,15 +128,15 @@ paths:
                   max_completion_tokens: 150
       responses:
         '200':
-          description: 成功响应
+          description: Success Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChatCompletionResponse'
               examples:
                 default-response:
-                  summary: 基础响应
-                  description: 对应基础聊天请求的响应示例。
+                  summary: Basic Response
+                  description: Response example for basic chat request.
                   value:
                     id: chatcmpl-02VKOdtBIb7RkHb97f0WePbsjjQkB
                     object: chat.completion
@@ -153,13 +153,13 @@ paths:
                       prompt_tokens: 9
                       total_tokens: 32
                 image_input-response:
-                  summary: 图像输入响应
-                  description: 模型根据图像内容生成的描述。
+                  summary: Image Input Response
+                  description: Description generated by the model based on image content.
                   value:
                     id: chatcmpl-789
                     object: chat.completion
                     created: 1677652300
-                    model: gpt-4-vision-preview
+                    model: claude-opus-4.6
                     choices:
                       - index: 0
                         message:
@@ -171,13 +171,13 @@ paths:
                       completion_tokens: 15
                       total_tokens: 138
                 functions-response:
-                  summary: 函数调用响应
-                  description: 模型返回一个函数调用请求。
+                  summary: Function Calling Response
+                  description: Model returns a function call request.
                   value:
                     id: chatcmpl-abc
                     object: chat.completion
                     created: 1677652310
-                    model: gpt-4
+                    model: claude-opus-4.6
                     choices:
                       - index: 0
                         message:
@@ -197,11 +197,11 @@ paths:
             text/event-stream:
               schema:
                 type: string
-                description: "流式响应以 Server-Sent Events 格式返回，每个事件是一行以 'data: ' 开头的 JSON 数据块，最后以 'data: [DONE]' 结束。"
+                description: "Streaming responses are returned in Server-Sent Events format, each event is a JSON data block starting with 'data: ' and ending with 'data: [DONE]'."
               examples:
                 streaming-response:
-                  summary: 流式响应示例
-                  description: 展示流式聊天过程中陆续发送的事件。
+                  summary: Streaming Response Example
+                  description: Shows events sent sequentially during streaming chat.
                   value: |
                     data: {"id":"chatcmpl-WWcxVVS3hexiKVbk3QCGSMV5wToGL","created":1773222960,"model":"claude-opus-4-6","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"content":"Hello! How are","role":"assistant"}}]}
                     data: {"id":"chatcmpl-WWcxVVS3hexiKVbk3QCGSMV5wToGL","created":1773222960,"model":"claude-opus-4-6","object":"chat.completion.chunk","choices":[{"index":0,"delta":{"content":" you doing today? Is there anything I"}}]}
@@ -221,8 +221,8 @@ paths:
     post:
       tags:
         - chat_completions_anthropic
-      summary: 创建文本补全
-      description: 基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
+      summary: Create Text Completion
+      description: Generate one or more completion results based on the provided prompt. Compatible with OpenAI's Completions API.
       operationId: createCompletion_anthropic
       security:
         - APIKeyHeader: []
@@ -234,8 +234,8 @@ paths:
               $ref: '#/components/schemas/CreateCompletionRequest'
             examples:
               default:
-                summary: 基础
-                description: 一个简单的文本补全示例。
+                summary: Basic
+                description: A simple text completion example.
                 value:
                   model: claude-opus-4.6
                   prompt: Once upon a time
@@ -244,8 +244,8 @@ paths:
                   'n': 1
                   stream: false
               streaming:
-                summary: 流式
-                description: "通过设置 stream: true 启用流式响应。"
+                summary: Streaming
+                description: "Enable streaming response by setting stream: true."
                 value:
                   model: claude-opus-4.6
                   prompt: The future of AI is
@@ -255,15 +255,15 @@ paths:
 
       responses:
         '200':
-          description: 成功响应
+          description: Success Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CompletionResponse'
               examples:
                 default-response:
-                  summary: 基础响应
-                  description: 对应基础文本补全请求的响应示例。
+                  summary: Basic Response
+                  description: Response example for basic text completion request.
                   value:
                     id: msg_01MMX9dbQ7ZPgjhMhgLPRuCz
                     object: text_completion
@@ -292,19 +292,19 @@ paths:
             text/event-stream:
               schema:
                 type: string
-                description: "流式响应以 Server-Sent Events 格式返回，每个事件是一行以 'data: ' 开头的 JSON 数据块，最后以 'data: [DONE]' 结束。"
+                description: "Streaming responses are returned in Server-Sent Events format, each event is a JSON data block starting with 'data: ' and ending with 'data: [DONE]'."
               examples:
                 streaming-response:
-                  summary: 流式响应示例
-                  description: 展示流式文本补全过程中陆续发送的事件。
+                  summary: Streaming Response Example
+                  description: Shows events sent sequentially during streaming text completion.
                   value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":".","index":0,"finish_reason":"length"}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-opus-4.6","choices":[{"text":"The","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-opus-4.6","choices":[{"text":" future","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-opus-4.6","choices":[{"text":" of","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-opus-4.6","choices":[{"text":" AI","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-opus-4.6","choices":[{"text":" is","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-opus-4.6","choices":[{"text":" bright","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-opus-4.6","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'
@@ -313,13 +313,13 @@ paths:
         '429':
           $ref: '#/components/responses/ErrorResponse'
 
-  # ========== 向量嵌入 ==========
+  # ========== Vector Embeddings ==========
   /v1/embeddings:
     post:
       tags:
         - embeddings_anthropic
-      summary: 创建嵌入向量
-      description: 获取给定输入的向量表示。与 OpenAI 的 Embeddings API 兼容。
+      summary: Create Embedding Vectors
+      description: Get vector representation for given input. Compatible with OpenAI's Embeddings API.
       operationId: createEmbedding_anthropic
       security:
         - APIKeyHeader: []
@@ -331,44 +331,44 @@ paths:
               $ref: '#/components/schemas/CreateEmbeddingRequest'
             examples:
               default:
-                summary: 基础
-                description: 对单个字符串输入生成嵌入向量。
+                summary: Basic
+                description: Generate embedding vectors for single string input.
                 value:
-                  model: text-embedding-ada-002
+                  model: claude-embed-1
                   input: The quick brown fox jumps over the lazy dog
               multiple-inputs:
-                summary: 多输入
-                description: 对多个字符串输入生成嵌入向量。
+                summary: Multiple Inputs
+                description: Generate embedding vectors for multiple string inputs.
                 value:
-                  model: text-embedding-ada-002
+                  model: claude-embed-1
                   input:
                     - Hello world
-                    - OpenAI is amazing
+                    - Anthropic is amazing
               base64-format:
-                summary: Base64 格式
-                description: 以 base64 编码返回嵌入向量。
+                summary: Base64 Format
+                description: Return embedding vectors in base64 encoding.
                 value:
-                  model: text-embedding-3-small
+                  model: claude-embed-1
                   input: Example text
                   encoding_format: base64
               with-dimensions:
-                summary: 指定维度
-                description: 指定输出维度。
+                summary: Specify Dimensions
+                description: Specify output dimensions.
                 value:
-                  model: text-embedding-3-small
+                  model: claude-embed-1
                   input: Example text
                   dimensions: 256
       responses:
         '200':
-          description: 成功响应
+          description: Success Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/EmbeddingResponse'
               examples:
                 default-response:
-                  summary: 基础响应
-                  description: 对应单个输入的基础响应。
+                  summary: Basic Response
+                  description: Response for single input.
                   value:
                     object: list
                     data:
@@ -378,13 +378,13 @@ paths:
                           - -0.005336422007530928
                           - -0.024047505110502243
                         index: 0
-                    model: text-embedding-ada-002
+                    model: claude-embed-1
                     usage:
                       prompt_tokens: 8
                       total_tokens: 8
                 multiple-inputs-response:
-                  summary: 多输入响应
-                  description: 对应多个输入的响应，包含多个嵌入向量。
+                  summary: Multiple Inputs Response
+                  description: Response for multiple inputs, containing multiple embedding vectors.
                   value:
                     object: list
                     data:
@@ -400,20 +400,20 @@ paths:
                           - 0.5
                           - 0.6
                         index: 1
-                    model: text-embedding-ada-002
+                    model: claude-embed-1
                     usage:
                       prompt_tokens: 6
                       total_tokens: 6
                 base64-response:
-                  summary: Base64 响应
-                  description: 嵌入向量以 base64 编码返回。
+                  summary: Base64 Response
+                  description: Embedding vectors are returned in base64 encoding.
                   value:
                     object: list
                     data:
                       - object: embedding
                         embedding: "YmFzZTY0X2VuY29kZWRfZGF0YQ=="
                         index: 0
-                    model: text-embedding-3-small
+                    model: claude-embed-1
                     usage:
                       prompt_tokens: 2
                       total_tokens: 2
@@ -424,13 +424,13 @@ paths:
         '429':
           $ref: '#/components/responses/ErrorResponse'
 
-  # ========== 图片生成 ==========
+  # ========== Image Generation ==========
   /v1/images/generations:
     post:
       tags:
         - image_generations_anthropic
-      summary: 创建图像
-      description: 根据文本提示生成图像。与 OpenAI 的 Images API 兼容。
+      summary: Create Image
+      description: Generate images based on text prompts. Compatible with OpenAI's Images API.
       operationId: createImageGeneration_anthropic
       security:
         - APIKeyHeader: []
@@ -442,42 +442,42 @@ paths:
               $ref: '#/components/schemas/CreateImageGenerationRequest'
             examples:
               default:
-                summary: 基础
-                description: 生成一张 1024x1024 的图像。
+                summary: Basic
+                description: Generate a 1024x1024 image.
                 value:
-                  model: dall-e-3
+                  model: claude-3-opus-20240229
                   prompt: A cute cat sitting on a windowsill
                   'n': 1
                   size: 1024x1024
               hd-quality:
-                summary: 高清质量
-                description: 生成高清质量的图像。
+                summary: High Quality
+                description: Generate high quality images.
                 value:
-                  model: dall-e-3
+                  model: claude-3-opus-20240229
                   prompt: A futuristic cityscape at sunset
                   'n': 1
                   quality: hd
                   size: 1792x1024
               b64-json:
-                summary: Base64 格式
-                description: 返回 base64 编码的图像数据。
+                summary: Base64 Format
+                description: Return base64 encoded image data.
                 value:
-                  model: dall-e-2
+                  model: claude-3-opus-20240229
                   prompt: A beautiful landscape
                   'n': 2
                   size: 512x512
                   response_format: b64_json
       responses:
         '200':
-          description: 成功响应
+          description: Success Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImageResponse'
               examples:
                 default-response:
-                  summary: 基础响应
-                  description: 返回包含图像 URL 和可选字段的完整响应。
+                  summary: Basic Response
+                  description: Return complete response containing image URL and optional fields.
                   value:
                     created: 1680000000
                     background: opaque
@@ -495,8 +495,8 @@ paths:
                         text_tokens: 10
                         image_tokens: 40
                 b64-response:
-                  summary: Base64 响应
-                  description: 返回包含 base64 编码图像数据和可选字段的响应。
+                  summary: Base64 Response
+                  description: Return response containing base64 encoded image data and optional fields.
                   value:
                     created: 1680000001
                     background: opaque
@@ -517,11 +517,11 @@ paths:
             text/event-stream:
               schema:
                 type: string
-                description: 流式响应以 Server-Sent Events 格式返回，每个事件由 'event:' 和 'data:' 行组成。
+                description: Streaming responses are returned in Server-Sent Events format, each event consists of 'event:' and 'data:' lines.
               examples:
                 streaming-response:
-                  summary: 流式响应示例
-                  description: 展示图像生成过程中的中间和最终事件。
+                  summary: Streaming Response Example
+                  description: Shows intermediate and final events during image generation.
                   value: |
                     event: image_generation.partial_image
 
@@ -538,13 +538,13 @@ paths:
         '429':
           $ref: '#/components/responses/ErrorResponse'
 
-  # ========== 图片编辑 ==========
+  # ========== Image Editing ==========
   /v1/images/edits:
     post:
       tags:
         - image_edits_anthropic
-      summary: 编辑图像
-      description: 根据原始图像和文本提示创建编辑后的图像。与 OpenAI 的 Images API 兼容。
+      summary: Edit Image
+      description: Create edited images based on original image and text prompts. Compatible with OpenAI's Images API.
       operationId: createImageEdit_anthropic
       security:
         - APIKeyHeader: []
@@ -560,10 +560,10 @@ paths:
                 explode: true
             examples:
               with-mask:
-                summary: 带蒙版
-                description: 使用图像、蒙版和提示进行编辑。
+                summary: With Mask
+                description: Edit using image, mask and prompt.
                 value:
-                  model: dall-e-2
+                  model: claude-3-opus-20240229
                   images:
                     - '@person.png'
                   mask: '@mask.png'
@@ -571,10 +571,10 @@ paths:
                   'n': 1
                   size: 1024x1024
               no-mask:
-                summary: 无蒙版
-                description: 仅使用图像和提示进行编辑。
+                summary: Without Mask
+                description: Edit using only image and prompt.
                 value:
-                  model: dall-e-2
+                  model: claude-3-opus-20240229
                   images:
                     - '@body-lotion.png'
                   prompt: Change the background to a beach
@@ -582,15 +582,15 @@ paths:
                   size: 1024x1024
       responses:
         '200':
-          description: 成功响应
+          description: Success Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImageResponse'
               examples:
                 default-response:
-                  summary: 编辑响应
-                  description: 返回编辑后的图像及相关元数据。
+                  summary: Edit Response
+                  description: Return edited image and related metadata.
                   value:
                     created: 1680000002
                     background: opaque
@@ -614,13 +614,13 @@ paths:
         '429':
           $ref: '#/components/responses/ErrorResponse'
 
-  # ========== 音频转录 ==========
+  # ========== Audio Transcription ==========
   /v1/audio/transcriptions:
     post:
       tags:
         - audio_transcriptions_anthropic
-      summary: 音频转录
-      description: 将音频文件转录为文本。与 OpenAI 的 Audio API 兼容。
+      summary: Audio Transcription
+      description: Transcribe audio files to text. Compatible with OpenAI's Audio API.
       operationId: createTranscription_anthropic
       security:
         - APIKeyHeader: []
@@ -632,44 +632,44 @@ paths:
               $ref: '#/components/schemas/CreateTranscriptionRequest'
             examples:
               default:
-                summary: 基础
-                description: 将音频文件转录为 JSON 格式。
+                summary: Basic
+                description: Transcribe audio file to JSON format.
                 value:
-                  model: whisper-1
+                  model: claude-3-opus-20240229
                   file: (binary)
                   response_format: json
               with-timestamps:
-                summary: 带时间戳
-                description: 获取包含单词级时间戳的详细转录。
+                summary: With Timestamps
+                description: Get detailed transcription with word-level timestamps.
                 value:
-                  model: whisper-1
+                  model: claude-3-opus-20240229
                   file: (binary)
                   response_format: verbose_json
                   timestamp_granularities:
                     - word
               srt-format:
-                summary: SRT 字幕
-                description: 以 SRT 字幕格式返回转录。
+                summary: SRT Subtitles
+                description: Return transcription in SRT subtitle format.
                 value:
-                  model: whisper-1
+                  model: claude-3-opus-20240229
                   file: (binary)
                   response_format: srt
       responses:
         '200':
-          description: 成功响应
+          description: Success Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TranscriptionResponse'
               examples:
                 json-response:
-                  summary: JSON 响应
-                  description: 默认的 JSON 格式转录。
+                  summary: JSON Response
+                  description: Default JSON format transcription.
                   value:
                     text: Hello, this is a test transcription.
                 verbose-json-response:
-                  summary: 详细 JSON 响应
-                  description: 包含单词级时间戳的详细转录。
+                  summary: Verbose JSON Response
+                  description: Detailed transcription with word-level timestamps.
                   value:
                     task: transcribe
                     language: english
@@ -697,10 +697,10 @@ paths:
             application/x-srt:
               schema:
                 type: string
-                description: SRT 字幕格式的转录。
+                description: Transcription in SRT subtitle format.
               examples:
                 srt-response:
-                  summary: SRT 响应
+                  summary: SRT Response
                   value: |
                     1
                     00:00:00,100 --> 00:00:00,500
@@ -728,10 +728,10 @@ paths:
             text/plain:
               schema:
                 type: string
-                description: 纯文本格式的转录。
+                description: Transcription in plain text format.
               examples:
                 text-response:
-                  summary: 纯文本响应
+                  summary: Plain Text Response
                   value: Hello, this is a test transcription.
         '400':
           $ref: '#/components/responses/ErrorResponse'

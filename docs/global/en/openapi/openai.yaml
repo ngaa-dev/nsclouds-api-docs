@@ -5,48 +5,48 @@ servers:
   $ref: ./_common.yaml#/servers
 
 tags:
-  # 引用公共文件中的顶级功能标签（用于保持导航层级）
+  # Reference top-level feature tags from common file (to maintain navigation hierarchy)
   - $ref: ./_common.yaml#/tags/0   # chat_completions
   - $ref: ./_common.yaml#/tags/1   # embeddings
   - $ref: ./_common.yaml#/tags/2   # image_generations
   - $ref: ./_common.yaml#/tags/3   # image_edits
   - $ref: ./_common.yaml#/tags/4   # audio_transcriptions
 
-  # ========== OpenAI 厂家标签 ==========
+  # ========== OpenAI Vendor Tags ==========
   - name: chat_completions_openai
     x-parent: chat_completions
     x-page-title: OpenAI
     x-page-icon: brain
-    description: OpenAI 的对话生成 API
+    description: OpenAI's Chat Completion API
   - name: embeddings_openai
     x-parent: embeddings
     x-page-title: OpenAI
     x-page-icon: brain
-    description: OpenAI 的向量嵌入 API
+    description: OpenAI's Embeddings API
   - name: image_generations_openai
     x-parent: image_generations
     x-page-title: OpenAI
     x-page-icon: brain
-    description: OpenAI 的图片生成 API
+    description: OpenAI's Image Generation API
   - name: image_edits_openai
     x-parent: image_edits
     x-page-title: OpenAI
     x-page-icon: brain
-    description: OpenAI 的图片编辑 API
+    description: OpenAI's Image Edits API
   - name: audio_transcriptions_openai
     x-parent: audio_transcriptions
     x-page-title: OpenAI
     x-page-icon: brain
-    description: OpenAI 的音频转录 API
+    description: OpenAI's Audio Transcriptions API
 
 paths:
-  # ========== 对话生成 ==========
+  # ========== Chat Completion ==========
   /v1/chat/completions:
     post:
       tags:
         - chat_completions_openai
-      summary: 创建聊天补全
-      description: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
+      summary: Create Chat Completion
+      description: Generate model responses based on input messages. Fully compatible with OpenAI's Chat API.
       operationId: createChatCompletion_openai
       security:
         - APIKeyHeader: []
@@ -58,10 +58,10 @@ paths:
               $ref: '#/components/schemas/CreateChatCompletionRequest'
             examples:
               default:
-                summary: 基础
-                description: 一个简单的对话示例，包含系统提示和用户消息。
+                summary: Basic
+                description: A simple conversation example with system prompt and user message.
                 value:
-                  model: openai/gpt-5
+                  model: gpt-5
                   messages:
                     - role: system
                       content: You are a helpful assistant.
@@ -72,10 +72,10 @@ paths:
                   'n': 1
                   stream: false
               streaming:
-                summary: 流式
-                description: "通过设置 stream: true 启用流式响应。"
+                summary: Streaming
+                description: "Enable streaming response by setting stream: true."
                 value:
-                  model: openai/gpt-5.2
+                  model: gpt-5.2
                   messages:
                     - role: system
                       content: You are a helpful assistant.
@@ -85,128 +85,119 @@ paths:
                   max_completion_tokens: 100
                   stream: true
               image_input:
-                summary: 图像输入（多模态）
-                description: 使用支持视觉的模型分析图像。
+                summary: Image Input (Multimodal)
+                description: Use vision-capable models to analyze images.
                 value:
-                  model: openai/gpt-5.2
+                  model: gpt-5.2
                   messages:
                     - role: user
                       content:
                         - type: text
-                          text: What's in this image?
+                          text: What is in this image?
                         - type: image_url
                           image_url:
-                            url: https://example.com/cat.jpg
+                            url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
                   max_completion_tokens: 300
               functions:
-                summary: 函数调用
-                description: 定义工具（函数）并让模型决定是否调用。
+                summary: Function Calling
+                description: Define tools (functions) and let the model decide whether to call them.
                 value:
-                  model: openai/gpt-5.2
+                  model: gpt-5.2
                   messages:
                     - role: user
-                      content: What's the weather in Boston?
+                      content: Read the content of the file report.txt
                   tools:
                     - type: function
                       function:
-                        name: get_current_weather
-                        description: Get the current weather in a given location
+                        name: read_file
+                        description: Read the content of a file
                         parameters:
                           type: object
                           properties:
-                            location:
+                            file_path:
                               type: string
-                              description: The city and state, e.g. San Francisco, CA
-                            unit:
-                              type: string
-                              enum:
-                                - celsius
-                                - fahrenheit
+                              description: The path to the file to read
                           required:
-                            - location
+                            - file_path
                   tool_choice: auto
                   max_completion_tokens: 150
       responses:
         '200':
-          description: 成功响应
+          description: Success Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChatCompletionResponse'
               examples:
                 default-response:
-                  summary: 基础响应
-                  description: 对应基础聊天请求的响应示例。
+                  summary: Basic Response
+                  description: Response example for basic chat request.
                   value:
-                    id: chatcmpl-123
+                    id: chatcmpl-BPzJw3iWI2jtsjCnR0rRCBvLCETq7
+                    created: 1773197421
+                    model: gpt-5
                     object: chat.completion
-                    created: 1677652288
-                    model: openai/gpt-5
                     choices:
                       - index: 0
                         message:
                           role: assistant
-                          content: Hello there! How can I assist you today?
+                          content: Hi! How can I help today? I can answer questions, explain topics, brainstorm ideas, write or edit text, solve problems, or analyze images.
                         finish_reason: stop
                     usage:
-                      prompt_tokens: 9
-                      completion_tokens: 12
-                      total_tokens: 21
+                      completion_tokens: 174
+                      prompt_tokens: 8
+                      total_tokens: 182
+                      completion_tokens_details:
+                        reasoning_tokens: 128
                 image_input-response:
-                  summary: 图像输入响应
-                  description: 模型根据图像内容生成的描述。
+                  summary: Image Input Response
+                  description: Model-generated description based on image content.
                   value:
-                    id: chatcmpl-789
+                    id: chatcmpl-s71Ce6GRN8PzAOB0PbVmNFGdSlGjS
+                    created: 1773197559
+                    model: gpt-5.2
                     object: chat.completion
-                    created: 1677652300
-                    model: openai/gpt-5.2
                     choices:
                       - index: 0
                         message:
                           role: assistant
-                          content: The image shows a cute cat sitting on a windowsill, looking outside.
+                          content: The image shows a person posing in a studio setup against a white backdrop, wearing a shiny, chrome-like metallic outfit with spiky, futuristic elements (including headpiece/hair). The face area is blurred/pixelated.
                         finish_reason: stop
                     usage:
-                      prompt_tokens: 123
-                      completion_tokens: 15
-                      total_tokens: 138
+                      completion_tokens: 49
+                      prompt_tokens: 704
+                      total_tokens: 753
                 functions-response:
-                  summary: 函数调用响应
-                  description: 模型返回一个函数调用请求。
+                  summary: Function Calling Response
+                  description: Model returns a function call request.
                   value:
-                    id: chatcmpl-abc
+                    id: chatcmpl-ZjQIwmTgiAmyXrAeTCcoNXvvqiprq
+                    created: 1773197541
+                    model: gpt-5.2
                     object: chat.completion
-                    created: 1677652310
-                    model: openai/gpt-5.2
                     choices:
                       - index: 0
                         message:
                           role: assistant
-                          content: null
-                          tool_calls:
-                            - id: call_123
-                              type: function
-                              function:
-                                name: get_current_weather
-                                arguments: '{"location": "Boston, MA", "unit": "fahrenheit"}'
-                        finish_reason: tool_calls
+                          content: I can't directly access or read files on your system. If you'd like to share the content of report.txt, you can copy and paste it here, and I'll help you analyze or work with it.
+                        finish_reason: stop
                     usage:
-                      prompt_tokens: 50
-                      completion_tokens: 20
-                      total_tokens: 70
+                      completion_tokens: 74
+                      prompt_tokens: 13
+                      total_tokens: 87
             text/event-stream:
               schema:
                 type: string
-                description: "流式响应以 Server-Sent Events 格式返回，每个事件是一行以 'data: ' 开头的 JSON 数据块，最后以 'data: [DONE]' 结束。"
+                description: "Streaming responses are returned in Server-Sent Events format, each event is a JSON data block starting with 'data: ' and ending with 'data: [DONE]'."
               examples:
                 streaming-response:
-                  summary: 流式响应示例
-                  description: 展示流式聊天过程中陆续发送的事件。
+                  summary: Streaming Response Example
+                  description: Shows events sent sequentially during streaming chat process.
                   value: |
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"openai/gpt-5.2","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"openai/gpt-5.2","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"openai/gpt-5.2","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"openai/gpt-5.2","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5.2","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5.2","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5.2","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5.2","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'
@@ -219,8 +210,8 @@ paths:
     post:
       tags:
         - chat_completions_openai
-      summary: 创建文本补全
-      description: 基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
+      summary: Create Text Completion
+      description: Generate one or more completions based on provided prompts. Compatible with OpenAI's Completions API.
       operationId: createCompletion_openai
       security:
         - APIKeyHeader: []
@@ -232,40 +223,40 @@ paths:
               $ref: '#/components/schemas/CreateCompletionRequest'
             examples:
               default:
-                summary: 基础
-                description: 一个简单的文本补全示例。
+                summary: Basic
+                description: A simple text completion example.
                 value:
-                  model: openai/gpt-5
+                  model: gpt-5
                   prompt: Once upon a time
                   max_tokens: 50
                   temperature: 0.7
                   'n': 1
                   stream: false
               streaming:
-                summary: 流式
-                description: "通过设置 stream: true 启用流式响应。"
+                summary: Streaming
+                description: "Enable streaming response by setting stream: true."
                 value:
-                  model: openai/gpt-5.2
+                  model: gpt-5.2
                   prompt: The future of AI is
                   max_tokens: 30
                   temperature: 0.8
                   stream: true
       responses:
         '200':
-          description: 成功响应
+          description: Success Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CompletionResponse'
               examples:
                 default-response:
-                  summary: 基础响应
-                  description: 对应基础文本补全请求的响应示例。
+                  summary: Basic Response
+                  description: Response example for basic text completion request.
                   value:
                     id: cmpl-123
                     object: text_completion
                     created: 1677652288
-                    model: openai/gpt-5
+                    model: gpt-5
                     choices:
                       - text: ' in a small village, there lived a young girl named Lily.'
                         index: 0
@@ -277,19 +268,19 @@ paths:
             text/event-stream:
               schema:
                 type: string
-                description: "流式响应以 Server-Sent Events 格式返回，每个事件是一行以 'data: ' 开头的 JSON 数据块，最后以 'data: [DONE]' 结束。"
+                description: "Streaming responses are returned in Server-Sent Events format, each event is a JSON data block starting with 'data: ' and ending with 'data: [DONE]'."
               examples:
                 streaming-response:
-                  summary: 流式响应示例
-                  description: 展示流式文本补全过程中陆续发送的事件。
+                  summary: Streaming Response Example
+                  description: Shows events sent sequentially during streaming text completion process.
                   value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"openai/gpt-5.2","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"openai/gpt-5.2","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"openai/gpt-5.2","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"openai/gpt-5.2","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"openai/gpt-5.2","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"openai/gpt-5.2","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"openai/gpt-5.2","choices":[{"text":".","index":0,"finish_reason":"length"}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":"The","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":" future","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":" of","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":" AI","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":" is","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":" bright","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5.2","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'
@@ -298,13 +289,13 @@ paths:
         '429':
           $ref: '#/components/responses/ErrorResponse'
 
-  # ========== 向量嵌入 ==========
+  # ========== Embeddings ==========
   /v1/embeddings:
     post:
       tags:
         - embeddings_openai
-      summary: 创建嵌入向量
-      description: 获取给定输入的向量表示。与 OpenAI 的 Embeddings API 兼容。
+      summary: Create Embedding
+      description: Get vector representations for given inputs. Compatible with OpenAI's Embeddings API.
       operationId: createEmbedding_openai
       security:
         - APIKeyHeader: []
@@ -316,44 +307,44 @@ paths:
               $ref: '#/components/schemas/CreateEmbeddingRequest'
             examples:
               default:
-                summary: 基础
-                description: 对单个字符串输入生成嵌入向量。
+                summary: Basic
+                description: Generate embedding for a single string input.
                 value:
-                  model: openai/gpt-5
+                  model: gpt-5
                   input: The quick brown fox jumps over the lazy dog
               multiple-inputs:
-                summary: 多输入
-                description: 对多个字符串输入生成嵌入向量。
+                summary: Multiple Inputs
+                description: Generate embeddings for multiple string inputs.
                 value:
-                  model: openai/gpt-5.2
+                  model: gpt-5.2
                   input:
                     - Hello world
                     - OpenAI is amazing
               base64-format:
-                summary: Base64 格式
-                description: 以 base64 编码返回嵌入向量。
+                summary: Base64 Format
+                description: Return embeddings in base64 encoding.
                 value:
-                  model: openai/gpt-5.2
+                  model: gpt-5.2
                   input: Example text
                   encoding_format: base64
               with-dimensions:
-                summary: 指定维度
-                description: 指定输出维度。
+                summary: Specify Dimensions
+                description: Specify output dimensions.
                 value:
-                  model: openai/gpt-5.2
+                  model: gpt-5.2
                   input: Example text
                   dimensions: 256
       responses:
         '200':
-          description: 成功响应
+          description: Success Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/EmbeddingResponse'
               examples:
                 default-response:
-                  summary: 基础响应
-                  description: 对应单个输入的基础响应。
+                  summary: Basic Response
+                  description: Basic response for single input.
                   value:
                     object: list
                     data:
@@ -363,13 +354,13 @@ paths:
                           - -0.005336422007530928
                           - -0.024047505110502243
                         index: 0
-                    model: openai/gpt-5
+                    model: gpt-5
                     usage:
                       prompt_tokens: 8
                       total_tokens: 8
                 multiple-inputs-response:
-                  summary: 多输入响应
-                  description: 对应多个输入的响应，包含多个嵌入向量。
+                  summary: Multiple Inputs Response
+                  description: Response for multiple inputs, containing multiple embeddings.
                   value:
                     object: list
                     data:
@@ -385,20 +376,20 @@ paths:
                           - 0.5
                           - 0.6
                         index: 1
-                    model: openai/gpt-5.2
+                    model: gpt-5.2
                     usage:
                       prompt_tokens: 6
                       total_tokens: 6
                 base64-response:
-                  summary: Base64 响应
-                  description: 嵌入向量以 base64 编码返回。
+                  summary: Base64 Response
+                  description: Embeddings returned in base64 encoding.
                   value:
                     object: list
                     data:
                       - object: embedding
                         embedding: "YmFzZTY0X2VuY29kZWRfZGF0YQ=="
                         index: 0
-                    model: openai/gpt-5.2
+                    model: gpt-5.2
                     usage:
                       prompt_tokens: 2
                       total_tokens: 2
@@ -409,13 +400,13 @@ paths:
         '429':
           $ref: '#/components/responses/ErrorResponse'
 
-  # ========== 图片生成 ==========
+  # ========== Image Generation ==========
   /v1/images/generations:
     post:
       tags:
         - image_generations_openai
-      summary: 创建图像
-      description: 根据文本提示生成图像。与 OpenAI 的 Images API 兼容。
+      summary: Create Image
+      description: Generate images based on text prompts. Compatible with OpenAI's Images API.
       operationId: createImageGeneration_openai
       security:
         - APIKeyHeader: []
@@ -427,42 +418,42 @@ paths:
               $ref: '#/components/schemas/CreateImageGenerationRequest'
             examples:
               default:
-                summary: 基础
-                description: 生成一张 1024x1024 的图像。
+                summary: Basic
+                description: Generate a 1024x1024 image.
                 value:
-                  model: openai/gpt-image-1
+                  model: gpt-image-1
                   prompt: A cute cat sitting on a windowsill
                   'n': 1
                   size: 1024x1024
               hd-quality:
-                summary: 高清质量
-                description: 生成高清质量的图像。
+                summary: HD Quality
+                description: Generate high-definition quality images.
                 value:
-                  model: openai/gpt-image-1
+                  model: gpt-image-1
                   prompt: A futuristic cityscape at sunset
                   'n': 1
                   quality: hd
                   size: 1792x1024
               b64-json:
-                summary: Base64 格式
-                description: 返回 base64 编码的图像数据。
+                summary: Base64 Format
+                description: Return base64-encoded image data.
                 value:
-                  model: openai/gpt-image-1
+                  model: gpt-image-1
                   prompt: A beautiful landscape
                   'n': 2
                   size: 512x512
                   response_format: b64_json
       responses:
         '200':
-          description: 成功响应
+          description: Success Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImageResponse'
               examples:
                 default-response:
-                  summary: 基础响应
-                  description: 返回包含图像 URL 和可选字段的完整响应。
+                  summary: Basic Response
+                  description: Complete response containing image URL and optional fields.
                   value:
                     created: 1680000000
                     background: opaque
@@ -480,8 +471,8 @@ paths:
                         text_tokens: 10
                         image_tokens: 40
                 b64-response:
-                  summary: Base64 响应
-                  description: 返回包含 base64 编码图像数据和可选字段的响应。
+                  summary: Base64 Response
+                  description: Response containing base64-encoded image data and optional fields.
                   value:
                     created: 1680000001
                     background: opaque
@@ -506,13 +497,13 @@ paths:
         '429':
           $ref: '#/components/responses/ErrorResponse'
 
-  # ========== 图片编辑 ==========
+  # ========== Image Edits ==========
   /v1/images/edits:
     post:
       tags:
         - image_edits_openai
-      summary: 编辑图像
-      description: 根据原始图像和文本提示创建编辑后的图像。与 OpenAI 的 Images API 兼容。
+      summary: Edit Image
+      description: Create edited images based on original images and text prompts. Compatible with OpenAI's Images API.
       operationId: createImageEdit_openai
       security:
         - APIKeyHeader: []
@@ -528,10 +519,10 @@ paths:
                 explode: true
             examples:
               with-mask:
-                summary: 带蒙版
-                description: 使用图像、蒙版和提示进行编辑。
+                summary: With Mask
+                description: Edit using image, mask, and prompt.
                 value:
-                  model: openai/gpt-image-1
+                  model: gpt-image-1
                   images:
                     - '@person.png'
                   mask: '@mask.png'
@@ -539,10 +530,10 @@ paths:
                   'n': 1
                   size: 1024x1024
               no-mask:
-                summary: 无蒙版
-                description: 仅使用图像和提示进行编辑。
+                summary: Without Mask
+                description: Edit using only image and prompt.
                 value:
-                  model: openai/gpt-image-1
+                  model: gpt-image-1
                   images:
                     - '@body-lotion.png'
                   prompt: Change the background to a beach
@@ -550,15 +541,15 @@ paths:
                   size: 1024x1024
       responses:
         '200':
-          description: 成功响应
+          description: Success Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImageResponse'
               examples:
                 default-response:
-                  summary: 编辑响应
-                  description: 返回编辑后的图像及相关元数据。
+                  summary: Edit Response
+                  description: Return edited image and related metadata.
                   value:
                     created: 1680000002
                     background: opaque
@@ -582,13 +573,13 @@ paths:
         '429':
           $ref: '#/components/responses/ErrorResponse'
 
-  # ========== 音频转录 ==========
+  # ========== Audio Transcriptions ==========
   /v1/audio/transcriptions:
     post:
       tags:
         - audio_transcriptions_openai
-      summary: 音频转录
-      description: 将音频文件转录为文本。与 OpenAI 的 Audio API 兼容。
+      summary: Audio Transcription
+      description: Transcribe audio files to text. Compatible with OpenAI's Audio API.
       operationId: createTranscription_openai
       security:
         - APIKeyHeader: []
@@ -600,44 +591,44 @@ paths:
               $ref: '#/components/schemas/CreateTranscriptionRequest'
             examples:
               default:
-                summary: 基础
-                description: 将音频文件转录为 JSON 格式。
+                summary: Basic
+                description: Transcribe audio file to JSON format.
                 value:
-                  model: openai/gpt-5
+                  model: gpt-5
                   file: (binary)
                   response_format: json
               with-timestamps:
-                summary: 带时间戳
-                description: 获取包含单词级时间戳的详细转录。
+                summary: With Timestamps
+                description: Get detailed transcription with word-level timestamps.
                 value:
-                  model: openai/gpt-5.2
+                  model: gpt-5.2
                   file: (binary)
                   response_format: verbose_json
                   timestamp_granularities:
                     - word
               srt-format:
-                summary: SRT 字幕
-                description: 以 SRT 字幕格式返回转录。
+                summary: SRT Subtitles
+                description: Return transcription in SRT subtitle format.
                 value:
-                  model: openai/gpt-5.2
+                  model: gpt-5.2
                   file: (binary)
                   response_format: srt
       responses:
         '200':
-          description: 成功响应
+          description: Success Response
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TranscriptionResponse'
               examples:
                 json-response:
-                  summary: JSON 响应
-                  description: 默认的 JSON 格式转录。
+                  summary: JSON Response
+                  description: Default JSON format transcription.
                   value:
                     text: Hello, this is a test transcription.
                 verbose-json-response:
-                  summary: 详细 JSON 响应
-                  description: 包含单词级时间戳的详细转录。
+                  summary: Verbose JSON Response
+                  description: Detailed transcription with word-level timestamps.
                   value:
                     task: transcribe
                     language: english
@@ -665,10 +656,10 @@ paths:
             application/x-srt:
               schema:
                 type: string
-                description: SRT 字幕格式的转录。
+                description: Transcription in SRT subtitle format.
               examples:
                 srt-response:
-                  summary: SRT 响应
+                  summary: SRT Response
                   value: |
                     1
                     00:00:00,100 --> 00:00:00,500
@@ -696,10 +687,10 @@ paths:
             text/plain:
               schema:
                 type: string
-                description: 纯文本格式的转录。
+                description: Transcription in plain text format.
               examples:
                 text-response:
-                  summary: 纯文本响应
+                  summary: Plain Text Response
                   value: Hello, this is a test transcription.
         '400':
           $ref: '#/components/responses/ErrorResponse'

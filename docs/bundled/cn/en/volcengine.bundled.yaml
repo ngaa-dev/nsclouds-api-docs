@@ -153,7 +153,7 @@ paths:
                         message:
                           role: assistant
                           content: "Hello there! \U0001F60A How can I assist you today?"
-                          reasoning_content: "用户说\"Hello!\"，我需要回应一个友好的问候。首先，保持自然亲切，比如\"Hello there! \U0001F60A How can I assist you today?\"这样既回应了问候，又表达了愿意帮忙的态度，符合AI的角色设定。检查一下，语言简洁友好，带有表情符号更生动，应该没问题。"
+                          reasoning_content: "The user said \"Hello!\", so I need to respond with a friendly greeting. First, keep it natural and warm, like \"Hello there! \U0001F60A How can I assist you today?\" This both responds to the greeting and expresses willingness to help, which fits the AI's role. Let me check - the language is concise and friendly, with an emoji to make it more lively. That should work."
                         finish_reason: stop
                     usage:
                       prompt_tokens: 50
@@ -215,10 +215,10 @@ paths:
                   summary: Streaming Response Example
                   description: Shows events sent continuously during streaming chat process.
                   value: |
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"doubao-1.5-pro-256k","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"doubao-1.5-pro-256k","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"doubao-1.5-pro-256k","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"doubao-1.5-pro-256k","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"volcengine/doubao-seed-1-8-251228","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"volcengine/doubao-seed-1-8-251228","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"volcengine/doubao-seed-1-8-251228","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"volcengine/doubao-seed-1-8-251228","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'
@@ -294,13 +294,13 @@ paths:
                   summary: Streaming Response Example
                   description: Shows events sent continuously during streaming text completion process.
                   value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-1.5-pro-256k","choices":[{"text":".","index":0,"finish_reason":"length"}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"volcengine/doubao-seed-1-8-251228","choices":[{"text":"The","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"volcengine/doubao-seed-1-8-251228","choices":[{"text":" future","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"volcengine/doubao-seed-1-8-251228","choices":[{"text":" of","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"volcengine/doubao-seed-1-8-251228","choices":[{"text":" AI","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"volcengine/doubao-seed-1-8-251228","choices":[{"text":" is","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"volcengine/doubao-seed-1-8-251228","choices":[{"text":" bright","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"volcengine/doubao-seed-1-8-251228","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'

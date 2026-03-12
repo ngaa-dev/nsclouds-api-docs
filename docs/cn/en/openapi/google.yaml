@@ -12,42 +12,42 @@ tags:
   - $ref: ./_common.yaml#/tags/3   # image_edits
   - $ref: ./_common.yaml#/tags/4   # audio_transcriptions
 
-  # ========== OpenAI vendor tags ==========
-  - name: chat_completions_openai
+  # ========== Google vendor tags ==========
+  - name: chat_completions_google
     x-parent: chat_completions
-    x-page-title: OpenAI
+    x-page-title: Google
     x-page-icon: brain
-    description: OpenAI's chat completion API
-  - name: embeddings_openai
+    description: Google's chat completion API
+  - name: embeddings_google
     x-parent: embeddings
-    x-page-title: OpenAI
+    x-page-title: Google
     x-page-icon: brain
-    description: OpenAI's vector embedding API
-  - name: image_generations_openai
+    description: Google's vector embedding API
+  - name: image_generations_google
     x-parent: image_generations
-    x-page-title: OpenAI
+    x-page-title: Google
     x-page-icon: brain
-    description: OpenAI's image generation API
-  - name: image_edits_openai
+    description: Google's image generation API
+  - name: image_edits_google
     x-parent: image_edits
-    x-page-title: OpenAI
+    x-page-title: Google
     x-page-icon: brain
-    description: OpenAI's image editing API
-  - name: audio_transcriptions_openai
+    description: Google's image editing API
+  - name: audio_transcriptions_google
     x-parent: audio_transcriptions
-    x-page-title: OpenAI
+    x-page-title: Google
     x-page-icon: brain
-    description: OpenAI's audio transcription API
+    description: Google's audio transcription API
 
 paths:
   # ========== Chat Completions ==========
   /v1/chat/completions:
     post:
       tags:
-        - chat_completions_openai
+        - chat_completions_google
       summary: Create chat completion
       description: Generate model response based on input messages. Fully compatible with OpenAI's Chat API.
-      operationId: createChatCompletion_openai
+      operationId: createChatCompletion_google
       security:
         - APIKeyHeader: []
       requestBody:
@@ -61,7 +61,7 @@ paths:
                 summary: Basic
                 description: A simple conversation example with system prompt and user message.
                 value:
-                  model: gpt-4
+                  model: gemini-2.5-flash
                   messages:
                     - role: system
                       content: You are a helpful assistant.
@@ -75,7 +75,7 @@ paths:
                 summary: Streaming
                 description: "Enable streaming response by setting stream: true."
                 value:
-                  model: gpt-4
+                  model: gemini-2.5-flash
                   messages:
                     - role: system
                       content: You are a helpful assistant.
@@ -88,7 +88,7 @@ paths:
                 summary: Image Input (Multimodal)
                 description: Use vision-enabled model to analyze images.
                 value:
-                  model: gpt-4-vision-preview
+                  model: gemini-2.5-flash
                   messages:
                     - role: user
                       content:
@@ -102,7 +102,7 @@ paths:
                 summary: Function Calling
                 description: Define tools (functions) and let the model decide whether to call them.
                 value:
-                  model: gpt-4
+                  model: gemini-2.5-flash
                   messages:
                     - role: user
                       content: What's the weather in Boston?
@@ -138,20 +138,22 @@ paths:
                   summary: Basic Response
                   description: Response example corresponding to basic chat request.
                   value:
-                    id: chatcmpl-123
+                    id: chatcmpl-9AP1q66BDnIuuBx14ROTmOQFTQjZm
                     object: chat.completion
-                    created: 1677652288
-                    model: gpt-4
+                    created: 1773220495
+                    model: gemini-2.5-flash
                     choices:
                       - index: 0
                         message:
                           role: assistant
-                          content: Hello there! How can I assist you today?
+                          content: Hello! How can I help you today?
                         finish_reason: stop
                     usage:
-                      prompt_tokens: 9
-                      completion_tokens: 12
-                      total_tokens: 21
+                      completion_tokens: 363
+                      prompt_tokens: 2
+                      total_tokens: 365
+                      completion_tokens_details:
+                        reasoning_tokens: 354
                 image_input-response:
                   summary: Image Input Response
                   description: Model's description generated based on image content.
@@ -159,7 +161,7 @@ paths:
                     id: chatcmpl-789
                     object: chat.completion
                     created: 1677652300
-                    model: gpt-4-vision-preview
+                    model: gemini-2.5-flash
                     choices:
                       - index: 0
                         message:
@@ -177,7 +179,7 @@ paths:
                     id: chatcmpl-abc
                     object: chat.completion
                     created: 1677652310
-                    model: gpt-4
+                    model: gemini-2.5-flash
                     choices:
                       - index: 0
                         message:
@@ -203,10 +205,10 @@ paths:
                   summary: Streaming Response Example
                   description: Shows events sent continuously during streaming chat process.
                   value: |
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-4","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-4","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-4","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-4","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gemini-2.5-flash","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gemini-2.5-flash","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gemini-2.5-flash","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gemini-2.5-flash","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'
@@ -218,10 +220,10 @@ paths:
   /v1/completions:
     post:
       tags:
-        - chat_completions_openai
+        - chat_completions_google
       summary: Create text completion
       description: Generate one or more completions based on the provided prompt. Compatible with OpenAI's Completions API.
-      operationId: createCompletion_openai
+      operationId: createCompletion_google
       security:
         - APIKeyHeader: []
       requestBody:
@@ -235,7 +237,7 @@ paths:
                 summary: Basic
                 description: A simple text completion example.
                 value:
-                  model: gpt-3.5-turbo-instruct
+                  model: gemini-2.5-flash
                   prompt: Once upon a time
                   max_tokens: 50
                   temperature: 0.7
@@ -245,7 +247,7 @@ paths:
                 summary: Streaming
                 description: "Enable streaming response by setting stream: true."
                 value:
-                  model: gpt-3.5-turbo-instruct
+                  model: gemini-2.5-flash
                   prompt: The future of AI is
                   max_tokens: 30
                   temperature: 0.8
@@ -262,18 +264,34 @@ paths:
                   summary: Basic Response
                   description: Response example corresponding to basic text completion request.
                   value:
-                    id: cmpl-123
+                    id: chatcmpl-a51a50d7-0f0a-4db9-a268-ba0e4d49342b
                     object: text_completion
-                    created: 1677652288
-                    model: gpt-3.5-turbo-instruct
+                    created: 1773220530
+                    model: mgg-4
                     choices:
-                      - text: ' in a small village, there lived a young girl named Lily.'
+                      - finish_reason: length
                         index: 0
-                        finish_reason: length
+                        text: ""
+                        logprobs: null
                     usage:
-                      prompt_tokens: 4
                       completion_tokens: 12
-                      total_tokens: 16
+                      prompt_tokens: 6
+                      total_tokens: 18
+                      completion_tokens_details:
+                        accepted_prediction_tokens: null
+                        audio_tokens: null
+                        reasoning_tokens: 12
+                        rejected_prediction_tokens: null
+                        text_tokens: null
+                      prompt_tokens_details:
+                        audio_tokens: null
+                        cached_tokens: null
+                        text_tokens: 6
+                        image_tokens: null
+                        cached_tokens_details: {}
+                      claude_cache_creation_5_m_tokens: 0
+                      claude_cache_creation_1_h_tokens: 0
+                      web_search_queries: 0
             text/event-stream:
               schema:
                 type: string
@@ -283,13 +301,13 @@ paths:
                   summary: Streaming Response Example
                   description: Shows events sent continuously during streaming text completion process.
                   value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-3.5-turbo-instruct","choices":[{"text":".","index":0,"finish_reason":"length"}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mgg-4","choices":[{"text":"The","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mgg-4","choices":[{"text":" future","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mgg-4","choices":[{"text":" of","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mgg-4","choices":[{"text":" AI","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mgg-4","choices":[{"text":" is","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mgg-4","choices":[{"text":" bright","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mgg-4","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'
@@ -302,10 +320,10 @@ paths:
   /v1/embeddings:
     post:
       tags:
-        - embeddings_openai
+        - embeddings_google
       summary: Create embedding vectors
       description: Get vector representation of given input. Compatible with OpenAI's Embeddings API.
-      operationId: createEmbedding_openai
+      operationId: createEmbedding_google
       security:
         - APIKeyHeader: []
       requestBody:
@@ -413,10 +431,10 @@ paths:
   /v1/images/generations:
     post:
       tags:
-        - image_generations_openai
+        - image_generations_google
       summary: Create image
       description: Generate image based on text prompt. Compatible with OpenAI's Images API.
-      operationId: createImageGeneration_openai
+      operationId: createImageGeneration_google
       security:
         - APIKeyHeader: []
       requestBody:
@@ -430,7 +448,7 @@ paths:
                 summary: Basic
                 description: Generate a 1024x1024 image.
                 value:
-                  model: dall-e-3
+                  model: imagen-3.0-generate-001
                   prompt: A cute cat sitting on a windowsill
                   'n': 1
                   size: 1024x1024
@@ -438,7 +456,7 @@ paths:
                 summary: HD Quality
                 description: Generate high-definition quality image.
                 value:
-                  model: dall-e-3
+                  model: imagen-3.0-generate-001
                   prompt: A futuristic cityscape at sunset
                   'n': 1
                   quality: hd
@@ -447,7 +465,7 @@ paths:
                 summary: Base64 Format
                 description: Return base64-encoded image data.
                 value:
-                  model: dall-e-2
+                  model: imagen-3.0-generate-001
                   prompt: A beautiful landscape
                   'n': 2
                   size: 512x512
@@ -510,10 +528,10 @@ paths:
   /v1/images/edits:
     post:
       tags:
-        - image_edits_openai
+        - image_edits_google
       summary: Edit image
       description: Create edited image based on original image and text prompt. Compatible with OpenAI's Images API.
-      operationId: createImageEdit_openai
+      operationId: createImageEdit_google
       security:
         - APIKeyHeader: []
       requestBody:
@@ -539,7 +557,7 @@ paths:
                   'n': 1
                   size: 1024x1024
               no-mask:
-                summary: Without Mask
+                summary: No Mask
                 description: Edit using only image and prompt.
                 value:
                   model: dall-e-2
@@ -586,10 +604,10 @@ paths:
   /v1/audio/transcriptions:
     post:
       tags:
-        - audio_transcriptions_openai
+        - audio_transcriptions_google
       summary: Audio transcription
       description: Transcribe audio file to text. Compatible with OpenAI's Audio API.
-      operationId: createTranscription_openai
+      operationId: createTranscription_google
       security:
         - APIKeyHeader: []
       requestBody:
