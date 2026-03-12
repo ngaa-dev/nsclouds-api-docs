@@ -25,7 +25,7 @@ This API is compatible with OpenAI interface format.
 ### Feature Verification
 
 | Feature | Status | Description |
-|---------|--------|-------------|
+|:---------|:--------|:-------------|
 | Basic Request | ✅ Verified | gpt-5, gpt-5.2 available |
 | Streaming | ✅ Verified | Test successful, returns streaming data |
 | Image Input | ✅ Verified | gpt-5.2 supports multimodal image input |
