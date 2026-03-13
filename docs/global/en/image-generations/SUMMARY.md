@@ -10,5 +10,4 @@ The image generation API allows you to generate images based on text prompts.
 
 ## Supported Vendors
 
-- [OpenAI](openai-image-generations.md)
 - [Google](google-image-generations.md)

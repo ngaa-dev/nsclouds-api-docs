@@ -14,6 +14,5 @@
   * [Moonshot AI](completions/moonshotai-completions.md)
   * [MiniMax](completions/minimax-completions.md)
 * [图像生成(image generations)](image-generations/README.md)
-  * [OpenAI](image-generations/openai-image-generations.md)
   * [Google](image-generations/google-image-generations.md)
 
