@@ -422,21 +422,54 @@ def build_capability_page(env: str, lang: str, vendor: str, capability: str, mod
     )
 
 
-def build_vendor_summary(lang: str, vendor: str, capabilities: list[str]) -> str:
+def chat_vendor_filename(vendor: str) -> str:
+    return f"{vendor}.md"
+
+
+def chat_capability_filename(vendor: str, capability: str) -> str:
+    slug = {
+        "chat": "chat",
+        "messages": "messages",
+        "responses": "responses",
+        "gemini": "gemini-native",
+    }[capability]
+    return f"{vendor}-{slug}.md"
+
+
+def build_vendor_landing(lang: str, vendor: str, capabilities: list[str]) -> str:
     title = f"# {vendor_name(vendor)}"
     capability_lines = "\n".join(
-        f"- [{capability_title(capability, lang)}]({capability_filename(capability)})" for capability in capabilities
+        f"- [{capability_title(capability, lang)}]({chat_capability_filename(vendor, capability)})"
+        for capability in capabilities
     )
     return f"{title}\n\n{capability_lines}\n"
 
 
 def category_vendor_target(category_key: str, vendor: str) -> str:
     if category_key == "chat":
-        return f"{vendor}/SUMMARY.md"
+        return f"conversation/{chat_vendor_filename(vendor)}"
+    if category_key == "completions":
+        return f"completions/{vendor}.md"
+    if category_key == "image_generations":
+        return f"image-generations/{vendor}.md"
+    if category_key == "image_edits":
+        return f"image-edits/{vendor}.md"
+    if category_key == "audio_transcriptions":
+        return f"audio-transcriptions/{vendor}.md"
     return f"{vendor}.md"
 
 
-def build_category_summary(lang: str, category_key: str, vendors: list[str]) -> str:
+def category_landing_filename(category_key: str) -> str:
+    return {
+        "chat": "conversation.md",
+        "completions": "completions.md",
+        "image_generations": "image-generations.md",
+        "image_edits": "image-edits.md",
+        "audio_transcriptions": "audio-transcriptions.md",
+    }[category_key]
+
+
+def build_category_landing(lang: str, category_key: str, vendors: list[str]) -> str:
     cfg = LANG_CONFIG[lang]
     title_map = {
         "chat": cfg["chat_root"],
@@ -459,6 +492,7 @@ def render_env(env: str) -> None:
         cfg = LANG_CONFIG[lang]
         base = DOCS_DIR / env / lang
         for rel in (
+            "conversation",
             "chat-completion",
             "completions",
             "image-generations",
@@ -478,42 +512,56 @@ def render_env(env: str) -> None:
         for stale_readme in base.rglob("README.md"):
             if stale_readme != base / "README.md":
                 stale_readme.unlink()
+        for landing_file in (
+            "conversation.md",
+            "chat-completion.md",
+            "completions.md",
+            "image-generations.md",
+            "image-edits.md",
+            "audio-transcriptions.md",
+        ):
+            stale_landing = base / landing_file
+            if stale_landing.exists():
+                stale_landing.unlink()
 
-        write_text(base / "chat-completion" / "SUMMARY.md", build_category_summary(lang, "chat", env_index["chat_vendors"]))
-        write_text(base / "completions" / "SUMMARY.md", build_category_summary(lang, "completions", env_index["completion_vendors"]))
+        write_text(base / category_landing_filename("chat"), build_category_landing(lang, "chat", env_index["chat_vendors"]))
         write_text(
-            base / "image-generations" / "SUMMARY.md",
-            build_category_summary(lang, "image_generations", env_index["image_gen_vendors"]),
+            base / category_landing_filename("completions"),
+            build_category_landing(lang, "completions", env_index["completion_vendors"]),
         )
         write_text(
-            base / "image-edits" / "SUMMARY.md",
-            build_category_summary(lang, "image_edits", env_index["image_edit_vendors"]),
+            base / category_landing_filename("image_generations"),
+            build_category_landing(lang, "image_generations", env_index["image_gen_vendors"]),
         )
         write_text(
-            base / "audio-transcriptions" / "SUMMARY.md",
-            build_category_summary(lang, "audio_transcriptions", env_index["audio_vendors"]),
+            base / category_landing_filename("image_edits"),
+            build_category_landing(lang, "image_edits", env_index["image_edit_vendors"]),
+        )
+        write_text(
+            base / category_landing_filename("audio_transcriptions"),
+            build_category_landing(lang, "audio_transcriptions", env_index["audio_vendors"]),
         )
 
         summary_lines = [cfg["summary_title"], "", f"* [{cfg['intro']}](README.md)"]
 
-        summary_lines.append(f"* [{cfg['chat_root']}](chat-completion/SUMMARY.md)")
+        summary_lines.append(f"* [{cfg['chat_root']}]({category_landing_filename('chat')})")
         for vendor in env_index["chat_vendors"]:
-            summary_lines.append(f"  * [{vendor_name(vendor)}](chat-completion/{vendor}/SUMMARY.md)")
+            summary_lines.append(f"  * [{vendor_name(vendor)}](conversation/{chat_vendor_filename(vendor)})")
             write_text(
-                base / "chat-completion" / vendor / "SUMMARY.md",
-                build_vendor_summary(lang, vendor, env_index["chat_capabilities"][vendor]),
+                base / "conversation" / chat_vendor_filename(vendor),
+                build_vendor_landing(lang, vendor, env_index["chat_capabilities"][vendor]),
             )
             for capability in env_index["chat_capabilities"][vendor]:
-                filename = capability_filename(capability)
+                filename = chat_capability_filename(vendor, capability)
                 summary_lines.append(
-                    f"    * [{capability_title(capability, lang)}](chat-completion/{vendor}/{filename})"
+                    f"    * [{capability_title(capability, lang)}](conversation/{filename})"
                 )
                 write_text(
-                    base / "chat-completion" / vendor / filename,
+                    base / "conversation" / filename,
                     build_capability_page(env, lang, vendor, capability, models_for_capability(env_index, vendor, capability)),
                 )
 
-        summary_lines.append(f"* [{cfg['completions_root']}](completions/SUMMARY.md)")
+        summary_lines.append(f"* [{cfg['completions_root']}]({category_landing_filename('completions')})")
         for vendor in env_index["completion_vendors"]:
             summary_lines.append(f"  * [{vendor_name(vendor)}](completions/{vendor}.md)")
             write_text(
@@ -521,7 +569,7 @@ def render_env(env: str) -> None:
                 build_capability_page(env, lang, vendor, "completions", models_for_capability(env_index, vendor, "completions")),
             )
 
-        summary_lines.append(f"* [{cfg['image_gen_root']}](image-generations/SUMMARY.md)")
+        summary_lines.append(f"* [{cfg['image_gen_root']}]({category_landing_filename('image_generations')})")
         for vendor in env_index["image_gen_vendors"]:
             summary_lines.append(f"  * [{vendor_name(vendor)}](image-generations/{vendor}.md)")
             write_text(
@@ -536,7 +584,7 @@ def render_env(env: str) -> None:
             )
 
         if env_index["image_edit_vendors"]:
-            summary_lines.append(f"* [{cfg['image_edit_root']}](image-edits/SUMMARY.md)")
+            summary_lines.append(f"* [{cfg['image_edit_root']}]({category_landing_filename('image_edits')})")
             for vendor in env_index["image_edit_vendors"]:
                 summary_lines.append(f"  * [{vendor_name(vendor)}](image-edits/{vendor}.md)")
                 write_text(
@@ -551,7 +599,7 @@ def render_env(env: str) -> None:
                 )
 
         if env_index["audio_vendors"]:
-            summary_lines.append(f"* [{cfg['audio_root']}](audio-transcriptions/SUMMARY.md)")
+            summary_lines.append(f"* [{cfg['audio_root']}]({category_landing_filename('audio_transcriptions')})")
             for vendor in env_index["audio_vendors"]:
                 summary_lines.append(f"  * [{vendor_name(vendor)}](audio-transcriptions/{vendor}.md)")
                 write_text(
