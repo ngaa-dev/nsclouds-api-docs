@@ -2,7 +2,7 @@
 
 ### 1. Overview
 
-Anthropic's chat generation capability.
+Anthropic's conversation API capability.
 
 {% hint style="success" %}
 This API is compatible with the OpenAI Chat Completions interface.

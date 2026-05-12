@@ -1,7 +1,7 @@
 # Table of contents
 
 * [Introduction](README.md)
-* [Chat Completions](chat-completion/README.md)
+* [Conversation APIs](chat-completion/README.md)
   * [DashScope](chat-completion/dashscope/README.md)
     * [Chat Completions](chat-completion/dashscope/chat-completions.md)
     * [Messages](chat-completion/dashscope/messages.md)

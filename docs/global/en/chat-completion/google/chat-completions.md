@@ -2,7 +2,7 @@
 
 ### 1. Overview
 
-Google's chat generation capability.
+Google's conversation API capability.
 
 {% hint style="success" %}
 This API is compatible with the OpenAI Chat Completions interface.

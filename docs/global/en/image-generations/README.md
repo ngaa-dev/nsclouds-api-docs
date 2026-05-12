@@ -1,9 +1,5 @@
 # Image Generations
 
-Image generation only lists vendors that are publicly available in this environment.
-
-**Supported vendors：**
-
-* Volcengine
-* DashScope
-* Z.AI
+- [Volcengine](volcengine.md)
+- [DashScope](dashscope.md)
+- [Z.AI](zai.md)

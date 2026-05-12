@@ -2,7 +2,7 @@
 
 ### 1. 概述
 
-Moonshot AI 的对话生成能力。
+Moonshot AI 的对话接口能力。
 
 {% hint style="success" %}
 本 API 与 OpenAI Chat Completions 接口格式兼容。

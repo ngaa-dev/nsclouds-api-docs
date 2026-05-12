@@ -1,7 +1,7 @@
 # Table of contents
 
 * [Introduction](README.md)
-* [Chat Completions](chat-completion/README.md)
+* [Conversation APIs](chat-completion/README.md)
   * [Anthropic](chat-completion/anthropic/README.md)
     * [Chat Completions](chat-completion/anthropic/chat-completions.md)
     * [Messages](chat-completion/anthropic/messages.md)

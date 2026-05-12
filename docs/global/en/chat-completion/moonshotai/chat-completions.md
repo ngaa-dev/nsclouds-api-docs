@@ -2,7 +2,7 @@
 
 ### 1. Overview
 
-Moonshot AI's chat generation capability.
+Moonshot AI's conversation API capability.
 
 {% hint style="success" %}
 This API is compatible with the OpenAI Chat Completions interface.

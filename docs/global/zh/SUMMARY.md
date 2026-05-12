@@ -1,7 +1,7 @@
 # Table of contents
 
 * [简介](README.md)
-* [对话生成](chat-completion/README.md)
+* [对话接口](chat-completion/README.md)
   * [Anthropic](chat-completion/anthropic/README.md)
     * [Chat Completions](chat-completion/anthropic/chat-completions.md)
     * [Messages](chat-completion/anthropic/messages.md)

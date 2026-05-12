@@ -2,7 +2,7 @@
 
 ### 1. Overview
 
-DashScope's chat generation capability.
+DashScope's conversation API capability.
 
 {% hint style="success" %}
 This API is compatible with the OpenAI Chat Completions interface.

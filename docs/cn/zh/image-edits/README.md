@@ -1,8 +1,4 @@
 # 图像编辑
 
-图像编辑能力仅展示当前环境对外公开可用的厂家。
-
-**支持的厂家：**
-
-* DashScope
-* Volcengine
+- [DashScope](dashscope.md)
+- [Volcengine](volcengine.md)

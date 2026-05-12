@@ -65,7 +65,7 @@ class ModelRecord:
 LANG_CONFIG = {
     "zh": {
         "intro": "简介",
-        "chat_root": "对话生成",
+        "chat_root": "对话接口",
         "completions_root": "文本补全",
         "image_gen_root": "图像生成",
         "image_edit_root": "图像编辑",
@@ -79,7 +79,7 @@ LANG_CONFIG = {
         "supported_vendors_label": "支持的厂家",
         "none": "（暂无）",
         "summary_title": "# Table of contents",
-        "readme_chat": "对话生成能力包含标准 Chat Completions，以及按厂家提供的扩展协议能力。",
+        "readme_chat": "对话接口涵盖标准 Chat Completions，以及按厂家提供的扩展协议能力。",
         "readme_completions": "文本补全能力按公开支持聊天模型的厂家展示，便于按厂家查找兼容接口。",
         "readme_image_generations": "图像生成能力仅展示当前环境对外公开可用的厂家。",
         "readme_image_edits": "图像编辑能力仅展示当前环境对外公开可用的厂家。",
@@ -92,7 +92,7 @@ LANG_CONFIG = {
         "hint_gemini": "本 API 与 Gemini 原生接口格式兼容。",
         "hint_images": "本 API 与 OpenAI Images 接口格式兼容。",
         "hint_audio": "本 API 与 OpenAI Audio Transcriptions 接口格式兼容。",
-        "overview_chat": "{vendor} 的对话生成能力。",
+        "overview_chat": "{vendor} 的对话接口能力。",
         "overview_completions": "{vendor} 的文本补全能力。",
         "overview_messages": "{vendor} 的 Messages 协议能力。",
         "overview_responses": "{vendor} 的 Responses 协议能力。",
@@ -105,7 +105,7 @@ LANG_CONFIG = {
     },
     "en": {
         "intro": "Introduction",
-        "chat_root": "Chat Completions",
+        "chat_root": "Conversation APIs",
         "completions_root": "Text Completions",
         "image_gen_root": "Image Generations",
         "image_edit_root": "Image Edits",
@@ -120,7 +120,7 @@ LANG_CONFIG = {
         "supported_vendors_label": "Supported vendors",
         "none": "(None)",
         "summary_title": "# Table of contents",
-        "readme_chat": "Chat generation covers standard Chat Completions and vendor-specific protocol variants.",
+        "readme_chat": "Conversation APIs cover standard Chat Completions and vendor-specific protocol variants.",
         "readme_completions": "Text completions are listed for every vendor that publicly exposes chat models in this environment.",
         "readme_image_generations": "Image generation only lists vendors that are publicly available in this environment.",
         "readme_image_edits": "Image edits only list vendors that are publicly available in this environment.",
@@ -133,7 +133,7 @@ LANG_CONFIG = {
         "hint_gemini": "This API is compatible with the Gemini native protocol.",
         "hint_images": "This API is compatible with the OpenAI Images interface.",
         "hint_audio": "This API is compatible with the OpenAI Audio Transcriptions interface.",
-        "overview_chat": "{vendor}'s chat generation capability.",
+        "overview_chat": "{vendor}'s conversation API capability.",
         "overview_completions": "{vendor}'s text completions capability.",
         "overview_messages": "{vendor}'s Messages protocol capability.",
         "overview_responses": "{vendor}'s Responses protocol capability.",
@@ -423,17 +423,17 @@ def build_capability_page(env: str, lang: str, vendor: str, capability: str, mod
 
 
 def build_vendor_readme(lang: str, vendor: str, capabilities: list[str]) -> str:
-    cfg = LANG_CONFIG[lang]
     title = f"# {vendor_name(vendor)}"
     capability_lines = "\n".join(
-        f"* [{capability_title(capability, lang)}]({capability_filename(capability)})" for capability in capabilities
+        f"- [{capability_title(capability, lang)}]({capability_filename(capability)})" for capability in capabilities
     )
-    return (
-        f"{title}\n\n"
-        f"{cfg['vendor_overview'].format(vendor=vendor_name(vendor))}\n\n"
-        f"**{cfg['navigation_label']}：**\n\n"
-        f"{capability_lines}\n"
-    )
+    return f"{title}\n\n{capability_lines}\n"
+
+
+def category_vendor_target(category_key: str, vendor: str) -> str:
+    if category_key == "chat":
+        return f"{vendor}/README.md"
+    return f"{vendor}.md"
 
 
 def build_category_readme(lang: str, category_key: str, vendors: list[str]) -> str:
@@ -445,20 +445,12 @@ def build_category_readme(lang: str, category_key: str, vendors: list[str]) -> s
         "image_edits": cfg["image_edit_root"],
         "audio_transcriptions": cfg["audio_root"],
     }
-    desc_map = {
-        "chat": cfg["readme_chat"],
-        "completions": cfg["readme_completions"],
-        "image_generations": cfg["readme_image_generations"],
-        "image_edits": cfg["readme_image_edits"],
-        "audio_transcriptions": cfg["readme_audio"],
-    }
-    vendor_lines = "\n".join(f"* {vendor_name(vendor)}" for vendor in vendors) if vendors else cfg["none"]
-    return (
-        f"# {title_map[category_key]}\n\n"
-        f"{desc_map[category_key]}\n\n"
-        f"**{cfg['supported_vendors_label']}：**\n\n"
-        f"{vendor_lines}\n"
+    vendor_lines = (
+        "\n".join(f"- [{vendor_name(vendor)}]({category_vendor_target(category_key, vendor)})" for vendor in vendors)
+        if vendors
+        else cfg["none"]
     )
+    return f"# {title_map[category_key]}\n\n{vendor_lines}\n"
 
 
 def render_env(env: str) -> None:

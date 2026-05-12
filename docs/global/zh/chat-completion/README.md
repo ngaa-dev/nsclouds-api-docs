@@ -1,15 +1,11 @@
-# 对话生成
+# 对话接口
 
-对话生成能力包含标准 Chat Completions，以及按厂家提供的扩展协议能力。
-
-**支持的厂家：**
-
-* Anthropic
-* OpenAI
-* Google
-* DeepSeek
-* Volcengine
-* DashScope
-* Z.AI
-* Moonshot AI
-* xAI
+- [Anthropic](anthropic/README.md)
+- [OpenAI](openai/README.md)
+- [Google](google/README.md)
+- [DeepSeek](deepseek/README.md)
+- [Volcengine](volcengine/README.md)
+- [DashScope](dashscope/README.md)
+- [Z.AI](zai/README.md)
+- [Moonshot AI](moonshotai/README.md)
+- [xAI](xai/README.md)
