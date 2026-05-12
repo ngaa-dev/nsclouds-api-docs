@@ -2,11 +2,6 @@
 
 Xiaomi exposes the following public capabilities in this environment.
 
-**Supported capabilities：**
+**Available pages：**
 
-* Chat Completions
-
-**Supported models：**
-
-* `mimo-v2.5`
-
+* [Chat Completions](chat-completions.md)

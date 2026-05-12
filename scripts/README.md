@@ -23,7 +23,7 @@
 - 左侧导航、厂家显隐、能力显隐，统一由 `scripts/data/global_model_info.json` / `scripts/data/cn_model_info.json` 决定。
 - 公开能力必须按 `model_info.supported_endpoints` 判定，不按 `mode` 单独猜测。
 - `Text Completions` 跟随 `/v1/chat/completions` 展示。
-- `Messages`、`Responses`、`Gemini Native` 只在 `supported_endpoints` 或显式规则命中时展示。
+- `Messages`、`Responses`、`Gemini Native` 只在 `supported_endpoints` 命中时展示。
 - 国内与国际环境分别只展示各自真实公开可用的厂家与能力。
 
 ## 更新模型或能力时怎么做

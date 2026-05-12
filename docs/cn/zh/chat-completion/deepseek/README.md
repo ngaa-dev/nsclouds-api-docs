@@ -2,17 +2,8 @@
 
 DeepSeek 在当前环境下提供以下公开能力。
 
-**支持能力：**
+**页面导航：**
 
-* Chat Completions
-* Messages
-* Responses
-
-**模型列表：**
-
-* `deepseek-r1`
-* `deepseek-v3.2`
-* `deepseek-v4-flash`
-* `deepseek-v4-pro`
-* `volcengine/deepseek-v3-2-251201`
-
+* [Chat Completions](chat-completions.md)
+* [Messages](messages.md)
+* [Responses](responses.md)

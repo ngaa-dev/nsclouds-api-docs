@@ -4,8 +4,8 @@ info:
   description: 'Self-hosted LiteLLM gateway API documentation, fully compatible with OpenAI format.'
   version: 1.11.0
 servers:
-  - url: 'https://aillm.nscloud.ai'
-    description: Global Server
+  - url: 'https://aillm.nsclouds.com'
+    description: China Server
 tags:
   - name: chat_completions
     x-page-title: Chat Completions
@@ -27,29 +27,29 @@ tags:
     x-page-title: Audio Transcriptions
     x-page-icon: microphone
     description: Audio transcription related APIs for transcribing audio files to text
-  - name: chat_completions_openai
+  - name: chat_completions_moonshotai
     x-parent: chat_completions
-    x-page-title: OpenAI
+    x-page-title: Moonshot AI
     x-page-icon: brain
-    description: OpenAI's chat completions API
-  - name: completions_openai
+    description: Moonshot AI's chat completions API
+  - name: completions_moonshotai
     x-parent: chat_completions
-    x-page-title: OpenAI
+    x-page-title: Moonshot AI
     x-page-icon: brain
-    description: OpenAI's text completions API
-  - name: responses_openai
+    description: Moonshot AI's text completions API
+  - name: messages_moonshotai
     x-parent: chat_completions
-    x-page-title: OpenAI
+    x-page-title: Moonshot AI
     x-page-icon: brain
-    description: OpenAI's Responses API
+    description: Moonshot AI's Messages protocol API
 paths:
   /v1/chat/completions:
     post:
       tags:
-        - chat_completions_openai
+        - chat_completions_moonshotai
       summary: Create Chat Completion
       description: Generate model responses based on input messages. Fully compatible with OpenAI's Chat API.
-      operationId: createChatCompletion_openai
+      operationId: createChatCompletion_moonshotai
       security:
         - APIKeyHeader: []
       requestBody:
@@ -63,7 +63,7 @@ paths:
                 summary: Basic
                 description: A simple conversation example with system prompt and user message.
                 value:
-                  model: gpt-5
+                  model: kimi-k2.6
                   messages:
                     - role: system
                       content: You are a helpful assistant.
@@ -77,7 +77,7 @@ paths:
                 summary: Streaming
                 description: 'Enable streaming response by setting stream: true.'
                 value:
-                  model: gpt-5
+                  model: kimi-k2.6
                   messages:
                     - role: system
                       content: You are a helpful assistant.
@@ -88,39 +88,44 @@ paths:
                   stream: true
               image_input:
                 summary: Image Input (Multimodal)
-                description: Use vision-capable models to analyze images.
+                description: Use vision-enabled models to analyze images.
                 value:
-                  model: gpt-5
+                  model: kimi-k2.6
                   messages:
                     - role: user
                       content:
                         - type: text
-                          text: What is in this image?
+                          text: What's in this image?
                         - type: image_url
                           image_url:
-                            url: 'https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png'
+                            url: 'https://example.com/cat.jpg'
                   max_completion_tokens: 300
               functions:
                 summary: Function Calling
                 description: Define tools (functions) and let the model decide whether to call them.
                 value:
-                  model: gpt-5
+                  model: kimi-k2.6
                   messages:
                     - role: user
-                      content: Read the content of the file report.txt
+                      content: What's the weather in Boston?
                   tools:
                     - type: function
                       function:
-                        name: read_file
-                        description: Read the content of a file
+                        name: get_current_weather
+                        description: Get the current weather in a given location
                         parameters:
                           type: object
                           properties:
-                            file_path:
+                            location:
                               type: string
-                              description: The path to the file to read
+                              description: 'The city and state, e.g. San Francisco, CA'
+                            unit:
+                              type: string
+                              enum:
+                                - celsius
+                                - fahrenheit
                           required:
-                            - file_path
+                            - location
                   tool_choice: auto
                   max_completion_tokens: 150
       responses:
@@ -135,58 +140,69 @@ paths:
                   summary: Basic Response
                   description: Response example for basic chat request.
                   value:
-                    id: chatcmpl-BPzJw3iWI2jtsjCnR0rRCBvLCETq7
-                    created: 1773197421
-                    model: gpt-5
+                    id: chatcmpl-8415e78a-7989-99de-9e4f-2b0ec895f35f
                     object: chat.completion
+                    created: 1773224824
+                    model: kimi-k2.6
                     choices:
                       - index: 0
                         message:
                           role: assistant
-                          content: 'Hi! How can I help today? I can answer questions, explain topics, brainstorm ideas, write or edit text, solve problems, or analyze images.'
+                          content: "Hello! How can I help you today? \U0001F60A"
+                          reasoning_content: ''
                         finish_reason: stop
+                        provider_specific_fields: {}
                     usage:
-                      completion_tokens: 174
-                      prompt_tokens: 8
-                      total_tokens: 182
+                      prompt_tokens: 11
+                      completion_tokens: 12
+                      total_tokens: 23
                       completion_tokens_details:
-                        reasoning_tokens: 128
+                        text_tokens: 12
+                      prompt_tokens_details:
+                        cached_tokens: 0
+                        text_tokens: 11
                 image_input-response:
                   summary: Image Input Response
-                  description: Model-generated description based on image content.
+                  description: Description generated by the model based on image content.
                   value:
-                    id: chatcmpl-s71Ce6GRN8PzAOB0PbVmNFGdSlGjS
-                    created: 1773197559
-                    model: gpt-5
+                    id: chatcmpl-789
                     object: chat.completion
+                    created: 1677652300
+                    model: kimi-k2.6
                     choices:
                       - index: 0
                         message:
                           role: assistant
-                          content: 'The image shows a person posing in a studio setup against a white backdrop, wearing a shiny, chrome-like metallic outfit with spiky, futuristic elements (including headpiece/hair). The face area is blurred/pixelated.'
+                          content: 'The image shows a cute cat sitting on a windowsill, looking outside.'
                         finish_reason: stop
                     usage:
-                      completion_tokens: 49
-                      prompt_tokens: 704
-                      total_tokens: 753
+                      prompt_tokens: 123
+                      completion_tokens: 15
+                      total_tokens: 138
                 functions-response:
                   summary: Function Calling Response
                   description: Model returns a function call request.
                   value:
-                    id: chatcmpl-ZjQIwmTgiAmyXrAeTCcoNXvvqiprq
-                    created: 1773197541
-                    model: gpt-5
+                    id: chatcmpl-abc
                     object: chat.completion
+                    created: 1677652310
+                    model: kimi-k2.6
                     choices:
                       - index: 0
                         message:
                           role: assistant
-                          content: 'I can''t directly access or read files on your system. If you''d like to share the content of report.txt, you can copy and paste it here, and I''ll help you analyze or work with it.'
-                        finish_reason: stop
+                          content: null
+                          tool_calls:
+                            - id: call_123
+                              type: function
+                              function:
+                                name: get_current_weather
+                                arguments: '{"location": "Boston, MA", "unit": "fahrenheit"}'
+                        finish_reason: tool_calls
                     usage:
-                      completion_tokens: 74
-                      prompt_tokens: 13
-                      total_tokens: 87
+                      prompt_tokens: 50
+                      completion_tokens: 20
+                      total_tokens: 70
             text/event-stream:
               schema:
                 type: string
@@ -196,10 +212,17 @@ paths:
                   summary: Streaming Response Example
                   description: Shows events sent sequentially during streaming chat process.
                   value: |
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"index":0,"delta":{"content":"Hello","role":"assistant"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"index":0,"delta":{"content":" there"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"index":0,"delta":{"content":"!"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"index":0,"delta":{"content":" How"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"index":0,"delta":{"content":" can"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"index":0,"delta":{"content":" I"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"index":0,"delta":{"content":" help"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"index":0,"delta":{"content":" you"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"index":0,"delta":{"content":" today"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"index":0,"delta":{"content":"?"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"finish_reason":"stop","index":0,"delta":{}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'
@@ -210,10 +233,10 @@ paths:
   /v1/completions:
     post:
       tags:
-        - completions_openai
+        - completions_moonshotai
       summary: Create Text Completion
       description: Generate one or more completions based on provided prompts. Compatible with OpenAI's Completions API.
-      operationId: createCompletion_openai
+      operationId: createCompletion_moonshotai
       security:
         - APIKeyHeader: []
       requestBody:
@@ -227,7 +250,7 @@ paths:
                 summary: Basic
                 description: A simple text completion example.
                 value:
-                  model: gpt-5
+                  model: kimi-k2.6
                   prompt: Once upon a time
                   max_tokens: 50
                   temperature: 0.7
@@ -237,7 +260,7 @@ paths:
                 summary: Streaming
                 description: 'Enable streaming response by setting stream: true.'
                 value:
-                  model: gpt-5
+                  model: kimi-k2.6
                   prompt: The future of AI is
                   max_tokens: 30
                   temperature: 0.8
@@ -257,7 +280,7 @@ paths:
                     id: cmpl-123
                     object: text_completion
                     created: 1677652288
-                    model: gpt-5
+                    model: kimi-k2.6
                     choices:
                       - text: ' in a small village, there lived a young girl named Lily.'
                         index: 0
@@ -275,13 +298,13 @@ paths:
                   summary: Streaming Response Example
                   description: Shows events sent sequentially during streaming text completion process.
                   value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":".","index":0,"finish_reason":"length"}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":"The","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" future","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" of","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" AI","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" is","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" bright","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'
@@ -289,13 +312,13 @@ paths:
           $ref: '#/components/responses/ErrorResponse'
         '429':
           $ref: '#/components/responses/ErrorResponse'
-  /v1/responses:
+  /v1/messages:
     post:
       tags:
-        - responses_openai
-      summary: Create Response
-      description: Create a model response using OpenAI Responses-compatible payload.
-      operationId: createResponse_openai
+        - messages_moonshotai
+      summary: Create Message
+      description: Create a message using Anthropic Messages-compatible payload.
+      operationId: createMessage_moonshotai
       security:
         - APIKeyHeader: []
       requestBody:
@@ -306,16 +329,28 @@ paths:
               type: object
               required:
                 - model
-                - input
+                - messages
               properties:
                 model:
                   type: string
-                input:
-                  oneOf:
-                    - type: string
-                    - type: array
-                      items:
-                        type: object
+                messages:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - role
+                      - content
+                    properties:
+                      role:
+                        type: string
+                      content:
+                        oneOf:
+                          - type: string
+                          - type: array
+                            items:
+                              type: object
+                max_tokens:
+                  type: integer
                 stream:
                   type: boolean
                   default: false
@@ -323,9 +358,11 @@ paths:
               default:
                 summary: Basic
                 value:
-                  model: gpt-5
-                  input: Hello
-                  stream: false
+                  model: kimi-k2.6
+                  messages:
+                    - role: user
+                      content: Hello
+                  max_tokens: 128
       responses:
         '200':
           description: Success Response
@@ -338,9 +375,17 @@ paths:
                 default:
                   summary: Basic Response
                   value:
-                    id: resp_123
-                    object: response
-                    model: gpt-5
+                    id: msg_123
+                    type: message
+                    role: assistant
+                    model: kimi-k2.6
+                    content:
+                      - type: text
+                        text: Hello! How can I help you today?
+                    stop_reason: end_turn
+                    usage:
+                      input_tokens: 12
+                      output_tokens: 9
         '400':
           $ref: '#/components/responses/ErrorResponse'
         '401':

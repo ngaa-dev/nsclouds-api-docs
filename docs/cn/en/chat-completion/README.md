@@ -1,4 +1,4 @@
-# Chat Generation
+# Chat Completions
 
 Chat generation covers standard Chat Completions and vendor-specific protocol variants.
 
@@ -9,3 +9,4 @@ Chat generation covers standard Chat Completions and vendor-specific protocol va
 * Volcengine
 * Z.AI
 * Xiaomi
+* Moonshot AI

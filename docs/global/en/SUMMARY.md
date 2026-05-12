@@ -1,17 +1,15 @@
 # Table of contents
 
 * [Introduction](README.md)
-* [Chat Generation](chat-completion/README.md)
+* [Chat Completions](chat-completion/README.md)
   * [Anthropic](chat-completion/anthropic/README.md)
     * [Chat Completions](chat-completion/anthropic/chat-completions.md)
     * [Messages](chat-completion/anthropic/messages.md)
   * [OpenAI](chat-completion/openai/README.md)
     * [Chat Completions](chat-completion/openai/chat-completions.md)
-    * [Messages](chat-completion/openai/messages.md)
     * [Responses](chat-completion/openai/responses.md)
   * [Google](chat-completion/google/README.md)
     * [Chat Completions](chat-completion/google/chat-completions.md)
-    * [Messages](chat-completion/google/messages.md)
     * [Gemini Native](chat-completion/google/gemini-native.md)
   * [DeepSeek](chat-completion/deepseek/README.md)
     * [Chat Completions](chat-completion/deepseek/chat-completions.md)

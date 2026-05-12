@@ -10,7 +10,13 @@ OpenAI 的 Responses 协议能力。
 
 **模型列表：**
 
+* `gpt-5`
+* `gpt-5.1`
+* `gpt-5.2`
+* `gpt-5.3-codex`
+* `gpt-5.4`
 * `gpt-5.4-mini`
+* `gpt-5.5`
 
 
 ### 2. 接口详情

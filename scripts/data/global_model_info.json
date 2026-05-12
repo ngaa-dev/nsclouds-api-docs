@@ -1228,7 +1228,9 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/models/{model}:generateContent",
+          "/v1beta/models/{model}:generateContent",
+          "/v1beta/models/{model}:streamGenerateContent"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -1395,7 +1397,9 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/models/{model}:generateContent",
+          "/v1beta/models/{model}:generateContent",
+          "/v1beta/models/{model}:streamGenerateContent"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -1559,7 +1563,9 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/models/{model}:generateContent",
+          "/v1beta/models/{model}:generateContent",
+          "/v1beta/models/{model}:streamGenerateContent"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -1726,7 +1732,9 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/models/{model}:generateContent",
+          "/v1beta/models/{model}:generateContent",
+          "/v1beta/models/{model}:streamGenerateContent"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -1890,7 +1898,7 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/responses"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -2057,7 +2065,7 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/responses"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -3174,7 +3182,7 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/responses"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -3337,7 +3345,7 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/responses"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -3521,7 +3529,7 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/responses"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -3685,7 +3693,7 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/responses"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -3852,7 +3860,7 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/responses"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -4016,7 +4024,7 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/responses"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -4183,7 +4191,7 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/responses"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -4347,7 +4355,7 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/responses"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -8260,8 +8268,7 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/responses",
-          "/v1/messages"
+          "/v1/responses"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -8749,7 +8756,9 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/models/{model}:generateContent",
+          "/v1beta/models/{model}:generateContent",
+          "/v1beta/models/{model}:streamGenerateContent"
         ],
         "pricings": null,
         "multiPrices": null,
@@ -8935,7 +8944,7 @@
         "supports_prefix_continuation": null,
         "supported_endpoints": [
           "/v1/chat/completions",
-          "/v1/messages"
+          "/v1/responses"
         ],
         "pricings": null,
         "multiPrices": null,

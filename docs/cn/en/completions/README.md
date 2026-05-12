@@ -9,3 +9,4 @@ Text completions are listed for every vendor that publicly exposes chat models i
 * Volcengine
 * Z.AI
 * Xiaomi
+* Moonshot AI

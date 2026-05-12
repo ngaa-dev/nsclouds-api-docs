@@ -9,3 +9,4 @@
 * Volcengine
 * Z.AI
 * Xiaomi
+* Moonshot AI

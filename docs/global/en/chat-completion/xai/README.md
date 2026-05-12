@@ -2,11 +2,6 @@
 
 xAI exposes the following public capabilities in this environment.
 
-**Supported capabilities：**
+**Available pages：**
 
-* Chat Completions
-
-**Supported models：**
-
-* `grok-code-fast-1`
-
+* [Chat Completions](chat-completions.md)

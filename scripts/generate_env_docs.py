@@ -105,7 +105,7 @@ LANG_CONFIG = {
     },
     "en": {
         "intro": "Introduction",
-        "chat_root": "Chat Generation",
+        "chat_root": "Chat Completions",
         "completions_root": "Text Completions",
         "image_gen_root": "Image Generations",
         "image_edit_root": "Image Edits",
@@ -116,6 +116,7 @@ LANG_CONFIG = {
         "gemini_leaf": "Gemini Native",
         "models_label": "Supported models",
         "capabilities_label": "Supported capabilities",
+        "navigation_label": "Available pages",
         "supported_vendors_label": "Supported vendors",
         "none": "(None)",
         "summary_title": "# Table of contents",
@@ -145,7 +146,15 @@ LANG_CONFIG = {
     },
 }
 
+LANG_CONFIG["zh"]["navigation_label"] = "页面导航"
+LANG_CONFIG["en"]["navigation_label"] = "Available pages"
+
 CHAT_LEAF_ORDER = ("chat", "messages", "responses", "gemini")
+GEMINI_NATIVE_ENDPOINTS = (
+    "/v1/models/{model}:generateContent",
+    "/v1beta/models/{model}:generateContent",
+    "/v1beta/models/{model}:streamGenerateContent",
+)
 
 
 def read_text(path: Path) -> str:
@@ -212,6 +221,10 @@ def supports_chat_completion(records: Iterable[ModelRecord]) -> bool:
     return any(has_endpoint(record, "/v1/chat/completions") for record in records)
 
 
+def supports_gemini_native(records: Iterable[ModelRecord]) -> bool:
+    return any(any(endpoint in record.endpoints for endpoint in GEMINI_NATIVE_ENDPOINTS) for record in records)
+
+
 def build_env_index(env: str) -> dict:
     records = load_model_records(env)
     by_vendor: dict[str, list[ModelRecord]] = defaultdict(list)
@@ -226,7 +239,7 @@ def build_env_index(env: str) -> dict:
             if supports_chat_completion(vendor_records)
             or any(has_endpoint(r, "/v1/messages") for r in vendor_records)
             or any(has_endpoint(r, "/v1/responses") for r in vendor_records)
-            or (env == "global" and vendor == "google")
+            or supports_gemini_native(vendor_records)
         },
     )
     image_gen_vendors = order_vendors(
@@ -249,7 +262,7 @@ def build_env_index(env: str) -> dict:
             children.append("messages")
         if any(has_endpoint(record, "/v1/responses") for record in vendor_records):
             children.append("responses")
-        if env == "global" and vendor == "google":
+        if supports_gemini_native(vendor_records):
             children.append("gemini")
         chat_capabilities[vendor] = [cap for cap in CHAT_LEAF_ORDER if cap in children]
 
@@ -276,7 +289,7 @@ def models_for_capability(env_index: dict, vendor: str, capability: str) -> list
     if capability in {"chat", "completions"}:
         return unique_model_names(record for record in records if has_endpoint(record, "/v1/chat/completions"))
     if capability == "gemini":
-        return unique_model_names(record for record in records if record.mode == "chat")
+        return unique_model_names(record for record in records if any(endpoint in record.endpoints for endpoint in GEMINI_NATIVE_ENDPOINTS))
     endpoint_map = {
         "messages": "/v1/messages",
         "responses": "/v1/responses",
@@ -321,6 +334,15 @@ def capability_title(capability: str, lang: str) -> str:
         "image_generations": cfg["image_gen_root"],
         "image_edits": cfg["image_edit_root"],
         "audio_transcriptions": cfg["audio_root"],
+    }[capability]
+
+
+def capability_filename(capability: str) -> str:
+    return {
+        "chat": "chat-completions.md",
+        "messages": "messages.md",
+        "responses": "responses.md",
+        "gemini": "gemini-native.md",
     }[capability]
 
 
@@ -400,16 +422,17 @@ def build_capability_page(env: str, lang: str, vendor: str, capability: str, mod
     )
 
 
-def build_vendor_readme(lang: str, vendor: str, capabilities: list[str], models: list[str]) -> str:
+def build_vendor_readme(lang: str, vendor: str, capabilities: list[str]) -> str:
     cfg = LANG_CONFIG[lang]
     title = f"# {vendor_name(vendor)}"
-    capability_lines = "\n".join(f"* {capability_title(capability, lang)}" for capability in capabilities)
+    capability_lines = "\n".join(
+        f"* [{capability_title(capability, lang)}]({capability_filename(capability)})" for capability in capabilities
+    )
     return (
         f"{title}\n\n"
         f"{cfg['vendor_overview'].format(vendor=vendor_name(vendor))}\n\n"
-        f"**{cfg['capabilities_label']}：**\n\n"
-        f"{capability_lines}\n\n"
-        f"{models_section(models, lang)}\n"
+        f"**{cfg['navigation_label']}：**\n\n"
+        f"{capability_lines}\n"
     )
 
 
@@ -481,18 +504,12 @@ def render_env(env: str) -> None:
         summary_lines.append(f"* [{cfg['chat_root']}](chat-completion/README.md)")
         for vendor in env_index["chat_vendors"]:
             summary_lines.append(f"  * [{vendor_name(vendor)}](chat-completion/{vendor}/README.md)")
-            chat_models = models_for_capability(env_index, vendor, "chat")
             write_text(
                 base / "chat-completion" / vendor / "README.md",
-                build_vendor_readme(lang, vendor, env_index["chat_capabilities"][vendor], chat_models),
+                build_vendor_readme(lang, vendor, env_index["chat_capabilities"][vendor]),
             )
             for capability in env_index["chat_capabilities"][vendor]:
-                filename = {
-                    "chat": "chat-completions.md",
-                    "messages": "messages.md",
-                    "responses": "responses.md",
-                    "gemini": "gemini-native.md",
-                }[capability]
+                filename = capability_filename(capability)
                 summary_lines.append(
                     f"    * [{capability_title(capability, lang)}](chat-completion/{vendor}/{filename})"
                 )

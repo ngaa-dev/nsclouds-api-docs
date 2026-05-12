@@ -2,14 +2,7 @@
 
 DeepSeek exposes the following public capabilities in this environment.
 
-**Supported capabilities：**
+**Available pages：**
 
-* Chat Completions
-* Messages
-
-**Supported models：**
-
-* `deepseek-r1`
-* `deepseek/deepseek-v4-flash`
-* `deepseek/deepseek-v4-pro`
-
+* [Chat Completions](chat-completions.md)
+* [Messages](messages.md)

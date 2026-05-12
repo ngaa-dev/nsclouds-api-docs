@@ -37,11 +37,6 @@ tags:
     x-page-title: Google
     x-page-icon: brain
     description: Google's text completions API
-  - name: messages_google
-    x-parent: chat_completions
-    x-page-title: Google
-    x-page-icon: brain
-    description: Google's Messages protocol API
   - name: gemini_native_google
     x-parent: chat_completions
     x-page-title: Google
@@ -315,86 +310,6 @@ paths:
                     data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gemini-3-flash-preview","choices":[{"text":" bright","index":0,"finish_reason":null}]}
                     data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gemini-3-flash-preview","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
-        '400':
-          $ref: '#/components/responses/ErrorResponse'
-        '401':
-          $ref: '#/components/responses/ErrorResponse'
-        '429':
-          $ref: '#/components/responses/ErrorResponse'
-  /v1/messages:
-    post:
-      tags:
-        - messages_google
-      summary: Create Message
-      description: Create a message using the Messages-compatible payload.
-      operationId: createMessage_google
-      security:
-        - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - model
-                - messages
-              properties:
-                model:
-                  type: string
-                messages:
-                  type: array
-                  items:
-                    type: object
-                    required:
-                      - role
-                      - content
-                    properties:
-                      role:
-                        type: string
-                      content:
-                        oneOf:
-                          - type: string
-                          - type: array
-                            items:
-                              type: object
-                max_tokens:
-                  type: integer
-                stream:
-                  type: boolean
-                  default: false
-            examples:
-              default:
-                summary: Basic
-                value:
-                  model: gemini-3-flash-preview
-                  messages:
-                    - role: user
-                      content: Hello
-                  max_tokens: 128
-      responses:
-        '200':
-          description: Success Response
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties: true
-              examples:
-                default:
-                  summary: Basic Response
-                  value:
-                    id: msg_123
-                    type: message
-                    role: assistant
-                    model: gemini-3-flash-preview
-                    content:
-                      - type: text
-                        text: Hello! How can I help you today?
-                    stop_reason: end_turn
-                    usage:
-                      input_tokens: 12
-                      output_tokens: 9
         '400':
           $ref: '#/components/responses/ErrorResponse'
         '401':

@@ -1,4 +1,4 @@
-# Chat Generation
+# Chat Completions
 
 Chat generation covers standard Chat Completions and vendor-specific protocol variants.
 

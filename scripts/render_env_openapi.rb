@@ -88,6 +88,8 @@ CAPABILITY_CONFIG = {
   },
 }.freeze
 
+GEMINI_NATIVE_ENDPOINTS = CAPABILITY_CONFIG.fetch("gemini").fetch(:paths).freeze
+
 
 def deep_copy(value)
   Marshal.load(Marshal.dump(value))
@@ -264,7 +266,7 @@ def example_models_for_env(env)
       "image_generations" => canonical_example_model(entries.select { |entry| entry["endpoints"].include?("/v1/images/generations") }),
       "image_edits" => canonical_example_model(entries.select { |entry| entry["endpoints"].include?("/v1/images/edits") }),
       "audio_transcriptions" => canonical_example_model(entries.select { |entry| entry["endpoints"].include?("/v1/audio/transcriptions") }),
-      "gemini" => canonical_example_model(entries.select { |entry| entry["mode"] == "chat" }),
+      "gemini" => canonical_example_model(entries.select { |entry| (entry["endpoints"] & GEMINI_NATIVE_ENDPOINTS).any? }),
     }
   end
 end
@@ -350,7 +352,7 @@ def capabilities_for_env(env)
     caps << "image_generations" if entries.any? { |entry| entry["endpoints"].include?("/v1/images/generations") }
     caps << "image_edits" if entries.any? { |entry| entry["endpoints"].include?("/v1/images/edits") }
     caps << "audio_transcriptions" if entries.any? { |entry| entry["endpoints"].include?("/v1/audio/transcriptions") }
-    caps << "gemini" if env == "global" && vendor == "google"
+    caps << "gemini" if entries.any? { |entry| (entry["endpoints"] & GEMINI_NATIVE_ENDPOINTS).any? }
     public_caps[vendor] = caps.uniq if caps.any?
   end
   public_caps
