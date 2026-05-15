@@ -422,24 +422,23 @@ def build_capability_page(env: str, lang: str, vendor: str, capability: str, mod
     )
 
 
-def chat_vendor_filename(vendor: str) -> str:
-    return f"{vendor}.md"
+def chat_vendor_summary_target(vendor: str) -> str:
+    return f"{vendor}/readme.md"
 
 
-def chat_capability_filename(vendor: str, capability: str) -> str:
-    slug = {
+def chat_capability_filename(capability: str) -> str:
+    return {
         "chat": "chat",
         "messages": "messages",
         "responses": "responses",
         "gemini": "gemini-native",
-    }[capability]
-    return f"{vendor}-{slug}.md"
+    }[capability] + ".md"
 
 
 def build_vendor_landing(lang: str, vendor: str, capabilities: list[str]) -> str:
     title = f"# {vendor_name(vendor)}"
     capability_lines = "\n".join(
-        f"- [{capability_title(capability, lang)}]({chat_capability_filename(vendor, capability)})"
+        f"- [{capability_title(capability, lang)}]({chat_capability_filename(capability)})"
         for capability in capabilities
     )
     return f"{title}\n\n{capability_lines}\n"
@@ -447,7 +446,7 @@ def build_vendor_landing(lang: str, vendor: str, capabilities: list[str]) -> str
 
 def category_vendor_target(category_key: str, vendor: str) -> str:
     if category_key == "chat":
-        return f"conversation/{chat_vendor_filename(vendor)}"
+        return f"conversation/{chat_vendor_summary_target(vendor)}"
     if category_key == "completions":
         return f"completions/{vendor}.md"
     if category_key == "image_generations":
@@ -470,9 +469,13 @@ def category_landing_filename(category_key: str) -> str:
 
 
 def category_summary_target(category_key: str) -> str:
-    if category_key == "chat":
-        return "conversation/readme.md"
-    return category_landing_filename(category_key)
+    return {
+        "chat": "conversation/readme.md",
+        "completions": "completions/readme.md",
+        "image_generations": "image-generations/readme.md",
+        "image_edits": "image-edits/readme.md",
+        "audio_transcriptions": "audio-transcriptions/readme.md",
+    }[category_key]
 
 
 def build_category_landing(lang: str, category_key: str, vendors: list[str]) -> str:
@@ -494,8 +497,20 @@ def build_category_landing(lang: str, category_key: str, vendors: list[str]) -> 
 
 def build_chat_directory_summary(lang: str, vendors: list[str]) -> str:
     cfg = LANG_CONFIG[lang]
-    vendor_lines = "\n".join(f"- [{vendor_name(vendor)}]({chat_vendor_filename(vendor)})" for vendor in vendors) if vendors else cfg["none"]
+    vendor_lines = "\n".join(f"- [{vendor_name(vendor)}]({chat_vendor_summary_target(vendor)})" for vendor in vendors) if vendors else cfg["none"]
     return f"# {cfg['chat_root']}\n\n{vendor_lines}\n"
+
+
+def build_category_directory_summary(lang: str, category_key: str, vendors: list[str]) -> str:
+    cfg = LANG_CONFIG[lang]
+    title_map = {
+        "completions": cfg["completions_root"],
+        "image_generations": cfg["image_gen_root"],
+        "image_edits": cfg["image_edit_root"],
+        "audio_transcriptions": cfg["audio_root"],
+    }
+    vendor_lines = "\n".join(f"- [{vendor_name(vendor)}]({vendor}.md)" for vendor in vendors) if vendors else cfg["none"]
+    return f"# {title_map[category_key]}\n\n{vendor_lines}\n"
 
 
 def render_env(env: str) -> None:
@@ -537,39 +552,36 @@ def render_env(env: str) -> None:
                 stale_landing.unlink()
 
         write_text(base / "conversation" / "SUMMARY.md", build_chat_directory_summary(lang, env_index["chat_vendors"]))
+        write_text(base / "completions" / "SUMMARY.md", build_category_directory_summary(lang, "completions", env_index["completion_vendors"]))
         write_text(
-            base / category_landing_filename("completions"),
-            build_category_landing(lang, "completions", env_index["completion_vendors"]),
+            base / "image-generations" / "SUMMARY.md",
+            build_category_directory_summary(lang, "image_generations", env_index["image_gen_vendors"]),
         )
         write_text(
-            base / category_landing_filename("image_generations"),
-            build_category_landing(lang, "image_generations", env_index["image_gen_vendors"]),
+            base / "image-edits" / "SUMMARY.md",
+            build_category_directory_summary(lang, "image_edits", env_index["image_edit_vendors"]),
         )
         write_text(
-            base / category_landing_filename("image_edits"),
-            build_category_landing(lang, "image_edits", env_index["image_edit_vendors"]),
-        )
-        write_text(
-            base / category_landing_filename("audio_transcriptions"),
-            build_category_landing(lang, "audio_transcriptions", env_index["audio_vendors"]),
+            base / "audio-transcriptions" / "SUMMARY.md",
+            build_category_directory_summary(lang, "audio_transcriptions", env_index["audio_vendors"]),
         )
 
         summary_lines = [cfg["summary_title"], "", f"* [{cfg['intro']}](README.md)"]
 
         summary_lines.append(f"* [{cfg['chat_root']}]({category_summary_target('chat')})")
         for vendor in env_index["chat_vendors"]:
-            summary_lines.append(f"  * [{vendor_name(vendor)}](conversation/{chat_vendor_filename(vendor)})")
+            summary_lines.append(f"  * [{vendor_name(vendor)}](conversation/{chat_vendor_summary_target(vendor)})")
             write_text(
-                base / "conversation" / chat_vendor_filename(vendor),
+                base / "conversation" / vendor / "SUMMARY.md",
                 build_vendor_landing(lang, vendor, env_index["chat_capabilities"][vendor]),
             )
             for capability in env_index["chat_capabilities"][vendor]:
-                filename = chat_capability_filename(vendor, capability)
+                filename = chat_capability_filename(capability)
                 summary_lines.append(
-                    f"    * [{capability_title(capability, lang)}](conversation/{filename})"
+                    f"    * [{capability_title(capability, lang)}](conversation/{vendor}/{filename})"
                 )
                 write_text(
-                    base / "conversation" / filename,
+                    base / "conversation" / vendor / filename,
                     build_capability_page(env, lang, vendor, capability, models_for_capability(env_index, vendor, capability)),
                 )
 
