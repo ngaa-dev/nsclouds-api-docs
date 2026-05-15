@@ -26,6 +26,82 @@
 - `Messages`、`Responses`、`Gemini Native` 只在 `supported_endpoints` 命中时展示。
 - 国内与国际环境分别只展示各自真实公开可用的厂家与能力。
 
+## GitBook OpenAPI 同步
+
+当前页面里的：
+
+```md
+{% openapi-operation spec="dashscope-en-global" path="/v1/completions" method="post" %}
+```
+
+要求 GitBook 组织内已经存在对应的 OpenAPI spec slug。单纯在 Markdown 里写 raw GitHub URL，不会自动完成 GitBook 侧导入。
+
+为避免在 GitBook 页面里逐个手工导入，可以使用：
+
+- `scripts/sync_gitbook_openapi.py`
+
+这个脚本会：
+
+- 扫描 `docs/bundled/{cn,global}/{en,zh}/*.bundled.yaml`
+- 自动生成 slug：`{vendor}-{lang}-{env}`
+- 调 GitBook OpenAPI API 对这些 slug 执行创建或更新
+- 已经在 GitBook UI 里手工导入过的 spec，只要 slug 一致，也会被直接更新
+
+### 需要准备什么
+
+- GitBook Developer Token
+  - 环境变量：`GITBOOK_TOKEN`
+- GitBook 组织 ID
+  - 环境变量：`GITBOOK_ORG_ID`
+  - 如果 token 只能看到一个 organization，脚本可自动选中，不必手动传
+
+可选项：
+
+- `GITBOOK_RAW_BASE`
+  - 默认值：
+    - `https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled`
+  - 如果后续仓库地址或分支变了，可以覆盖这个值
+
+### 常用命令
+
+先重建文档：
+
+```bash
+bash build-docs.sh
+```
+
+先做 dry-run 看将要同步哪些 spec：
+
+```bash
+export GITBOOK_TOKEN=...
+export GITBOOK_ORG_ID=...
+python3 scripts/sync_gitbook_openapi.py --dry-run
+```
+
+正式同步全部 spec：
+
+```bash
+export GITBOOK_TOKEN=...
+export GITBOOK_ORG_ID=...
+python3 scripts/sync_gitbook_openapi.py --wait
+```
+
+只同步某个环境/语言/厂家：
+
+```bash
+python3 scripts/sync_gitbook_openapi.py --env global --lang en --vendor dashscope --wait
+```
+
+### 推荐维护方式
+
+以后每次更新模型能力或 OpenAPI 模板后，按下面顺序执行：
+
+1. 更新 `scripts/data/*.json`
+2. 运行 `bash build-docs.sh`
+3. 运行 `python3 scripts/sync_gitbook_openapi.py --wait`
+
+这样就不需要再去 GitBook 页面里逐个导入 `dashscope-en-global`、`openai-zh-global` 之类的 spec。
+
 ## 更新模型或能力时怎么做
 
 ### 1. 更新数据源
