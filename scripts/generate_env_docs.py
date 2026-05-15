@@ -542,11 +542,11 @@ def render_env(env: str) -> None:
             build_category_landing(lang, "audio_transcriptions", env_index["audio_vendors"]),
         )
 
-        summary_lines = [cfg["summary_title"], "", f"- [{cfg['intro']}](README.md)"]
+        summary_lines = [cfg["summary_title"], "", f"* [{cfg['intro']}](README.md)"]
 
-        summary_lines.append(f"- [{cfg['chat_root']}]({category_landing_filename('chat')})")
+        summary_lines.append(f"* [{cfg['chat_root']}]({category_landing_filename('chat')})")
         for vendor in env_index["chat_vendors"]:
-            summary_lines.append(f"  - [{vendor_name(vendor)}](conversation/{chat_vendor_filename(vendor)})")
+            summary_lines.append(f"  * [{vendor_name(vendor)}](conversation/{chat_vendor_filename(vendor)})")
             write_text(
                 base / "conversation" / chat_vendor_filename(vendor),
                 build_vendor_landing(lang, vendor, env_index["chat_capabilities"][vendor]),
@@ -554,24 +554,24 @@ def render_env(env: str) -> None:
             for capability in env_index["chat_capabilities"][vendor]:
                 filename = chat_capability_filename(vendor, capability)
                 summary_lines.append(
-                    f"    - [{capability_title(capability, lang)}](conversation/{filename})"
+                    f"    * [{capability_title(capability, lang)}](conversation/{filename})"
                 )
                 write_text(
                     base / "conversation" / filename,
                     build_capability_page(env, lang, vendor, capability, models_for_capability(env_index, vendor, capability)),
                 )
 
-        summary_lines.append(f"- [{cfg['completions_root']}]({category_landing_filename('completions')})")
+        summary_lines.append(f"* [{cfg['completions_root']}]({category_landing_filename('completions')})")
         for vendor in env_index["completion_vendors"]:
-            summary_lines.append(f"  - [{vendor_name(vendor)}](completions/{vendor}.md)")
+            summary_lines.append(f"  * [{vendor_name(vendor)}](completions/{vendor}.md)")
             write_text(
                 base / "completions" / f"{vendor}.md",
                 build_capability_page(env, lang, vendor, "completions", models_for_capability(env_index, vendor, "completions")),
             )
 
-        summary_lines.append(f"- [{cfg['image_gen_root']}]({category_landing_filename('image_generations')})")
+        summary_lines.append(f"* [{cfg['image_gen_root']}]({category_landing_filename('image_generations')})")
         for vendor in env_index["image_gen_vendors"]:
-            summary_lines.append(f"  - [{vendor_name(vendor)}](image-generations/{vendor}.md)")
+            summary_lines.append(f"  * [{vendor_name(vendor)}](image-generations/{vendor}.md)")
             write_text(
                 base / "image-generations" / f"{vendor}.md",
                 build_capability_page(
@@ -584,9 +584,9 @@ def render_env(env: str) -> None:
             )
 
         if env_index["image_edit_vendors"]:
-            summary_lines.append(f"- [{cfg['image_edit_root']}]({category_landing_filename('image_edits')})")
+            summary_lines.append(f"* [{cfg['image_edit_root']}]({category_landing_filename('image_edits')})")
             for vendor in env_index["image_edit_vendors"]:
-                summary_lines.append(f"  - [{vendor_name(vendor)}](image-edits/{vendor}.md)")
+                summary_lines.append(f"  * [{vendor_name(vendor)}](image-edits/{vendor}.md)")
                 write_text(
                     base / "image-edits" / f"{vendor}.md",
                     build_capability_page(
@@ -599,9 +599,9 @@ def render_env(env: str) -> None:
                 )
 
         if env_index["audio_vendors"]:
-            summary_lines.append(f"- [{cfg['audio_root']}]({category_landing_filename('audio_transcriptions')})")
+            summary_lines.append(f"* [{cfg['audio_root']}]({category_landing_filename('audio_transcriptions')})")
             for vendor in env_index["audio_vendors"]:
-                summary_lines.append(f"  - [{vendor_name(vendor)}](audio-transcriptions/{vendor}.md)")
+                summary_lines.append(f"  * [{vendor_name(vendor)}](audio-transcriptions/{vendor}.md)")
                 write_text(
                     base / "audio-transcriptions" / f"{vendor}.md",
                     build_capability_page(
