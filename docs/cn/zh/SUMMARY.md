@@ -1,7 +1,7 @@
 # Table of contents
 
 * [简介](README.md)
-* [对话接口](conversation.md)
+* [对话接口](conversation/readme.md)
   * [DashScope](conversation/dashscope.md)
     * [Chat Completions](conversation/dashscope-chat.md)
     * [Responses](conversation/dashscope-responses.md)

@@ -469,6 +469,12 @@ def category_landing_filename(category_key: str) -> str:
     }[category_key]
 
 
+def category_summary_target(category_key: str) -> str:
+    if category_key == "chat":
+        return "conversation/readme.md"
+    return category_landing_filename(category_key)
+
+
 def build_category_landing(lang: str, category_key: str, vendors: list[str]) -> str:
     cfg = LANG_CONFIG[lang]
     title_map = {
@@ -530,7 +536,6 @@ def render_env(env: str) -> None:
             if stale_landing.exists():
                 stale_landing.unlink()
 
-        write_text(base / category_landing_filename("chat"), build_category_landing(lang, "chat", env_index["chat_vendors"]))
         write_text(base / "conversation" / "SUMMARY.md", build_chat_directory_summary(lang, env_index["chat_vendors"]))
         write_text(
             base / category_landing_filename("completions"),
@@ -551,7 +556,7 @@ def render_env(env: str) -> None:
 
         summary_lines = [cfg["summary_title"], "", f"* [{cfg['intro']}](README.md)"]
 
-        summary_lines.append(f"* [{cfg['chat_root']}]({category_landing_filename('chat')})")
+        summary_lines.append(f"* [{cfg['chat_root']}]({category_summary_target('chat')})")
         for vendor in env_index["chat_vendors"]:
             summary_lines.append(f"  * [{vendor_name(vendor)}](conversation/{chat_vendor_filename(vendor)})")
             write_text(
@@ -568,7 +573,7 @@ def render_env(env: str) -> None:
                     build_capability_page(env, lang, vendor, capability, models_for_capability(env_index, vendor, capability)),
                 )
 
-        summary_lines.append(f"* [{cfg['completions_root']}]({category_landing_filename('completions')})")
+        summary_lines.append(f"* [{cfg['completions_root']}]({category_summary_target('completions')})")
         for vendor in env_index["completion_vendors"]:
             summary_lines.append(f"  * [{vendor_name(vendor)}](completions/{vendor}.md)")
             write_text(
@@ -576,7 +581,7 @@ def render_env(env: str) -> None:
                 build_capability_page(env, lang, vendor, "completions", models_for_capability(env_index, vendor, "completions")),
             )
 
-        summary_lines.append(f"* [{cfg['image_gen_root']}]({category_landing_filename('image_generations')})")
+        summary_lines.append(f"* [{cfg['image_gen_root']}]({category_summary_target('image_generations')})")
         for vendor in env_index["image_gen_vendors"]:
             summary_lines.append(f"  * [{vendor_name(vendor)}](image-generations/{vendor}.md)")
             write_text(
@@ -591,7 +596,7 @@ def render_env(env: str) -> None:
             )
 
         if env_index["image_edit_vendors"]:
-            summary_lines.append(f"* [{cfg['image_edit_root']}]({category_landing_filename('image_edits')})")
+            summary_lines.append(f"* [{cfg['image_edit_root']}]({category_summary_target('image_edits')})")
             for vendor in env_index["image_edit_vendors"]:
                 summary_lines.append(f"  * [{vendor_name(vendor)}](image-edits/{vendor}.md)")
                 write_text(
@@ -606,7 +611,7 @@ def render_env(env: str) -> None:
                 )
 
         if env_index["audio_vendors"]:
-            summary_lines.append(f"* [{cfg['audio_root']}]({category_landing_filename('audio_transcriptions')})")
+            summary_lines.append(f"* [{cfg['audio_root']}]({category_summary_target('audio_transcriptions')})")
             for vendor in env_index["audio_vendors"]:
                 summary_lines.append(f"  * [{vendor_name(vendor)}](audio-transcriptions/{vendor}.md)")
                 write_text(
