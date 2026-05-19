@@ -86,7 +86,7 @@ paths:
                   stream: true
               image_input:
                 summary: Image Input (Multimodal)
-                description: Use vision-capable models to analyze images.
+                description: Analyze one or more images by URL using image_url parts.
                 value:
                   model: gpt-5.2
                   messages:
@@ -97,6 +97,20 @@ paths:
                         - type: image_url
                           image_url:
                             url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
+                  max_completion_tokens: 300
+              image_data_url_input:
+                summary: Image Input (base64)
+                description: Analyze one or more inline image data URLs using image_url parts. PNG is shown as an example format.
+                value:
+                  model: gpt-5.2
+                  messages:
+                    - role: user
+                      content:
+                        - type: image_url
+                          image_url:
+                            url: data:image/png;base64,iVBORw0KGgo...
+                        - type: text
+                          text: What's in this image?
                   max_completion_tokens: 300
               functions:
                 summary: Function Calling
@@ -366,7 +380,7 @@ paths:
                   stream: false
               image_input:
                 summary: Image Input (Multimodal)
-                description: Analyze an image URL using an input_image part.
+                description: Analyze one or more image URLs using input_image parts.
                 value:
                   model: gpt-5.4
                   input:
@@ -380,7 +394,7 @@ paths:
                   stream: false
               image_data_url_input:
                 summary: Image Input (base64)
-                description: Analyze an inline image data URL using an input_image part.
+                description: Analyze one or more inline image data URLs using input_image parts. PNG is shown as an example format.
                 value:
                   model: gpt-5.4
                   input:
@@ -393,7 +407,7 @@ paths:
                   stream: false
               file_url_input:
                 summary: File Input (file_url)
-                description: Analyze a publicly accessible file with an input_file part and file_url.
+                description: Analyze a publicly accessible file with an input_file part and file_url. Common document and text formats are supported; PDF is shown as an example.
                 value:
                   model: gpt-5.4
                   stream: true
@@ -406,7 +420,7 @@ paths:
                           text: Summarize this paper's core idea.
               file_data_input:
                 summary: File Input (file_data)
-                description: Analyze an inline uploaded file with filename and a base64 data URL in file_data.
+                description: Analyze an inline uploaded file with filename and a base64 data URL in file_data. Common document and text formats are supported; PDF is shown as an example.
                 value:
                   model: gpt-5.4
                   input:

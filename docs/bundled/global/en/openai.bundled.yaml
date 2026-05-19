@@ -5,7 +5,7 @@ info:
   version: 1.11.0
 servers:
   - url: 'https://aillm.nscloud.ai'
-    description: '${SERVER_DESCRIPTION}'
+    description: Global Server
 tags:
   - name: chat_completions
     x-page-title: Chat Completions
@@ -88,7 +88,7 @@ paths:
                   stream: true
               image_input:
                 summary: Image Input (Multimodal)
-                description: Use vision-capable models to analyze images.
+                description: Analyze one or more images by URL using image_url parts.
                 value:
                   model: gpt-5
                   messages:
@@ -99,6 +99,20 @@ paths:
                         - type: image_url
                           image_url:
                             url: 'https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png'
+                  max_completion_tokens: 300
+              image_data_url_input:
+                summary: Image Input (base64)
+                description: Analyze one or more inline image data URLs using image_url parts. PNG is shown as an example format.
+                value:
+                  model: gpt-5
+                  messages:
+                    - role: user
+                      content:
+                        - type: image_url
+                          image_url:
+                            url: 'data:image/png;base64,iVBORw0KGgo...'
+                        - type: text
+                          text: What's in this image?
                   max_completion_tokens: 300
               functions:
                 summary: Function Calling
@@ -313,7 +327,7 @@ paths:
                   stream: false
               image_input:
                 summary: Image Input (Multimodal)
-                description: Analyze an image URL using an input_image part.
+                description: Analyze one or more image URLs using input_image parts.
                 value:
                   model: gpt-5
                   input:
@@ -327,7 +341,7 @@ paths:
                   stream: false
               image_data_url_input:
                 summary: Image Input (base64)
-                description: Analyze an inline image data URL using an input_image part.
+                description: Analyze one or more inline image data URLs using input_image parts. PNG is shown as an example format.
                 value:
                   model: gpt-5
                   input:
@@ -340,7 +354,7 @@ paths:
                   stream: false
               file_url_input:
                 summary: File Input (file_url)
-                description: Analyze a publicly accessible file with an input_file part and file_url.
+                description: Analyze a publicly accessible file with an input_file part and file_url. Common document and text formats are supported; PDF is shown as an example.
                 value:
                   model: gpt-5
                   stream: true
@@ -353,7 +367,7 @@ paths:
                           text: Summarize this paper's core idea.
               file_data_input:
                 summary: File Input (file_data)
-                description: Analyze an inline uploaded file with filename and a base64 data URL in file_data.
+                description: Analyze an inline uploaded file with filename and a base64 data URL in file_data. Common document and text formats are supported; PDF is shown as an example.
                 value:
                   model: gpt-5
                   input:
@@ -419,12 +433,19 @@ components:
       properties:
         url:
           type: string
-          description: 'Publicly accessible image URL, or a base64 data URL.'
+          description: Publicly accessible image URL or image data URL. Common image formats are supported; PNG may be used in examples.
+        detail:
+          type: string
+          description: Optional image understanding detail level.
+          enum:
+            - auto
+            - low
+            - high
       required:
         - url
     ChatMessageImagePart:
       type: object
-      description: Image input content part.
+      description: Image input content part. Add multiple image_url parts to send multiple images.
       properties:
         type:
           type: string
@@ -454,7 +475,7 @@ components:
             - type: string
               description: Plain text content.
             - type: array
-              description: 'Array of structured content parts, typically used for multimodal input.'
+              description: 'Array of structured content parts, typically used for multimodal input with text and one or more images.'
               items:
                 oneOf:
                   - $ref: '#/components/schemas/ChatMessageTextPart'
@@ -778,7 +799,7 @@ components:
       additionalProperties: true
     ResponseInputImagePart:
       type: object
-      description: Image input content part for the Responses protocol.
+      description: Image input content part for the Responses protocol. Add multiple input_image parts to send multiple images.
       properties:
         type:
           type: string
@@ -787,7 +808,7 @@ components:
             - input_image
         image_url:
           type: string
-          description: 'Publicly accessible image URL or data URL, such as data:image/png;base64,...'
+          description: 'Publicly accessible image URL or image data URL. Common image formats are supported; for example, data:image/png;base64,...'
         detail:
           type: string
           description: 'Detail level for image understanding, when supported.'
@@ -801,7 +822,7 @@ components:
       additionalProperties: true
     ResponseInputFilePart:
       type: object
-      description: File input content part for the Responses protocol.
+      description: File input content part for the Responses protocol. Common document and text formats are supported; PDF is only one example.
       properties:
         type:
           type: string
@@ -810,13 +831,13 @@ components:
             - input_file
         file_url:
           type: string
-          description: 'Referenced file URL used by file input parts, when supported.'
+          description: Publicly accessible file URL used by file input parts. Common document and text formats are supported.
         filename:
           type: string
           description: File name used together with file_data for inline file uploads.
         file_data:
           type: string
-          description: 'Data URL containing base64-encoded file content, such as data:application/pdf;base64,...'
+          description: 'Data URL containing base64-encoded file content, such as data:application/pdf;base64,... or data:text/plain;base64,...'
       required:
         - type
       anyOf:

@@ -53,13 +53,20 @@ components:
       properties:
         url:
           type: string
-          description: Publicly accessible image URL, or a base64 data URL.
+          description: Publicly accessible image URL or image data URL. Common image formats are supported; PNG may be used in examples.
+        detail:
+          type: string
+          description: Optional image understanding detail level.
+          enum:
+            - auto
+            - low
+            - high
       required:
         - url
 
     ChatMessageImagePart:
       type: object
-      description: Image input content part.
+      description: Image input content part. Add multiple image_url parts to send multiple images.
       properties:
         type:
           type: string
@@ -90,7 +97,7 @@ components:
             - type: string
               description: Plain text content.
             - type: array
-              description: Array of structured content parts, typically used for multimodal input.
+              description: Array of structured content parts, typically used for multimodal input with text and one or more images.
               items:
                 oneOf:
                   - $ref: '#/components/schemas/ChatMessageTextPart'
@@ -428,7 +435,7 @@ components:
 
     ResponseInputImagePart:
       type: object
-      description: Image input content part for the Responses protocol.
+      description: Image input content part for the Responses protocol. Add multiple input_image parts to send multiple images.
       properties:
         type:
           type: string
@@ -437,7 +444,7 @@ components:
             - input_image
         image_url:
           type: string
-          description: Publicly accessible image URL or data URL, such as data:image/png;base64,...
+          description: Publicly accessible image URL or image data URL. Common image formats are supported; for example, data:image/png;base64,...
         detail:
           type: string
           description: Detail level for image understanding, when supported.
@@ -452,7 +459,7 @@ components:
 
     ResponseInputFilePart:
       type: object
-      description: File input content part for the Responses protocol.
+      description: File input content part for the Responses protocol. Common document and text formats are supported; PDF is only one example.
       properties:
         type:
           type: string
@@ -461,13 +468,13 @@ components:
             - input_file
         file_url:
           type: string
-          description: Referenced file URL used by file input parts, when supported.
+          description: Publicly accessible file URL used by file input parts. Common document and text formats are supported.
         filename:
           type: string
           description: File name used together with file_data for inline file uploads.
         file_data:
           type: string
-          description: Data URL containing base64-encoded file content, such as data:application/pdf;base64,...
+          description: Data URL containing base64-encoded file content, such as data:application/pdf;base64,... or data:text/plain;base64,...
       required:
         - type
       anyOf:
