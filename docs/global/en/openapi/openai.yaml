@@ -72,8 +72,8 @@ paths:
                   max_completion_tokens: 100
                   stream: true
               image_input:
-                summary: Image Input (Multimodal)
-                description: Use vision-capable models to analyze images.
+                summary: Image Input (URL)
+                description: Analyze one or more images by URL using image_url parts.
                 value:
                   model: gpt-5
                   messages:
@@ -84,6 +84,21 @@ paths:
                     - type: image_url
                       image_url:
                         url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
+                  max_completion_tokens: 300
+              image_data_url_input:
+                summary: Image Input (base64)
+                description: Analyze one or more inline image data URLs using image_url
+                  parts. PNG is shown as an example format.
+                value:
+                  model: gpt-5
+                  messages:
+                  - role: user
+                    content:
+                    - type: image_url
+                      image_url:
+                        url: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=
+                    - type: text
+                      text: What's in this image?
                   max_completion_tokens: 300
               functions:
                 summary: Function Calling
@@ -312,6 +327,64 @@ paths:
                   model: gpt-5
                   input: Hello
                   stream: false
+              image_input:
+                summary: Image Input (URL)
+                description: Analyze one or more image URLs using input_image parts.
+                value:
+                  model: gpt-5
+                  input:
+                  - role: user
+                    content:
+                    - type: input_image
+                      image_url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
+                      detail: high
+                    - type: input_text
+                      text: Describe the image and list any visible text.
+                  stream: false
+              image_data_url_input:
+                summary: Image Input (base64)
+                description: Analyze one or more inline image data URLs using input_image
+                  parts. PNG is shown as an example format.
+                value:
+                  model: gpt-5
+                  input:
+                  - role: user
+                    content:
+                    - type: input_image
+                      image_url: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=
+                    - type: input_text
+                      text: What's in this image?
+                  stream: false
+              file_url_input:
+                summary: File Input (file_url)
+                description: Analyze a publicly accessible file with an input_file
+                  part and file_url. Common document and text formats are supported;
+                  PDF is shown as an example.
+                value:
+                  model: gpt-5
+                  stream: true
+                  input:
+                  - role: user
+                    content:
+                    - type: input_file
+                      file_url: https://arxiv.org/pdf/1706.03762v7
+                    - type: input_text
+                      text: Summarize this paper's core idea.
+              file_data_input:
+                summary: File Input (file_data)
+                description: Analyze an inline uploaded file with filename and a base64
+                  data URL in file_data. Common document and text formats are supported;
+                  PDF is shown as an example.
+                value:
+                  model: gpt-5
+                  input:
+                  - role: user
+                    content:
+                    - type: input_file
+                      filename: 1706.03762v7.pdf
+                      file_data: data:application/pdf;base64,JVBERi0x...
+                    - type: input_text
+                      text: Summarize this paper's core idea.
       responses:
         '200':
           description: Success Response

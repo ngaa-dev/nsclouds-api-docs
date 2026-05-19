@@ -87,8 +87,8 @@ paths:
                   max_completion_tokens: 100
                   stream: true
               image_input:
-                summary: Image Input (Multimodal)
-                description: Use vision-capable models to analyze images.
+                summary: Image Input (URL)
+                description: Analyze one or more images by URL using image_url parts.
                 value:
                   model: gpt-5
                   messages:
@@ -99,6 +99,20 @@ paths:
                         - type: image_url
                           image_url:
                             url: 'https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png'
+                  max_completion_tokens: 300
+              image_data_url_input:
+                summary: Image Input (base64)
+                description: Analyze one or more inline image data URLs using image_url parts. PNG is shown as an example format.
+                value:
+                  model: gpt-5
+                  messages:
+                    - role: user
+                      content:
+                        - type: image_url
+                          image_url:
+                            url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII='
+                        - type: text
+                          text: What's in this image?
                   max_completion_tokens: 300
               functions:
                 summary: Function Calling
@@ -311,6 +325,59 @@ paths:
                   model: gpt-5
                   input: Hello
                   stream: false
+              image_input:
+                summary: Image Input (URL)
+                description: Analyze one or more image URLs using input_image parts.
+                value:
+                  model: gpt-5
+                  input:
+                    - role: user
+                      content:
+                        - type: input_image
+                          image_url: 'https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png'
+                          detail: high
+                        - type: input_text
+                          text: Describe the image and list any visible text.
+                  stream: false
+              image_data_url_input:
+                summary: Image Input (base64)
+                description: Analyze one or more inline image data URLs using input_image parts. PNG is shown as an example format.
+                value:
+                  model: gpt-5
+                  input:
+                    - role: user
+                      content:
+                        - type: input_image
+                          image_url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII='
+                        - type: input_text
+                          text: What's in this image?
+                  stream: false
+              file_url_input:
+                summary: File Input (file_url)
+                description: Analyze a publicly accessible file with an input_file part and file_url. Common document and text formats are supported; PDF is shown as an example.
+                value:
+                  model: gpt-5
+                  stream: true
+                  input:
+                    - role: user
+                      content:
+                        - type: input_file
+                          file_url: 'https://arxiv.org/pdf/1706.03762v7'
+                        - type: input_text
+                          text: Summarize this paper's core idea.
+              file_data_input:
+                summary: File Input (file_data)
+                description: Analyze an inline uploaded file with filename and a base64 data URL in file_data. Common document and text formats are supported; PDF is shown as an example.
+                value:
+                  model: gpt-5
+                  input:
+                    - role: user
+                      content:
+                        - type: input_file
+                          filename: 1706.03762v7.pdf
+                          file_data: 'data:application/pdf;base64,JVBERi0x...'
+                        - type: input_text
+                          text: Summarize this paper's core idea.
       responses:
         '200':
           description: Success Response
@@ -366,12 +433,19 @@ components:
       properties:
         url:
           type: string
-          description: 'Publicly accessible image URL, or a base64 data URL.'
+          description: Publicly accessible image URL or image data URL. Common image formats are supported; PNG may be used in examples.
+        detail:
+          type: string
+          description: Optional image understanding detail level.
+          enum:
+            - auto
+            - low
+            - high
       required:
         - url
     ChatMessageImagePart:
       type: object
-      description: Image input content part.
+      description: Image input content part. Add multiple image_url parts to send multiple images.
       properties:
         type:
           type: string
@@ -401,7 +475,7 @@ components:
             - type: string
               description: Plain text content.
             - type: array
-              description: 'Array of structured content parts, typically used for multimodal input.'
+              description: 'Array of structured content parts, typically used for multimodal input with text and one or more images.'
               items:
                 oneOf:
                   - $ref: '#/components/schemas/ChatMessageTextPart'
@@ -707,28 +781,88 @@ components:
         usage:
           $ref: '#/components/schemas/Usage'
       additionalProperties: true
-    ResponseContentPart:
+    ResponseInputTextPart:
       type: object
-      description: Flexible content part used inside Responses input and output items.
+      description: Text input content part for the Responses protocol.
       properties:
         type:
           type: string
-          description: 'Part type, such as input_text, input_image, output_text, or tool_result.'
+          description: Input part type.
+          enum:
+            - input_text
         text:
           type: string
-          description: Text value carried by the part.
+          description: Text input value.
+      required:
+        - type
+        - text
+      additionalProperties: true
+    ResponseInputImagePart:
+      type: object
+      description: Image input content part for the Responses protocol. Add multiple input_image parts to send multiple images.
+      properties:
+        type:
+          type: string
+          description: Input part type.
+          enum:
+            - input_image
         image_url:
           type: string
-          description: Publicly accessible image URL or data URL used by image input parts.
-        file_id:
-          type: string
-          description: Referenced file identifier.
-        file_url:
-          type: string
-          description: Referenced file URL.
+          description: 'Publicly accessible image URL or image data URL. Common image formats are supported; for example, data:image/png;base64,...'
         detail:
           type: string
           description: 'Detail level for image understanding, when supported.'
+          enum:
+            - auto
+            - low
+            - high
+      required:
+        - type
+        - image_url
+      additionalProperties: true
+    ResponseInputFilePart:
+      type: object
+      description: File input content part for the Responses protocol. Common document and text formats are supported; PDF is only one example.
+      properties:
+        type:
+          type: string
+          description: Input part type.
+          enum:
+            - input_file
+        file_url:
+          type: string
+          description: Publicly accessible file URL used by file input parts. Common document and text formats are supported.
+        filename:
+          type: string
+          description: File name used together with file_data for inline file uploads.
+        file_data:
+          type: string
+          description: 'Data URL containing base64-encoded file content, such as data:application/pdf;base64,... or data:text/plain;base64,...'
+      required:
+        - type
+      anyOf:
+        - required:
+            - file_url
+        - required:
+            - filename
+            - file_data
+      additionalProperties: true
+    ResponseInputContentPart:
+      description: 'Responses input content part. Supported input types are input_text, input_image, and input_file.'
+      oneOf:
+        - $ref: '#/components/schemas/ResponseInputTextPart'
+        - $ref: '#/components/schemas/ResponseInputImagePart'
+        - $ref: '#/components/schemas/ResponseInputFilePart'
+    ResponseContentPart:
+      type: object
+      description: Flexible output content part used inside Responses output items.
+      properties:
+        type:
+          type: string
+          description: 'Output part type, such as output_text or tool_result.'
+        text:
+          type: string
+          description: Text value carried by the part.
         annotations:
           type: array
           description: Optional annotations attached to the content part.
@@ -754,7 +888,7 @@ components:
             - type: array
               description: Structured content part array.
               items:
-                $ref: '#/components/schemas/ResponseContentPart'
+                $ref: '#/components/schemas/ResponseInputContentPart'
       additionalProperties: true
     CreateResponseRequest:
       type: object
