@@ -19,32 +19,7 @@ This API is compatible with the OpenAI Chat Completions interface.
 * `gpt-5.5`
 
 
-### 2. Image Input (Multimodal)
-
-The `/v1/chat/completions` endpoint supports image input with `image_url` content parts. For file input, use the `/v1/responses` endpoint instead.
-
-```json
-{
-  "model": "gpt-5.4",
-  "messages": [
-    {
-      "role": "user",
-      "content": [
-        { "type": "text", "text": "What is in this image?" },
-        {
-          "type": "image_url",
-          "image_url": {
-            "url": "https://example.com/image.png"
-          }
-        }
-      ]
-    }
-  ],
-  "max_completion_tokens": 300
-}
-```
-
-### 3. API Details
+### 2. API Details
 
 {% openapi-operation spec="openai-en-global" path="/v1/chat/completions" method="post" %}
 [OpenAPI OpenAI](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/en/openai.bundled.yaml)

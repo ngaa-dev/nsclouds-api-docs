@@ -402,106 +402,22 @@ def openapi_path(capability: str) -> list[str]:
     ]
 
 
-def extra_capability_content(lang: str, vendor: str, capability: str) -> str:
-    if lang != "en" or vendor != "openai":
-        return ""
-    if capability == "chat":
-        return """### 2. Image Input (Multimodal)
-
-The `/v1/chat/completions` endpoint supports image input with `image_url` content parts. For file input, use the `/v1/responses` endpoint instead.
-
-```json
-{
-  "model": "gpt-5.4",
-  "messages": [
-    {
-      "role": "user",
-      "content": [
-        { "type": "text", "text": "What is in this image?" },
-        {
-          "type": "image_url",
-          "image_url": {
-            "url": "https://example.com/image.png"
-          }
-        }
-      ]
-    }
-  ],
-  "max_completion_tokens": 300
-}
-```
-"""
-    if capability != "responses":
-        return ""
-    return """### 2. Image Input (Multimodal)
-
-Use `input_image` content parts with `gpt-5.4` when you need the model to inspect an image. The image can be a public URL or a base64 data URL.
-
-```json
-{
-  "model": "gpt-5.4",
-  "input": [
-    {
-      "role": "user",
-      "content": [
-        { "type": "input_text", "text": "Describe this image and extract any visible text." },
-        {
-          "type": "input_image",
-          "image_url": "https://example.com/image.png",
-          "detail": "high"
-        }
-      ]
-    }
-  ]
-}
-```
-
-### 3. File Input
-
-The `/v1/responses` endpoint supports file input with `input_file` content parts. You can reference a publicly accessible file URL directly with `file_url`.
-
-```json
-{
-  "model": "gpt-5.4",
-  "stream": true,
-  "input": [
-    {
-      "role": "user",
-      "content": [
-        { "type": "input_text", "text": "Summarize this paper's core idea." },
-        {
-          "type": "input_file",
-          "file_url": "https://arxiv.org/pdf/1706.03762v7"
-        }
-      ]
-    }
-  ]
-}
-```
-
-"""
-
-
 def build_capability_page(env: str, lang: str, vendor: str, capability: str, models: list[str]) -> str:
     cfg = LANG_CONFIG[lang]
     title = f"# {vendor_name(vendor)} - {capability_title(capability, lang)}"
     overview = capability_overview(capability, vendor, lang)
     hint = capability_hint(capability, lang)
     spec_vendor = openapi_spec_vendor(vendor, capability)
-    paths = openapi_path(capability)
-    blocks = "\n".join(build_openapi_block(spec_vendor, env, lang, path, vendor_name(vendor)) for path in paths)
-    extra = extra_capability_content(lang, vendor, capability)
-    extra_section_count = extra.count("### ")
-    api_section_number = f"### {2 + extra_section_count}. API Details" if extra else cfg["openapi_section"]
-    extra_block = f"{extra}\n" if extra else ""
+    blocks = "\n".join(
+        build_openapi_block(spec_vendor, env, lang, path, vendor_name(vendor)) for path in openapi_path(capability)
+    )
     return (
         f"{title}\n\n"
         f"{cfg['overview_section']}\n\n"
         f"{overview}\n\n"
         f"{success_hint(hint)}\n"
         f"{models_section(models, lang)}\n\n"
-        f"{extra_block}"
-        f"{api_section_number}\n\n"
+        f"{cfg['openapi_section']}\n\n"
         f"{blocks}"
     )
 

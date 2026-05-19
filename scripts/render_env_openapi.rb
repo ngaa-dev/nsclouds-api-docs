@@ -89,6 +89,8 @@ CAPABILITY_CONFIG = {
 }.freeze
 
 GEMINI_NATIVE_ENDPOINTS = CAPABILITY_CONFIG.fetch("gemini").fetch(:paths).freeze
+
+
 def deep_copy(value)
   Marshal.load(Marshal.dump(value))
 end
@@ -310,12 +312,6 @@ def rewrite_operation(operation, capability, vendor, example_model)
     new_operation["operationId"] = new_operation["operationId"].gsub(/_(openai|anthropic|google|deepseek|volcengine|minimax|moonshotai)\z/, "_#{vendor}")
   end
   apply_example_model!(new_operation, example_model)
-  if capability == "responses" && vendor != "openai"
-    new_operation.dig("requestBody", "content", "application/json", "examples")&.delete("image_input")
-    new_operation.dig("requestBody", "content", "application/json", "examples")&.delete("file_input")
-    new_operation.dig("responses", "200", "content", "application/json", "examples")&.delete("image-input-response")
-    new_operation.dig("responses", "200", "content", "application/json", "examples")&.delete("file-input-response")
-  end
   new_operation
 end
 

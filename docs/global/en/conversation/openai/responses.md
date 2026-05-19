@@ -19,54 +19,7 @@ This API is compatible with the Responses protocol.
 * `gpt-5.5`
 
 
-### 2. Image Input (Multimodal)
-
-Use `input_image` content parts with `gpt-5.4` when you need the model to inspect an image. The image can be a public URL or a base64 data URL.
-
-```json
-{
-  "model": "gpt-5.4",
-  "input": [
-    {
-      "role": "user",
-      "content": [
-        { "type": "input_text", "text": "Describe this image and extract any visible text." },
-        {
-          "type": "input_image",
-          "image_url": "https://example.com/image.png",
-          "detail": "high"
-        }
-      ]
-    }
-  ]
-}
-```
-
-### 3. File Input
-
-The `/v1/responses` endpoint supports file input with `input_file` content parts. You can reference a publicly accessible file URL directly with `file_url`.
-
-```json
-{
-  "model": "gpt-5.4",
-  "stream": true,
-  "input": [
-    {
-      "role": "user",
-      "content": [
-        { "type": "input_text", "text": "Summarize this paper's core idea." },
-        {
-          "type": "input_file",
-          "file_url": "https://arxiv.org/pdf/1706.03762v7"
-        }
-      ]
-    }
-  ]
-}
-```
-
-
-### 4. API Details
+### 2. API Details
 
 {% openapi-operation spec="openai-en-global" path="/v1/responses" method="post" %}
 [OpenAPI OpenAI](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/en/openai.bundled.yaml)

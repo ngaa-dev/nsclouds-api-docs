@@ -54,13 +54,6 @@ components:
         url:
           type: string
           description: Publicly accessible image URL, or a base64 data URL.
-        detail:
-          type: string
-          description: Optional image understanding detail level.
-          enum:
-            - auto
-            - low
-            - high
       required:
         - url
 
@@ -422,16 +415,19 @@ components:
       properties:
         type:
           type: string
-          description: Part type, such as input_text, input_image, input_file, output_text, or tool_result.
+          description: Part type, such as input_text, input_image, output_text, or tool_result.
         text:
           type: string
           description: Text value carried by the part.
         image_url:
           type: string
           description: Publicly accessible image URL or data URL used by image input parts.
+        file_id:
+          type: string
+          description: Referenced file identifier.
         file_url:
           type: string
-          description: Referenced file URL used by file input parts, when supported.
+          description: Referenced file URL.
         detail:
           type: string
           description: Detail level for image understanding, when supported.

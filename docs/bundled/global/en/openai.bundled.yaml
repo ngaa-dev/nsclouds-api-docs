@@ -311,33 +311,6 @@ paths:
                   model: gpt-5
                   input: Hello
                   stream: false
-              image_input:
-                summary: Image Input (Multimodal)
-                description: Analyze an image using an input_image part.
-                value:
-                  model: gpt-5
-                  input:
-                    - role: user
-                      content:
-                        - type: input_text
-                          text: Describe the image and list any visible text.
-                        - type: input_image
-                          image_url: 'https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png'
-                          detail: high
-                  stream: false
-              file_input:
-                summary: File Input
-                description: Analyze a publicly accessible file with an input_file part and file_url.
-                value:
-                  model: gpt-5
-                  stream: true
-                  input:
-                    - role: user
-                      content:
-                        - type: input_file
-                          file_url: 'https://arxiv.org/pdf/1706.03762v7'
-                        - type: input_text
-                          text: Summarize this paper's core idea.
       responses:
         '200':
           description: Success Response
@@ -364,44 +337,6 @@ paths:
                       input_tokens: 12
                       output_tokens: 9
                       total_tokens: 21
-                image-input-response:
-                  summary: Image Input Response
-                  value:
-                    id: resp_image_123
-                    object: response
-                    model: gpt-5
-                    output_text: 'The image shows a person in a studio setting wearing a metallic, futuristic outfit.'
-                    output:
-                      - id: msg_image_123
-                        type: message
-                        role: assistant
-                        status: completed
-                        content:
-                          - type: output_text
-                            text: 'The image shows a person in a studio setting wearing a metallic, futuristic outfit.'
-                    usage:
-                      input_tokens: 704
-                      output_tokens: 36
-                      total_tokens: 740
-                file-input-response:
-                  summary: File Input Response
-                  value:
-                    id: resp_file_123
-                    object: response
-                    model: gpt-5
-                    output_text: The document summarizes quarterly performance and lists three action items.
-                    output:
-                      - id: msg_file_123
-                        type: message
-                        role: assistant
-                        status: completed
-                        content:
-                          - type: output_text
-                            text: The document summarizes quarterly performance and lists three action items.
-                    usage:
-                      input_tokens: 1200
-                      output_tokens: 64
-                      total_tokens: 1264
         '400':
           $ref: '#/components/responses/ErrorResponse'
         '401':
@@ -432,13 +367,6 @@ components:
         url:
           type: string
           description: 'Publicly accessible image URL, or a base64 data URL.'
-        detail:
-          type: string
-          description: Optional image understanding detail level.
-          enum:
-            - auto
-            - low
-            - high
       required:
         - url
     ChatMessageImagePart:
@@ -785,16 +713,19 @@ components:
       properties:
         type:
           type: string
-          description: 'Part type, such as input_text, input_image, input_file, output_text, or tool_result.'
+          description: 'Part type, such as input_text, input_image, output_text, or tool_result.'
         text:
           type: string
           description: Text value carried by the part.
         image_url:
           type: string
           description: Publicly accessible image URL or data URL used by image input parts.
+        file_id:
+          type: string
+          description: Referenced file identifier.
         file_url:
           type: string
-          description: 'Referenced file URL used by file input parts, when supported.'
+          description: Referenced file URL.
         detail:
           type: string
           description: 'Detail level for image understanding, when supported.'
