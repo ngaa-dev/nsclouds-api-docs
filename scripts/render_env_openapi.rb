@@ -17,6 +17,7 @@ BRAND_NAMES = {
   "dashscope" => "DashScope",
   "deepseek" => "DeepSeek",
   "google" => "Google",
+  "minimax" => "MiniMax",
   "moonshotai" => "Moonshot AI",
   "openai" => "OpenAI",
   "volcengine" => "Volcengine",

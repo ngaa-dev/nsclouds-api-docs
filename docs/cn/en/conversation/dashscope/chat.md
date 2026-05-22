@@ -10,8 +10,6 @@ This API is compatible with the OpenAI Chat Completions interface.
 
 **Supported models：**
 
-* `MiniMax-M2.5`
-* `MiniMax-M2.7`
 * `qwen3.5-flash`
 * `qwen3.5-plus`
 * `qwen3.6-flash`

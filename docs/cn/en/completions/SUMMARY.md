@@ -1,6 +1,7 @@
 # Text Completions
 
 - [DashScope](dashscope.md)
+- [MiniMax](minimax.md)
 - [DeepSeek](deepseek.md)
 - [Volcengine](volcengine.md)
 - [Z.AI](zai.md)

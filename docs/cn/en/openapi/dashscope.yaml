@@ -63,7 +63,7 @@ paths:
                 description: A simple conversation example with system prompt and
                   user message.
                 value:
-                  model: MiniMax-M2.5
+                  model: qwen3.6-flash
                   messages:
                   - role: system
                     content: You are a helpful assistant.
@@ -77,7 +77,7 @@ paths:
                 summary: Streaming
                 description: 'Enable streaming response by setting stream: true.'
                 value:
-                  model: MiniMax-M2.5
+                  model: qwen3.6-flash
                   messages:
                   - role: system
                     content: You are a helpful assistant.
@@ -90,7 +90,7 @@ paths:
                 summary: Image Input (Multimodal)
                 description: Use vision-capable models to analyze images.
                 value:
-                  model: MiniMax-M2.5
+                  model: qwen3.6-flash
                   messages:
                   - role: user
                     content:
@@ -105,7 +105,7 @@ paths:
                 description: Define tools (functions) and let the model decide whether
                   to call them.
                 value:
-                  model: MiniMax-M2.5
+                  model: qwen3.6-flash
                   messages:
                   - role: user
                     content: Read the content of the file report.txt
@@ -138,7 +138,7 @@ paths:
                   value:
                     id: chatcmpl-BPzJw3iWI2jtsjCnR0rRCBvLCETq7
                     created: 1773197421
-                    model: MiniMax-M2.5
+                    model: qwen3.6-flash
                     object: chat.completion
                     choices:
                     - index: 0
@@ -160,7 +160,7 @@ paths:
                   value:
                     id: chatcmpl-s71Ce6GRN8PzAOB0PbVmNFGdSlGjS
                     created: 1773197559
-                    model: MiniMax-M2.5
+                    model: qwen3.6-flash
                     object: chat.completion
                     choices:
                     - index: 0
@@ -181,7 +181,7 @@ paths:
                   value:
                     id: chatcmpl-ZjQIwmTgiAmyXrAeTCcoNXvvqiprq
                     created: 1773197541
-                    model: MiniMax-M2.5
+                    model: qwen3.6-flash
                     object: chat.completion
                     choices:
                     - index: 0
@@ -208,10 +208,10 @@ paths:
                   description: Shows events sent sequentially during streaming chat
                     process.
                   value: |
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.6-flash","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.6-flash","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.6-flash","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.6-flash","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
                     data: [DONE]
         '400':
           "$ref": "#/components/responses/ErrorResponse"
@@ -240,7 +240,7 @@ paths:
                 summary: Basic
                 description: A simple text completion example.
                 value:
-                  model: MiniMax-M2.5
+                  model: qwen3.6-flash
                   prompt: Once upon a time
                   max_tokens: 50
                   temperature: 0.7
@@ -250,7 +250,7 @@ paths:
                 summary: Streaming
                 description: 'Enable streaming response by setting stream: true.'
                 value:
-                  model: MiniMax-M2.5
+                  model: qwen3.6-flash
                   prompt: The future of AI is
                   max_tokens: 30
                   temperature: 0.8
@@ -270,7 +270,7 @@ paths:
                     id: cmpl-123
                     object: text_completion
                     created: 1677652288
-                    model: MiniMax-M2.5
+                    model: qwen3.6-flash
                     choices:
                     - text: " in a small village, there lived a young girl named Lily."
                       index: 0
@@ -291,13 +291,13 @@ paths:
                   description: Shows events sent sequentially during streaming text
                     completion process.
                   value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":".","index":0,"finish_reason":"length"}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"qwen3.6-flash","choices":[{"text":"The","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"qwen3.6-flash","choices":[{"text":" future","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"qwen3.6-flash","choices":[{"text":" of","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"qwen3.6-flash","choices":[{"text":" AI","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"qwen3.6-flash","choices":[{"text":" is","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"qwen3.6-flash","choices":[{"text":" bright","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"qwen3.6-flash","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
         '400':
           "$ref": "#/components/responses/ErrorResponse"

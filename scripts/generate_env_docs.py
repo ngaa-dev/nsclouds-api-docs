@@ -29,7 +29,7 @@ NEW_OPENAPI_VENDORS = {
     "xiaomi": "Xiaomi",
 }
 VENDOR_ORDER = {
-    "cn": ["dashscope", "deepseek", "volcengine", "zai", "xiaomi"],
+    "cn": ["dashscope", "minimax", "deepseek", "volcengine", "zai", "xiaomi"],
     "global": [
         "anthropic",
         "openai",
@@ -37,6 +37,7 @@ VENDOR_ORDER = {
         "deepseek",
         "volcengine",
         "dashscope",
+        "minimax",
         "zai",
         "moonshotai",
         "xai",
@@ -47,6 +48,7 @@ BRAND_NAMES = {
     "dashscope": "DashScope",
     "deepseek": "DeepSeek",
     "google": "Google",
+    "minimax": "MiniMax",
     "moonshotai": "Moonshot AI",
     "openai": "OpenAI",
     "volcengine": "Volcengine",

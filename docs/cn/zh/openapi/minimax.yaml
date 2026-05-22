@@ -1,0 +1,293 @@
+---
+openapi: 3.1.0
+info:
+  "$ref": "./_common.yaml#/info"
+servers:
+  "$ref": "./_common.yaml#/servers"
+tags:
+- "$ref": "./_common.yaml#/tags/0"
+- "$ref": "./_common.yaml#/tags/1"
+- "$ref": "./_common.yaml#/tags/2"
+- "$ref": "./_common.yaml#/tags/3"
+- "$ref": "./_common.yaml#/tags/4"
+- name: chat_completions_minimax
+  x-parent: chat_completions
+  x-page-title: MiniMax
+  x-page-icon: brain
+  description: MiniMax 的对话生成 API
+- name: completions_minimax
+  x-parent: chat_completions
+  x-page-title: MiniMax
+  x-page-icon: brain
+  description: MiniMax 的文本补全 API
+paths:
+  "/v1/chat/completions":
+    post:
+      tags:
+      - chat_completions_minimax
+      summary: 创建聊天补全
+      description: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
+      operationId: createChatCompletion_minimax
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateChatCompletionRequest"
+            examples:
+              default:
+                summary: 基础
+                description: 一个简单的对话示例，包含系统提示和用户消息。
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                  - role: system
+                    content: You are a helpful assistant.
+                  - role: user
+                    content: Hello!
+                  temperature: 1
+                  max_completion_tokens: 50
+                  n: 1
+                  stream: false
+              streaming:
+                summary: 流式
+                description: '通过设置 stream: true 启用流式响应。'
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                  - role: system
+                    content: You are a helpful assistant.
+                  - role: user
+                    content: Tell me a story.
+                  temperature: 0.7
+                  max_completion_tokens: 100
+                  stream: true
+              image_input:
+                summary: 图像输入（多模态）
+                description: 使用支持视觉的模型分析图像。
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                  - role: user
+                    content:
+                    - type: text
+                      text: What's in this image?
+                    - type: image_url
+                      image_url:
+                        url: https://example.com/cat.jpg
+                  max_completion_tokens: 300
+              functions:
+                summary: 函数调用
+                description: 定义工具（函数）并让模型决定是否调用。
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                  - role: user
+                    content: What's the weather in Boston?
+                  tools:
+                  - type: function
+                    function:
+                      name: get_current_weather
+                      description: Get the current weather in a given location
+                      parameters:
+                        type: object
+                        properties:
+                          location:
+                            type: string
+                            description: The city and state, e.g. San Francisco, CA
+                          unit:
+                            type: string
+                            enum:
+                            - celsius
+                            - fahrenheit
+                        required:
+                        - location
+                  tool_choice: auto
+                  max_completion_tokens: 150
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ChatCompletionResponse"
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础聊天请求的响应示例。
+                  value:
+                    id: chatcmpl-5f8c2c44-08dd-98f7-b111-c18d6281f6ee
+                    object: chat.completion
+                    created: 1773225557
+                    model: MiniMax-M2.5
+                    choices:
+                    - index: 0
+                      message:
+                        role: assistant
+                        content: Hello! How can I help you today?
+                        reasoning_content: The user has sent a simple greeting. I
+                          should respond in a friendly and helpful manner.
+                      finish_reason: stop
+                      provider_specific_fields: {}
+                    usage:
+                      prompt_tokens: 40
+                      completion_tokens: 31
+                      total_tokens: 71
+                      completion_tokens_details:
+                        reasoning_tokens: 17
+                      prompt_tokens_details:
+                        cached_tokens: 0
+                image_input-response:
+                  summary: 图像输入响应
+                  description: 模型根据图像内容生成的描述。
+                  value:
+                    id: chatcmpl-789
+                    object: chat.completion
+                    created: 1677652300
+                    model: MiniMax-M2.5
+                    choices:
+                    - index: 0
+                      message:
+                        role: assistant
+                        content: The image shows a cute cat sitting on a windowsill,
+                          looking outside.
+                      finish_reason: stop
+                    usage:
+                      prompt_tokens: 123
+                      completion_tokens: 15
+                      total_tokens: 138
+                functions-response:
+                  summary: 函数调用响应
+                  description: 模型返回一个函数调用请求。
+                  value:
+                    id: chatcmpl-abc
+                    object: chat.completion
+                    created: 1677652310
+                    model: MiniMax-M2.5
+                    choices:
+                    - index: 0
+                      message:
+                        role: assistant
+                        content: 
+                        tool_calls:
+                        - id: call_123
+                          type: function
+                          function:
+                            name: get_current_weather
+                            arguments: '{"location": "Boston, MA", "unit": "fahrenheit"}'
+                      finish_reason: tool_calls
+                    usage:
+                      prompt_tokens: 50
+                      completion_tokens: 20
+                      total_tokens: 70
+            text/event-stream:
+              schema:
+                type: string
+                description: '流式响应以 Server-Sent Events 格式返回，每个事件是一行以 ''data: '' 开头的
+                  JSON 数据块，最后以 ''data: [DONE]'' 结束。'
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示流式聊天过程中陆续发送的事件。
+                  value: |
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"reasoning_content":"The user has just said \"Hello!\" - a simple greeting. I should respond in a friendly, welcoming manner and offer to help them with whatever they need.\n"},"reasoning_content":"The user has just said \"Hello!\" - a simple greeting. I should respond in a friendly, welcoming manner and offer to help them with whatever they need.\n"}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":"Hello!"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" How are you doing"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" today? Is there"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" something I can help"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" you with?"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"finish_reason":"stop","index":0,"delta":{}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: [DONE]
+        '400':
+          "$ref": "#/components/responses/ErrorResponse"
+        '401':
+          "$ref": "#/components/responses/ErrorResponse"
+        '429':
+          "$ref": "#/components/responses/ErrorResponse"
+  "/v1/completions":
+    post:
+      tags:
+      - completions_minimax
+      summary: 创建文本补全
+      description: 基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
+      operationId: createCompletion_minimax
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateCompletionRequest"
+            examples:
+              default:
+                summary: 基础
+                description: 一个简单的文本补全示例。
+                value:
+                  model: MiniMax-M2.5
+                  prompt: Once upon a time
+                  max_tokens: 50
+                  temperature: 0.7
+                  n: 1
+                  stream: false
+              streaming:
+                summary: 流式
+                description: '通过设置 stream: true 启用流式响应。'
+                value:
+                  model: MiniMax-M2.5
+                  prompt: The future of AI is
+                  max_tokens: 30
+                  temperature: 0.8
+                  stream: true
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CompletionResponse"
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础文本补全请求的响应示例。
+                  value:
+                    id: cmpl-123
+                    object: text_completion
+                    created: 1677652288
+                    model: MiniMax-M2.5
+                    choices:
+                    - text: " in a small village, there lived a young girl named Lily."
+                      index: 0
+                      finish_reason: length
+                    usage:
+                      prompt_tokens: 4
+                      completion_tokens: 12
+                      total_tokens: 16
+            text/event-stream:
+              schema:
+                type: string
+                description: '流式响应以 Server-Sent Events 格式返回，每个事件是一行以 ''data: '' 开头的
+                  JSON 数据块，最后以 ''data: [DONE]'' 结束。'
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示流式文本补全过程中陆续发送的事件。
+                  value: |
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":"The","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" future","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" of","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" AI","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" is","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" bright","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":".","index":0,"finish_reason":"length"}]}
+                    data: [DONE]
+        '400':
+          "$ref": "#/components/responses/ErrorResponse"
+        '401':
+          "$ref": "#/components/responses/ErrorResponse"
+        '429':
+          "$ref": "#/components/responses/ErrorResponse"
+components:
+  "$ref": "./_common.yaml#/components"

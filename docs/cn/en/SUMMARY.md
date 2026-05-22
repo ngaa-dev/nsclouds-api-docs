@@ -5,6 +5,8 @@
   * [DashScope](conversation/dashscope/readme.md)
     * [Chat Completions](conversation/dashscope/chat.md)
     * [Responses](conversation/dashscope/responses.md)
+  * [MiniMax](conversation/minimax/readme.md)
+    * [Chat Completions](conversation/minimax/chat.md)
   * [DeepSeek](conversation/deepseek/readme.md)
     * [Chat Completions](conversation/deepseek/chat.md)
     * [Messages](conversation/deepseek/messages.md)

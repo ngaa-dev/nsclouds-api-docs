@@ -6,6 +6,7 @@
 - [DeepSeek](deepseek.md)
 - [Volcengine](volcengine.md)
 - [DashScope](dashscope.md)
+- [MiniMax](minimax.md)
 - [Z.AI](zai.md)
 - [Moonshot AI](moonshotai.md)
 - [xAI](xai.md)
