@@ -6,6 +6,6 @@ NewStream AI Gateway 通过统一的 API 接口整合了主流的人工智能服
 
 所有 API 均采用标准化接口设计，能够灵活适配多样化的业务场景。该网关尤其适用于边缘智能及实时内容处理应用。
 
-更多产品信息与解决方案介绍，请访问官网了解更多：[https://www.ngaa.com.cn/product/aigateway.html](https://www.ngaa.com.cn/product/aigateway.html).
+更多产品信息与解决方案介绍，请访问[官网](https://www.ngaa.com.cn/product/aigateway.html)了解更多。
 
 如需获取访问授权或技术支持，请联系 NewStream 客户支持团队：[dev@ngaa.com.cn](mailto:dev@ngaa.com.cn).
