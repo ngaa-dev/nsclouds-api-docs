@@ -15,6 +15,7 @@ DashScope 的对话接口能力。
 * `qwen3.6-flash`
 * `qwen3.6-max-preview`
 * `qwen3.6-plus`
+* `qwen3.7-max`
 
 
 ### 2. 接口详情

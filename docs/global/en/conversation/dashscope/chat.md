@@ -15,6 +15,7 @@ This API is compatible with the OpenAI Chat Completions interface.
 * `qwen3.6-flash`
 * `qwen3.6-max-preview`
 * `qwen3.6-plus`
+* `qwen3.7-max`
 
 
 ### 2. API Details

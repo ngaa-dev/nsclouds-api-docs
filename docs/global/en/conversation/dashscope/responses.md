@@ -12,6 +12,7 @@ This API is compatible with the Responses protocol.
 
 * `qwen3.6-flash`
 * `qwen3.6-plus`
+* `qwen3.7-max`
 
 
 ### 2. API Details
