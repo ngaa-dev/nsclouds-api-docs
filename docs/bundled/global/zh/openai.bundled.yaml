@@ -113,8 +113,23 @@ paths:
                           text: What's in this image?
                   max_completion_tokens: 300
               file_input:
-                summary: 文件输入
-                description: 在 Chat Completions 中传入已上传的文件。此端点不接受 file_url；外部文件 URL 请使用 Responses 的 input_file.file_url。
+                summary: 文件输入（Base64）
+                description: 在 Chat Completions 中以内联 base64 传入文件内容，当前推荐优先使用 file_data。此端点不接受 file_url；外部文件 URL 请使用 Responses 的 input_file.file_url。
+                value:
+                  model: gpt-5
+                  messages:
+                    - role: user
+                      content:
+                        - type: text
+                          text: Summarize the attached document in five bullet points.
+                        - type: file
+                          file:
+                            filename: report.pdf
+                            file_data: 'data:application/pdf;base64,JVBERi0xLjQKJcfs...'
+                  max_completion_tokens: 300
+              file_id_input:
+                summary: 文件输入（File ID）
+                description: OpenAI 兼容字段。file_id 来源于 Files API 上传后返回的文件 ID；当前平台该能力适配中，实际可用性取决于文件托管和模型侧支持。
                 value:
                   model: gpt-5
                   messages:
@@ -342,8 +357,8 @@ paths:
                           image_url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII='
                   stream: false
               image_file_input:
-                summary: 图像输入（File ID）
-                description: 通过已上传文件的 file_id 分析图片内容。
+                summary: 图像输入（File ID，兼容字段）
+                description: OpenAI 兼容字段。通过已上传图片的 file_id 分析图片内容；当前平台该能力适配中，实际可用性取决于文件托管和模型侧支持。当前推荐优先使用 image_url 或图片 data URL。
                 value:
                   model: gpt-5.4
                   input:
@@ -369,7 +384,7 @@ paths:
                   stream: false
               file_id_input:
                 summary: 文件输入（File ID）
-                description: 引用通过 Files API 预先上传的文件。
+                description: OpenAI 兼容字段。引用通过 Files API 预先上传的文件；当前平台该能力适配中，实际可用性取决于文件托管和模型侧支持。
                 value:
                   model: gpt-5
                   input:
@@ -518,14 +533,14 @@ components:
         - input_audio
     ChatMessageFileObject:
       type: object
-      description: Chat Completions 内容片段中的文件结构。Chat 的 file 片段支持已上传文件的 file_id 或内联 file_data，不支持 file_url；外部文件 URL 请使用 Responses 的 input_file.file_url。
+      description: Chat Completions 内容片段中的文件结构。Chat 的 file 片段支持内联 file_data，也兼容 OpenAI 的 file_id；当前推荐优先使用 file_data。不支持 file_url；外部文件 URL 请使用 Responses 的 input_file.file_url。
       properties:
         file_id:
           type: string
-          description: 预先上传后的文件 ID。
+          description: OpenAI 兼容字段。预先上传后的文件 ID，来源于 Files API；当前平台该能力适配中，实际可用性取决于文件托管和模型侧支持。
         file_data:
           type: string
-          description: 内联传递的 base64 文件内容。
+          description: 内联传递的 base64 文件内容，当前推荐优先使用。
         filename:
           type: string
           description: 与内联文件内容配套的文件名。
@@ -537,7 +552,7 @@ components:
       additionalProperties: false
     ChatMessageFilePart:
       type: object
-      description: Chat Completions 的文件输入内容片段。这里不支持外部文件 URL；如需传入文件 URL，请使用 Responses 的 input_file.file_url。
+      description: Chat Completions 的文件输入内容片段。支持 file_data，也兼容 file_id；不支持外部文件 URL。如需传入文件 URL，请使用 Responses 的 input_file.file_url。
       properties:
         type:
           type: string
@@ -1313,7 +1328,7 @@ components:
       additionalProperties: true
     ResponseInputImagePart:
       type: object
-      description: Responses 协议中的图片输入内容片段。可通过多个 input_image 片段传递多张图片。
+      description: Responses 协议中的图片输入内容片段。支持 image_url 或 OpenAI 兼容的 file_id；当前推荐优先使用 image_url。可通过多个 input_image 片段传递多张图片。
       properties:
         type:
           type: string
@@ -1325,7 +1340,7 @@ components:
           description: '可公开访问的图片 URL 或图片 data URL。支持常见图片格式，例如 data:image/png;base64,...。'
         file_id:
           type: string
-          description: 预先上传的图片文件 ID。
+          description: OpenAI 兼容字段。预先上传的图片文件 ID，来源于 Files API；当前平台该能力适配中，实际可用性取决于文件托管和模型侧支持。
         detail:
           type: string
           description: 支持时用于控制图片理解的细节等级。
@@ -1344,7 +1359,7 @@ components:
       additionalProperties: true
     ResponseInputFilePart:
       type: object
-      description: Responses 协议中的文件输入内容片段。支持常见文档和文本格式，PDF 仅为示例。
+      description: Responses 协议中的文件输入内容片段。支持 file_url、file_data 和 OpenAI 兼容的 file_id；当前推荐优先使用 file_url 或 file_data。支持常见文档和文本格式，PDF 仅为示例。
       properties:
         type:
           type: string
@@ -1353,16 +1368,16 @@ components:
             - input_file
         file_id:
           type: string
-          description: 预先上传的文件 ID。
+          description: OpenAI 兼容字段。预先上传的文件 ID，来源于 Files API；当前平台该能力适配中，实际可用性取决于文件托管和模型侧支持。
         file_url:
           type: string
-          description: 用于文件输入的可公开访问文件 URL。支持常见文档和文本格式。
+          description: 用于文件输入的可公开访问文件 URL，当前推荐优先使用。支持常见文档和文本格式。
         filename:
           type: string
           description: 以内联方式传递文件内容时使用的文件名。
         file_data:
           type: string
-          description: '以 data URL 形式传递的 base64 编码文件内容，例如 data:application/pdf;base64,... 或 data:text/plain;base64,...'
+          description: '以 data URL 形式传递的 base64 编码文件内容，当前推荐优先使用；例如 data:application/pdf;base64,... 或 data:text/plain;base64,...'
       required:
         - type
       anyOf:

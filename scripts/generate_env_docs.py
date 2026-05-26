@@ -108,6 +108,7 @@ LANG_CONFIG = {
         "overview_image_edits": "{vendor} 在当前环境中提供的图像编辑能力。",
         "overview_audio_transcriptions": "{vendor} 在当前环境中提供的音频转写能力。",
         "openapi_section": "### 2. 接口详情",
+        "openapi_section_after_extra": "### 3. 接口详情",
         "overview_section": "### 1. 概述",
     },
     "en": {
@@ -149,6 +150,7 @@ LANG_CONFIG = {
         "overview_image_edits": "{vendor} exposes image edit capabilities in this environment.",
         "overview_audio_transcriptions": "{vendor} exposes audio transcription capabilities in this environment.",
         "openapi_section": "### 2. API Details",
+        "openapi_section_after_extra": "### 3. API Details",
         "overview_section": "### 1. Overview",
     },
 }
@@ -388,6 +390,70 @@ def capability_hint(capability: str, lang: str) -> str:
     return cfg[key]
 
 
+def info_hint(text: str) -> str:
+    return f'{{% hint style="info" %}}\n{text}\n{{% endhint %}}\n'
+
+
+def file_input_notes(lang: str, vendor: str, capability: str) -> str:
+    if vendor != "openai" or capability not in {"chat", "responses"}:
+        return ""
+    if lang == "zh" and capability == "chat":
+        return (
+            "### 2. 文件输入说明\n\n"
+            + info_hint(
+                "`/v1/chat/completions` 支持通过 `file_data` 传入 base64 文件内容，也兼容 OpenAI 的 `file_id` 字段；不支持 `file_url`。如需通过 URL 传入文件，请使用 Responses API。"
+            )
+            + "\n"
+            "| 字段 | 支持情况 | 建议 |\n"
+            "| --- | --- | --- |\n"
+            "| `file_data` | 支持 | 当前推荐，适合直接以内联 base64 传入文件内容 |\n"
+            "| `file_id` | OpenAI 兼容字段，适配中 | 来源于 Files API 上传后返回的文件 ID，实际可用性取决于文件托管和模型侧支持 |\n"
+            "| `file_url` | 不支持 | 请改用 `/v1/responses` 的 `input_file.file_url` |\n"
+        )
+    if lang == "zh" and capability == "responses":
+        return (
+            "### 2. 文件与图片输入说明\n\n"
+            + info_hint(
+                "`/v1/responses` 支持通过 URL 或 data URL 传入图片和文件，也兼容 OpenAI 的 `file_id`。当前建议优先使用 `image_url`、`file_url` 或 `file_data`；图片和文件的 `file_id` 均依赖 Files API 上传、文件托管和模型侧映射能力。"
+            )
+            + "\n"
+            "| 字段 | 适用类型 | 支持情况 | 建议 |\n"
+            "| --- | --- | --- | --- |\n"
+            "| `image_url` | `input_image` | 支持 | 当前推荐，适合图片 URL 或图片 data URL |\n"
+            "| `file_url` | `input_file` | 支持 | 当前推荐，适合可公开访问的文件 URL |\n"
+            "| `file_data` | `input_file` | 支持 | 当前推荐，适合以内联 base64 传入文件内容 |\n"
+            "| `file_id` | `input_image` / `input_file` | OpenAI 兼容字段，适配中 | 来源于 Files API 上传后返回的文件 ID，实际可用性取决于文件托管和模型侧支持 |\n"
+        )
+    if lang == "en" and capability == "chat":
+        return (
+            "### 2. File Input Notes\n\n"
+            + info_hint(
+                "`/v1/chat/completions` supports base64 file input through `file_data` and keeps OpenAI-compatible `file_id`; it does not support `file_url`. Use the Responses API when you need to pass files by URL."
+            )
+            + "\n"
+            "| Field | Support | Recommendation |\n"
+            "| --- | --- | --- |\n"
+            "| `file_data` | Supported | Recommended today for inline base64 file content |\n"
+            "| `file_id` | OpenAI-compatible field, in adaptation | Comes from a Files API upload; actual availability depends on file hosting and model-side support |\n"
+            "| `file_url` | Not supported | Use `/v1/responses` with `input_file.file_url` instead |\n"
+        )
+    if lang == "en" and capability == "responses":
+        return (
+            "### 2. File And Image Input Notes\n\n"
+            + info_hint(
+                "`/v1/responses` supports image and file inputs by URL or data URL, and keeps OpenAI-compatible `file_id`. Prefer `image_url`, `file_url`, or `file_data` today; image and file `file_id` both depend on Files API upload, file hosting, and model-side mapping support."
+            )
+            + "\n"
+            "| Field | Applies to | Support | Recommendation |\n"
+            "| --- | --- | --- | --- |\n"
+            "| `image_url` | `input_image` | Supported | Recommended today for image URLs or image data URLs |\n"
+            "| `file_url` | `input_file` | Supported | Recommended today for publicly accessible file URLs |\n"
+            "| `file_data` | `input_file` | Supported | Recommended today for inline base64 file content |\n"
+            "| `file_id` | `input_image` / `input_file` | OpenAI-compatible field, in adaptation | Comes from a Files API upload; actual availability depends on file hosting and model-side support |\n"
+        )
+    return ""
+
+
 def openapi_spec_vendor(vendor: str, capability: str) -> str:
     if capability == "gemini":
         return "google"
@@ -419,13 +485,17 @@ def build_capability_page(env: str, lang: str, vendor: str, capability: str, mod
     blocks = "\n".join(
         build_openapi_block(spec_vendor, env, lang, path, vendor_name(vendor)) for path in openapi_path(capability)
     )
+    extra_section = file_input_notes(lang, vendor, capability)
+    extra_block = f"{extra_section}\n" if extra_section else ""
+    openapi_section = cfg["openapi_section_after_extra"] if extra_section else cfg["openapi_section"]
     return (
         f"{title}\n\n"
         f"{cfg['overview_section']}\n\n"
         f"{overview}\n\n"
         f"{success_hint(hint)}\n"
         f"{models_section(models, lang)}\n\n"
-        f"{cfg['openapi_section']}\n\n"
+        f"{extra_block}"
+        f"{openapi_section}\n\n"
         f"{blocks}"
     )
 

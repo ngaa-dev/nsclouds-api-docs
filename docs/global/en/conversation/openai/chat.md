@@ -19,7 +19,19 @@ This endpoint provides an OpenAI-compatible Chat Completions path. Actual parame
 * `gpt-5.5`
 
 
-### 2. API Details
+### 2. File Input Notes
+
+{% hint style="info" %}
+`/v1/chat/completions` supports base64 file input through `file_data` and keeps OpenAI-compatible `file_id`; it does not support `file_url`. Use the Responses API when you need to pass files by URL.
+{% endhint %}
+
+| Field | Support | Recommendation |
+| --- | --- | --- |
+| `file_data` | Supported | Recommended today for inline base64 file content |
+| `file_id` | OpenAI-compatible field, in adaptation | Comes from a Files API upload; actual availability depends on file hosting and model-side support |
+| `file_url` | Not supported | Use `/v1/responses` with `input_file.file_url` instead |
+
+### 3. API Details
 
 {% openapi-operation spec="openai-en-global" path="/v1/chat/completions" method="post" %}
 [OpenAPI OpenAI](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/en/openai.bundled.yaml)

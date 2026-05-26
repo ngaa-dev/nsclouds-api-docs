@@ -113,8 +113,23 @@ paths:
                           text: What's in this image?
                   max_completion_tokens: 300
               file_input:
-                summary: File Input
-                description: Pass a previously uploaded file into Chat Completions. This endpoint does not accept file_url; use Responses input_file.file_url for external file URLs.
+                summary: File Input (Base64)
+                description: 'Send inline base64 file content into Chat Completions, with file_data recommended today. This endpoint does not accept file_url; use Responses input_file.file_url for external file URLs.'
+                value:
+                  model: gpt-5
+                  messages:
+                    - role: user
+                      content:
+                        - type: text
+                          text: Summarize the attached document in five bullet points.
+                        - type: file
+                          file:
+                            filename: report.pdf
+                            file_data: 'data:application/pdf;base64,JVBERi0xLjQKJcfs...'
+                  max_completion_tokens: 300
+              file_id_input:
+                summary: File Input (File ID)
+                description: 'OpenAI-compatible field. file_id comes from a Files API upload; this platform capability is still being adapted, and actual availability depends on file hosting and model-side support.'
                 value:
                   model: gpt-5
                   messages:
@@ -342,8 +357,8 @@ paths:
                           image_url: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII='
                   stream: false
               image_file_input:
-                summary: Image Input (File ID)
-                description: Analyze an uploaded image by passing its file ID.
+                summary: 'Image Input (File ID, Compatible Field)'
+                description: 'OpenAI-compatible field. Analyze an uploaded image by passing its file ID; this platform capability is still being adapted, and actual availability depends on file hosting and model-side support. Prefer image_url or an image data URL today.'
                 value:
                   model: gpt-5.4
                   input:
@@ -369,7 +384,7 @@ paths:
                   stream: false
               file_id_input:
                 summary: File Input (File ID)
-                description: Reference a previously uploaded file from the Files API.
+                description: 'OpenAI-compatible field. Reference a previously uploaded file from the Files API; this platform capability is still being adapted, and actual availability depends on file hosting and model-side support.'
                 value:
                   model: gpt-5
                   input:
@@ -518,14 +533,14 @@ components:
         - input_audio
     ChatMessageFileObject:
       type: object
-      description: File payload passed in a Chat Completions content part. Chat file parts accept an uploaded file_id or inline file_data; they do not support file_url. Use Responses input_file.file_url for external file URLs.
+      description: File payload passed in a Chat Completions content part. Chat file parts support inline file_data and keep OpenAI-compatible file_id; file_data is recommended today. They do not support file_url. Use Responses input_file.file_url for external file URLs.
       properties:
         file_id:
           type: string
-          description: Previously uploaded file ID.
+          description: 'OpenAI-compatible field. Previously uploaded file ID from the Files API; this platform capability is still being adapted, and actual availability depends on file hosting and model-side support.'
         file_data:
           type: string
-          description: Inline base64-encoded file content.
+          description: 'Inline base64-encoded file content, recommended today.'
         filename:
           type: string
           description: File name used together with inline file content.
@@ -537,7 +552,7 @@ components:
       additionalProperties: false
     ChatMessageFilePart:
       type: object
-      description: File input content part for Chat Completions. External file URLs are not supported here; use Responses input_file.file_url instead.
+      description: File input content part for Chat Completions. Supports file_data and keeps file_id compatibility; external file URLs are not supported here. Use Responses input_file.file_url instead.
       properties:
         type:
           type: string
@@ -1313,7 +1328,7 @@ components:
       additionalProperties: true
     ResponseInputImagePart:
       type: object
-      description: Image input content part for the Responses protocol. Add multiple input_image parts to send multiple images.
+      description: Image input content part for the Responses protocol. Supports image_url or OpenAI-compatible file_id; image_url is recommended today. Add multiple input_image parts to send multiple images.
       properties:
         type:
           type: string
@@ -1325,7 +1340,7 @@ components:
           description: 'Publicly accessible image URL or image data URL. Common image formats are supported; for example, data:image/png;base64,...'
         file_id:
           type: string
-          description: Previously uploaded image file ID.
+          description: 'OpenAI-compatible field. Previously uploaded image file ID from the Files API; this platform capability is still being adapted, and actual availability depends on file hosting and model-side support.'
         detail:
           type: string
           description: 'Detail level for image understanding, when supported.'
@@ -1344,7 +1359,7 @@ components:
       additionalProperties: true
     ResponseInputFilePart:
       type: object
-      description: File input content part for the Responses protocol. Common document and text formats are supported; PDF is only one example.
+      description: 'File input content part for the Responses protocol. Supports file_url, file_data, and OpenAI-compatible file_id; file_url or file_data is recommended today. Common document and text formats are supported; PDF is only one example.'
       properties:
         type:
           type: string
@@ -1353,16 +1368,16 @@ components:
             - input_file
         file_id:
           type: string
-          description: Previously uploaded file ID used by file input parts.
+          description: 'OpenAI-compatible field. Previously uploaded file ID from the Files API; this platform capability is still being adapted, and actual availability depends on file hosting and model-side support.'
         file_url:
           type: string
-          description: Publicly accessible file URL used by file input parts. Common document and text formats are supported.
+          description: 'Publicly accessible file URL used by file input parts, recommended today. Common document and text formats are supported.'
         filename:
           type: string
           description: File name used together with file_data for inline file uploads.
         file_data:
           type: string
-          description: 'Data URL containing base64-encoded file content, such as data:application/pdf;base64,... or data:text/plain;base64,...'
+          description: 'Data URL containing base64-encoded file content, recommended today; for example, data:application/pdf;base64,... or data:text/plain;base64,...'
       required:
         - type
       anyOf:

@@ -98,10 +98,27 @@ paths:
                       text: What's in this image?
                   max_completion_tokens: 300
               file_input:
-                summary: File Input
-                description: Pass a previously uploaded file into Chat Completions.
-                  This endpoint does not accept file_url; use Responses input_file.file_url
-                  for external file URLs.
+                summary: File Input (Base64)
+                description: Send inline base64 file content into Chat Completions,
+                  with file_data recommended today. This endpoint does not accept
+                  file_url; use Responses input_file.file_url for external file URLs.
+                value:
+                  model: gpt-5
+                  messages:
+                  - role: user
+                    content:
+                    - type: text
+                      text: Summarize the attached document in five bullet points.
+                    - type: file
+                      file:
+                        filename: report.pdf
+                        file_data: data:application/pdf;base64,JVBERi0xLjQKJcfs...
+                  max_completion_tokens: 300
+              file_id_input:
+                summary: File Input (File ID)
+                description: OpenAI-compatible field. file_id comes from a Files API
+                  upload; this platform capability is still being adapted, and actual
+                  availability depends on file hosting and model-side support.
                 value:
                   model: gpt-5
                   messages:
@@ -342,8 +359,11 @@ paths:
                       image_url: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=
                   stream: false
               image_file_input:
-                summary: Image Input (File ID)
-                description: Analyze an uploaded image by passing its file ID.
+                summary: Image Input (File ID, Compatible Field)
+                description: OpenAI-compatible field. Analyze an uploaded image by
+                  passing its file ID; this platform capability is still being adapted,
+                  and actual availability depends on file hosting and model-side support.
+                  Prefer image_url or an image data URL today.
                 value:
                   model: gpt-5.4
                   input:
@@ -369,7 +389,10 @@ paths:
                   stream: false
               file_id_input:
                 summary: File Input (File ID)
-                description: Reference a previously uploaded file from the Files API.
+                description: OpenAI-compatible field. Reference a previously uploaded
+                  file from the Files API; this platform capability is still being
+                  adapted, and actual availability depends on file hosting and model-side
+                  support.
                 value:
                   model: gpt-5
                   input:

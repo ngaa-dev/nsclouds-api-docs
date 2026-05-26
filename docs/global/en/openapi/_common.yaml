@@ -112,15 +112,18 @@ components:
     ChatMessageFileObject:
       type: object
       description: File payload passed in a Chat Completions content part. Chat file
-        parts accept an uploaded file_id or inline file_data; they do not support
-        file_url. Use Responses input_file.file_url for external file URLs.
+        parts support inline file_data and keep OpenAI-compatible file_id; file_data
+        is recommended today. They do not support file_url. Use Responses input_file.file_url
+        for external file URLs.
       properties:
         file_id:
           type: string
-          description: Previously uploaded file ID.
+          description: OpenAI-compatible field. Previously uploaded file ID from the
+            Files API; this platform capability is still being adapted, and actual
+            availability depends on file hosting and model-side support.
         file_data:
           type: string
-          description: Inline base64-encoded file content.
+          description: Inline base64-encoded file content, recommended today.
         filename:
           type: string
           description: File name used together with inline file content.
@@ -132,8 +135,9 @@ components:
       additionalProperties: false
     ChatMessageFilePart:
       type: object
-      description: File input content part for Chat Completions. External file URLs
-        are not supported here; use Responses input_file.file_url instead.
+      description: File input content part for Chat Completions. Supports file_data
+        and keeps file_id compatibility; external file URLs are not supported here.
+        Use Responses input_file.file_url instead.
       properties:
         type:
           type: string
@@ -918,7 +922,8 @@ components:
       additionalProperties: true
     ResponseInputImagePart:
       type: object
-      description: Image input content part for the Responses protocol. Add multiple
+      description: Image input content part for the Responses protocol. Supports image_url
+        or OpenAI-compatible file_id; image_url is recommended today. Add multiple
         input_image parts to send multiple images.
       properties:
         type:
@@ -932,7 +937,9 @@ components:
             formats are supported; for example, data:image/png;base64,...
         file_id:
           type: string
-          description: Previously uploaded image file ID.
+          description: OpenAI-compatible field. Previously uploaded image file ID
+            from the Files API; this platform capability is still being adapted, and
+            actual availability depends on file hosting and model-side support.
         detail:
           type: string
           description: Detail level for image understanding, when supported.
@@ -951,8 +958,9 @@ components:
       additionalProperties: true
     ResponseInputFilePart:
       type: object
-      description: File input content part for the Responses protocol. Common document
-        and text formats are supported; PDF is only one example.
+      description: File input content part for the Responses protocol. Supports file_url,
+        file_data, and OpenAI-compatible file_id; file_url or file_data is recommended
+        today. Common document and text formats are supported; PDF is only one example.
       properties:
         type:
           type: string
@@ -961,18 +969,20 @@ components:
           - input_file
         file_id:
           type: string
-          description: Previously uploaded file ID used by file input parts.
+          description: OpenAI-compatible field. Previously uploaded file ID from the
+            Files API; this platform capability is still being adapted, and actual
+            availability depends on file hosting and model-side support.
         file_url:
           type: string
-          description: Publicly accessible file URL used by file input parts. Common
-            document and text formats are supported.
+          description: Publicly accessible file URL used by file input parts, recommended
+            today. Common document and text formats are supported.
         filename:
           type: string
           description: File name used together with file_data for inline file uploads.
         file_data:
           type: string
-          description: Data URL containing base64-encoded file content, such as data:application/pdf;base64,...
-            or data:text/plain;base64,...
+          description: Data URL containing base64-encoded file content, recommended
+            today; for example, data:application/pdf;base64,... or data:text/plain;base64,...
       required:
       - type
       anyOf:
