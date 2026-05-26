@@ -15,11 +15,6 @@ tags:
   x-page-title: Z.AI
   x-page-icon: brain
   description: Z.AI's chat completions API
-- name: completions_zai
-  x-parent: chat_completions
-  x-page-title: Z.AI
-  x-page-icon: brain
-  description: Z.AI's text completions API
 - name: responses_zai
   x-parent: chat_completions
   x-page-title: Z.AI
@@ -40,9 +35,9 @@ paths:
     post:
       tags:
       - chat_completions_zai
-      summary: Create Chat Completion
-      description: Generate model responses based on input messages. Fully compatible
-        with OpenAI's Chat API.
+      summary: Create chat completion
+      description: Provides an OpenAI-compatible Chat Completions endpoint. Supported
+        parameters and behavior may vary by model.
       operationId: createChatCompletion_zai
       security:
       - APIKeyHeader: []
@@ -81,47 +76,9 @@ paths:
                   temperature: 0.7
                   max_completion_tokens: 100
                   stream: true
-              image_input:
-                summary: Image Input (Multimodal)
-                description: Use vision-capable models to analyze images.
-                value:
-                  model: glm-4.6v
-                  messages:
-                  - role: user
-                    content:
-                    - type: text
-                      text: What is in this image?
-                    - type: image_url
-                      image_url:
-                        url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
-                  max_completion_tokens: 300
-              functions:
-                summary: Function Calling
-                description: Define tools (functions) and let the model decide whether
-                  to call them.
-                value:
-                  model: glm-4.6v
-                  messages:
-                  - role: user
-                    content: Read the content of the file report.txt
-                  tools:
-                  - type: function
-                    function:
-                      name: read_file
-                      description: Read the content of a file
-                      parameters:
-                        type: object
-                        properties:
-                          file_path:
-                            type: string
-                            description: The path to the file to read
-                        required:
-                        - file_path
-                  tool_choice: auto
-                  max_completion_tokens: 150
       responses:
         '200':
-          description: Success Response
+          description: Successful response
           content:
             application/json:
               schema:
@@ -129,78 +86,32 @@ paths:
               examples:
                 default-response:
                   summary: Basic Response
-                  description: Response example for basic chat request.
+                  description: Response example corresponding to basic chat request.
                   value:
-                    id: chatcmpl-BPzJw3iWI2jtsjCnR0rRCBvLCETq7
-                    created: 1773197421
-                    model: glm-4.6v
+                    id: chatcmpl-123
                     object: chat.completion
+                    created: 1677652288
+                    model: glm-4.6v
                     choices:
                     - index: 0
                       message:
                         role: assistant
-                        content: Hi! How can I help today? I can answer questions,
-                          explain topics, brainstorm ideas, write or edit text, solve
-                          problems, or analyze images.
+                        content: Hello there! How can I assist you today?
                       finish_reason: stop
                     usage:
-                      completion_tokens: 174
-                      prompt_tokens: 8
-                      total_tokens: 182
-                      completion_tokens_details:
-                        reasoning_tokens: 128
-                image_input-response:
-                  summary: Image Input Response
-                  description: Model-generated description based on image content.
-                  value:
-                    id: chatcmpl-s71Ce6GRN8PzAOB0PbVmNFGdSlGjS
-                    created: 1773197559
-                    model: glm-4.6v
-                    object: chat.completion
-                    choices:
-                    - index: 0
-                      message:
-                        role: assistant
-                        content: The image shows a person posing in a studio setup
-                          against a white backdrop, wearing a shiny, chrome-like metallic
-                          outfit with spiky, futuristic elements (including headpiece/hair).
-                          The face area is blurred/pixelated.
-                      finish_reason: stop
-                    usage:
-                      completion_tokens: 49
-                      prompt_tokens: 704
-                      total_tokens: 753
-                functions-response:
-                  summary: Function Calling Response
-                  description: Model returns a function call request.
-                  value:
-                    id: chatcmpl-ZjQIwmTgiAmyXrAeTCcoNXvvqiprq
-                    created: 1773197541
-                    model: glm-4.6v
-                    object: chat.completion
-                    choices:
-                    - index: 0
-                      message:
-                        role: assistant
-                        content: I can't directly access or read files on your system.
-                          If you'd like to share the content of report.txt, you can
-                          copy and paste it here, and I'll help you analyze or work
-                          with it.
-                      finish_reason: stop
-                    usage:
-                      completion_tokens: 74
-                      prompt_tokens: 13
-                      total_tokens: 87
+                      prompt_tokens: 9
+                      completion_tokens: 12
+                      total_tokens: 21
             text/event-stream:
               schema:
                 type: string
-                description: 'Streaming responses are returned in Server-Sent Events
-                  format, each event is a JSON data block starting with ''data: ''
-                  and ending with ''data: [DONE]''.'
+                description: 'Streaming response is returned in Server-Sent Events
+                  format, each event is a line of JSON data block starting with ''data:
+                  '', ending with ''data: [DONE]''.'
               examples:
                 streaming-response:
                   summary: Streaming Response Example
-                  description: Shows events sent sequentially during streaming chat
+                  description: Shows events sent continuously during streaming chat
                     process.
                   value: |
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"glm-4.6v","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
@@ -214,98 +125,13 @@ paths:
           "$ref": "#/components/responses/ErrorResponse"
         '429':
           "$ref": "#/components/responses/ErrorResponse"
-  "/v1/completions":
-    post:
-      tags:
-      - completions_zai
-      summary: Create Text Completion
-      description: Generate one or more completions based on provided prompts. Compatible
-        with OpenAI's Completions API.
-      operationId: createCompletion_zai
-      security:
-      - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/CreateCompletionRequest"
-            examples:
-              default:
-                summary: Basic
-                description: A simple text completion example.
-                value:
-                  model: glm-4.6v
-                  prompt: Once upon a time
-                  max_tokens: 50
-                  temperature: 0.7
-                  n: 1
-                  stream: false
-              streaming:
-                summary: Streaming
-                description: 'Enable streaming response by setting stream: true.'
-                value:
-                  model: glm-4.6v
-                  prompt: The future of AI is
-                  max_tokens: 30
-                  temperature: 0.8
-                  stream: true
-      responses:
-        '200':
-          description: Success Response
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/CompletionResponse"
-              examples:
-                default-response:
-                  summary: Basic Response
-                  description: Response example for basic text completion request.
-                  value:
-                    id: cmpl-123
-                    object: text_completion
-                    created: 1677652288
-                    model: glm-4.6v
-                    choices:
-                    - text: " in a small village, there lived a young girl named Lily."
-                      index: 0
-                      finish_reason: length
-                    usage:
-                      prompt_tokens: 4
-                      completion_tokens: 12
-                      total_tokens: 16
-            text/event-stream:
-              schema:
-                type: string
-                description: 'Streaming responses are returned in Server-Sent Events
-                  format, each event is a JSON data block starting with ''data: ''
-                  and ending with ''data: [DONE]''.'
-              examples:
-                streaming-response:
-                  summary: Streaming Response Example
-                  description: Shows events sent sequentially during streaming text
-                    completion process.
-                  value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"glm-4.6v","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"glm-4.6v","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"glm-4.6v","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"glm-4.6v","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"glm-4.6v","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"glm-4.6v","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"glm-4.6v","choices":[{"text":".","index":0,"finish_reason":"length"}]}
-                    data: [DONE]
-        '400':
-          "$ref": "#/components/responses/ErrorResponse"
-        '401':
-          "$ref": "#/components/responses/ErrorResponse"
-        '429':
-          "$ref": "#/components/responses/ErrorResponse"
   "/v1/responses":
     post:
       tags:
       - responses_zai
       summary: Create Response
-      description: Create a model response using OpenAI Responses-compatible payload.
+      description: Provides an OpenAI-compatible Responses endpoint. Supported parameters
+        and behavior may vary by model.
       operationId: createResponse_zai
       security:
       - APIKeyHeader: []
@@ -318,10 +144,23 @@ paths:
             examples:
               default:
                 summary: Basic
+                description: A simple text-only Responses request.
                 value:
                   model: glm-4.7
                   input: Hello
                   stream: false
+              streaming:
+                summary: Streaming
+                description: Enable semantic event streaming by setting stream to
+                  true.
+                value:
+                  model: glm-4.7
+                  input:
+                  - role: user
+                    content:
+                    - type: input_text
+                      text: Write a short welcome message for a new user.
+                  stream: true
       responses:
         '200':
           description: Success Response
@@ -348,6 +187,21 @@ paths:
                       input_tokens: 12
                       output_tokens: 9
                       total_tokens: 21
+            text/event-stream:
+              schema:
+                type: string
+                description: Responses streaming returns Server-Sent Events with typed
+                  semantic event payloads.
+              examples:
+                streaming-response:
+                  summary: Streaming Response Example
+                  description: Shows a minimal sequence of semantic events emitted
+                    during Responses streaming.
+                  value: |
+                    data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"in_progress","model":"glm-4.7"}}
+                    data: {"type":"response.output_text.delta","sequence_number":1,"item_id":"msg_123","output_index":0,"content_index":0,"delta":"Hello"}
+                    data: {"type":"response.output_text.delta","sequence_number":2,"item_id":"msg_123","output_index":0,"content_index":0,"delta":" there!"}
+                    data: {"type":"response.completed","sequence_number":3,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"completed","model":"glm-4.7","output":[{"id":"msg_123","type":"message","role":"assistant","status":"completed","content":[{"type":"output_text","text":"Hello there!"}]}]}}
         '400':
           "$ref": "#/components/responses/ErrorResponse"
         '401':
@@ -359,8 +213,8 @@ paths:
       tags:
       - image_generations_zai
       summary: Create Image
-      description: Generate images based on text prompts. Compatible with OpenAI's
-        Images API.
+      description: Provides an OpenAI-compatible Images generation endpoint. Supported
+        capabilities may vary by model.
       operationId: createImageGeneration_zai
       security:
       - APIKeyHeader: []
@@ -458,8 +312,8 @@ paths:
       tags:
       - audio_transcriptions_zai
       summary: Audio Transcription
-      description: Transcribe audio files to text. Compatible with OpenAI's Audio
-        API.
+      description: Provides an OpenAI-compatible Audio Transcriptions endpoint. Supported
+        capabilities may vary by model.
       operationId: createTranscription_zai
       security:
       - APIKeyHeader: []

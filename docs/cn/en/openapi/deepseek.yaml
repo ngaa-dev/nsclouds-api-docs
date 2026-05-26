@@ -31,8 +31,8 @@ paths:
       tags:
       - chat_completions_deepseek
       summary: Create chat completion
-      description: Generate model response based on input messages. Fully compatible
-        with OpenAI's Chat API.
+      description: Provides an OpenAI-compatible Chat Completions endpoint. Supported
+        parameters and behavior may vary by model.
       operationId: createChatCompletion_deepseek
       security:
       - APIKeyHeader: []
@@ -219,7 +219,7 @@ paths:
       tags:
       - messages_deepseek
       summary: Create Message
-      description: Create a message using Anthropic Messages-compatible payload.
+      description: Provides an Anthropic Messages-compatible endpoint.
       operationId: createMessage_deepseek
       security:
       - APIKeyHeader: []
@@ -271,7 +271,8 @@ paths:
       tags:
       - responses_deepseek
       summary: Create Response
-      description: Create a model response using OpenAI Responses-compatible payload.
+      description: Provides an OpenAI-compatible Responses endpoint. Supported parameters
+        and behavior may vary by model.
       operationId: createResponse_deepseek
       security:
       - APIKeyHeader: []
@@ -284,10 +285,23 @@ paths:
             examples:
               default:
                 summary: Basic
+                description: A simple text-only Responses request.
                 value:
                   model: deepseek-v3.2
                   input: Hello
                   stream: false
+              streaming:
+                summary: Streaming
+                description: Enable semantic event streaming by setting stream to
+                  true.
+                value:
+                  model: deepseek-v3.2
+                  input:
+                  - role: user
+                    content:
+                    - type: input_text
+                      text: Write a short welcome message for a new user.
+                  stream: true
       responses:
         '200':
           description: Success Response
@@ -314,6 +328,21 @@ paths:
                       input_tokens: 12
                       output_tokens: 9
                       total_tokens: 21
+            text/event-stream:
+              schema:
+                type: string
+                description: Responses streaming returns Server-Sent Events with typed
+                  semantic event payloads.
+              examples:
+                streaming-response:
+                  summary: Streaming Response Example
+                  description: Shows a minimal sequence of semantic events emitted
+                    during Responses streaming.
+                  value: |
+                    data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"in_progress","model":"deepseek-v3.2"}}
+                    data: {"type":"response.output_text.delta","sequence_number":1,"item_id":"msg_123","output_index":0,"content_index":0,"delta":"Hello"}
+                    data: {"type":"response.output_text.delta","sequence_number":2,"item_id":"msg_123","output_index":0,"content_index":0,"delta":" there!"}
+                    data: {"type":"response.completed","sequence_number":3,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"completed","model":"deepseek-v3.2","output":[{"id":"msg_123","type":"message","role":"assistant","status":"completed","content":[{"type":"output_text","text":"Hello there!"}]}]}}
         '400':
           "$ref": "#/components/responses/ErrorResponse"
         '401':

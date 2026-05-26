@@ -11,7 +11,7 @@ ENV_MODEL_FILES = {
   "global" => File.join(ROOT, "scripts", "data", "global_model_info.json"),
 }.freeze
 
-BASE_SPECS = %w[openai anthropic google deepseek volcengine moonshotai minimax].freeze
+BASE_SPECS = %w[openai anthropic google deepseek volcengine moonshotai minimax example].freeze
 BRAND_NAMES = {
   "anthropic" => "Anthropic",
   "dashscope" => "DashScope",
@@ -28,7 +28,7 @@ BRAND_NAMES = {
 
 CAPABILITY_CONFIG = {
   "chat" => {
-    default_source: "openai",
+    default_source: "example",
     path: "/v1/chat/completions",
     tag_name: "chat_completions",
     x_parent: "chat_completions",
@@ -91,6 +91,7 @@ CAPABILITY_CONFIG = {
 
 GEMINI_NATIVE_ENDPOINTS = CAPABILITY_CONFIG.fetch("gemini").fetch(:paths).freeze
 SHOW_TEXT_COMPLETIONS = false
+GEMINI_NATIVE_DETECTION_ENDPOINTS = GEMINI_NATIVE_ENDPOINTS.freeze
 
 
 def deep_copy(value)
@@ -268,7 +269,7 @@ def example_models_for_env(env)
       "image_generations" => canonical_example_model(entries.select { |entry| entry["endpoints"].include?("/v1/images/generations") }),
       "image_edits" => canonical_example_model(entries.select { |entry| entry["endpoints"].include?("/v1/images/edits") }),
       "audio_transcriptions" => canonical_example_model(entries.select { |entry| entry["endpoints"].include?("/v1/audio/transcriptions") }),
-      "gemini" => canonical_example_model(entries.select { |entry| (entry["endpoints"] & GEMINI_NATIVE_ENDPOINTS).any? }),
+      "gemini" => canonical_example_model(entries.select { |entry| (entry["endpoints"] & GEMINI_NATIVE_DETECTION_ENDPOINTS).any? }),
     }
   end
 end
@@ -307,23 +308,72 @@ def apply_example_model!(operation, example_model)
 end
 
 
-def rewrite_operation(operation, capability, vendor, example_model)
+def trim_generic_chat_examples!(operation)
+  request_examples = operation.dig("requestBody", "content", "application/json", "examples")
+  if request_examples.is_a?(Hash)
+    request_examples.select! { |name, _| %w[default streaming].include?(name) }
+  end
+
+  json_examples = operation.dig("responses", "200", "content", "application/json", "examples")
+  if json_examples.is_a?(Hash)
+    json_examples.select! { |name, _| %w[default-response].include?(name) }
+  end
+end
+
+
+def trim_generic_response_examples!(operation)
+  request_examples = operation.dig("requestBody", "content", "application/json", "examples")
+  if request_examples.is_a?(Hash)
+    request_examples.select! { |name, _| %w[default streaming].include?(name) }
+  end
+
+  json_examples = operation.dig("responses", "200", "content", "application/json", "examples")
+  if json_examples.is_a?(Hash)
+    json_examples.select! { |name, _| %w[default].include?(name) }
+  end
+end
+
+
+def operation_description(capability, vendor, lang)
+  return nil if vendor == "openai"
+
+  descriptions = {
+    "zh" => {
+      "chat" => "提供与 OpenAI Chat Completions 兼容的对话接口。具体支持的参数和行为因模型而异。",
+      "completions" => "提供与 OpenAI Completions 兼容的文本补全接口。具体支持的参数和行为因模型而异。",
+      "messages" => "提供与 Anthropic Messages 协议兼容的接口。",
+      "responses" => "提供与 OpenAI Responses 兼容的接口。具体支持的参数和行为因模型而异。",
+      "image_generations" => "提供与 OpenAI Images 兼容的图像生成接口。具体支持的能力因模型而异。",
+      "image_edits" => "提供与 OpenAI Images 兼容的图像编辑接口。具体支持的能力因模型而异。",
+      "audio_transcriptions" => "提供与 OpenAI Audio Transcriptions 兼容的音频转写接口。具体支持的能力因模型而异。",
+      "gemini" => "提供与 Google Gemini 原生协议兼容的接口。",
+    },
+    "en" => {
+      "chat" => "Provides an OpenAI-compatible Chat Completions endpoint. Supported parameters and behavior may vary by model.",
+      "completions" => "Provides an OpenAI-compatible Completions endpoint. Supported parameters and behavior may vary by model.",
+      "messages" => "Provides an Anthropic Messages-compatible endpoint.",
+      "responses" => "Provides an OpenAI-compatible Responses endpoint. Supported parameters and behavior may vary by model.",
+      "image_generations" => "Provides an OpenAI-compatible Images generation endpoint. Supported capabilities may vary by model.",
+      "image_edits" => "Provides an OpenAI-compatible Images editing endpoint. Supported capabilities may vary by model.",
+      "audio_transcriptions" => "Provides an OpenAI-compatible Audio Transcriptions endpoint. Supported capabilities may vary by model.",
+      "gemini" => "Provides a Google Gemini native-compatible endpoint.",
+    },
+  }
+  descriptions.fetch(lang).fetch(capability)
+end
+
+
+def rewrite_operation(operation, capability, vendor, example_model, source_vendor, lang)
   new_operation = deep_copy(operation)
   new_operation["tags"] = ["#{CAPABILITY_CONFIG.fetch(capability).fetch(:tag_name)}_#{vendor}"]
   if new_operation["operationId"]
-    new_operation["operationId"] = new_operation["operationId"].gsub(/_(openai|anthropic|google|deepseek|volcengine|minimax|moonshotai)\z/, "_#{vendor}")
+    new_operation["operationId"] = new_operation["operationId"].gsub(/_(openai|anthropic|google|deepseek|volcengine|minimax|moonshotai|example)\z/, "_#{vendor}")
   end
-  apply_example_model!(new_operation, example_model)
-  if capability == "chat" && vendor != "openai"
-    request_examples = new_operation.dig("requestBody", "content", "application/json", "examples")
-    request_examples&.delete("image_data_url_input")
-  end
-  if capability == "responses" && vendor != "openai"
-    request_examples = new_operation.dig("requestBody", "content", "application/json", "examples")
-    %w[image_input image_data_url_input file_input file_url_input file_data_input].each { |key| request_examples&.delete(key) }
-    new_operation.dig("responses", "200", "content", "application/json", "examples")&.delete("image-input-response")
-    new_operation.dig("responses", "200", "content", "application/json", "examples")&.delete("file-input-response")
-  end
+  description = operation_description(capability, vendor, lang)
+  new_operation["description"] = description if description
+  apply_example_model!(new_operation, example_model) unless vendor == "openai"
+  trim_generic_chat_examples!(new_operation) if capability == "chat" && source_vendor == "example"
+  trim_generic_response_examples!(new_operation) if capability == "responses" && vendor != "openai"
   new_operation
 end
 
@@ -332,7 +382,7 @@ def extract_path_object(lang, source_vendor, path, capability, vendor, example_m
   source_path = source_specs(lang).fetch(source_vendor).fetch("paths").fetch(path)
   rewritten = {}
   source_path.each do |method, operation|
-    rewritten[method] = rewrite_operation(operation, capability, vendor, example_model)
+    rewritten[method] = rewrite_operation(operation, capability, vendor, example_model, source_vendor, lang)
   end
   rewritten
 end
@@ -364,7 +414,7 @@ def capabilities_for_env(env)
     caps << "image_generations" if entries.any? { |entry| entry["endpoints"].include?("/v1/images/generations") }
     caps << "image_edits" if entries.any? { |entry| entry["endpoints"].include?("/v1/images/edits") }
     caps << "audio_transcriptions" if entries.any? { |entry| entry["endpoints"].include?("/v1/audio/transcriptions") }
-    caps << "gemini" if entries.any? { |entry| (entry["endpoints"] & GEMINI_NATIVE_ENDPOINTS).any? }
+    caps << "gemini" if entries.any? { |entry| (entry["endpoints"] & GEMINI_NATIVE_DETECTION_ENDPOINTS).any? }
     public_caps[vendor] = caps.uniq if caps.any?
   end
   public_caps

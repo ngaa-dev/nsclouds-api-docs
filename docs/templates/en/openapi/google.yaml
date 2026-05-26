@@ -46,7 +46,7 @@ paths:
       tags:
         - chat_completions_google
       summary: Create chat completion
-      description: Generate model response based on input messages. Fully compatible with OpenAI's Chat API.
+      description: Provides an OpenAI-compatible Chat Completions endpoint. Supported parameters and behavior may vary by model.
       operationId: createChatCompletion_google
       security:
         - APIKeyHeader: []
@@ -374,7 +374,7 @@ paths:
       tags:
         - chat_completions_google
       summary: Gemini Generate Content (v1)
-      description: Gemini native protocol endpoint for generateContent.
+      description: Provides a Google Gemini native-compatible endpoint.
       operationId: generateContentV1_google
       security:
         - APIKeyHeader: []
@@ -430,7 +430,7 @@ paths:
       tags:
         - chat_completions_google
       summary: Gemini Generate Content (v1beta)
-      description: Gemini native protocol endpoint for generateContent (v1beta).
+      description: Provides a Google Gemini native-compatible endpoint.
       operationId: generateContentV1beta_google
       security:
         - APIKeyHeader: []
@@ -486,7 +486,7 @@ paths:
       tags:
         - chat_completions_google
       summary: Gemini Stream Generate Content (v1beta)
-      description: Gemini native protocol endpoint for streamGenerateContent (v1beta).
+      description: Provides a Google Gemini native-compatible streaming endpoint.
       operationId: streamGenerateContentV1beta_google
       security:
         - APIKeyHeader: []

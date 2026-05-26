@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: LiteLLM API 文档
-  description: 自建 LiteLLM 网关的 API 文档，完全兼容 OpenAI 格式。
+  title: NSCloud AI API 文档
+  description: OpenAI 兼容接口和厂家兼容接口的 API 文档。
   version: 1.11.0
 servers:
   - url: 'https://aillm.nsclouds.com'
@@ -43,7 +43,7 @@ paths:
       tags:
         - chat_completions_moonshotai
       summary: 创建聊天补全
-      description: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
+      description: 提供与 OpenAI Chat Completions 兼容的对话接口。具体支持的参数和行为因模型而异。
       operationId: createChatCompletion_moonshotai
       security:
         - APIKeyHeader: []
@@ -230,7 +230,7 @@ paths:
       tags:
         - messages_moonshotai
       summary: 创建 Messages 消息
-      description: 使用 Anthropic Messages 兼容格式创建消息响应。
+      description: 提供与 Anthropic Messages 协议兼容的接口。
       operationId: createMessage_moonshotai
       security:
         - APIKeyHeader: []
@@ -324,32 +324,493 @@ components:
       required:
         - type
         - image_url
-    ChatMessage:
+    ChatMessageInputAudio:
       type: object
-      description: 聊天消息对象。
+      description: 音频输入结构。
+      properties:
+        data:
+          type: string
+          description: Base64 编码的音频数据。
+        format:
+          type: string
+          description: 音频格式。
+          enum:
+            - wav
+            - mp3
+      required:
+        - data
+        - format
+    ChatMessageInputAudioPart:
+      type: object
+      description: 音频输入内容片段。
+      properties:
+        type:
+          type: string
+          description: 内容片段类型。
+          enum:
+            - input_audio
+        input_audio:
+          $ref: '#/components/schemas/ChatMessageInputAudio'
+      required:
+        - type
+        - input_audio
+    ChatMessageFileObject:
+      type: object
+      description: Chat Completions 内容片段中的文件结构。Chat 的 file 片段支持已上传文件的 file_id 或内联 file_data，不支持 file_url；外部文件 URL 请使用 Responses 的 input_file.file_url。
+      properties:
+        file_id:
+          type: string
+          description: 预先上传后的文件 ID。
+        file_data:
+          type: string
+          description: 内联传递的 base64 文件内容。
+        filename:
+          type: string
+          description: 与内联文件内容配套的文件名。
+      anyOf:
+        - required:
+            - file_id
+        - required:
+            - file_data
+      additionalProperties: false
+    ChatMessageFilePart:
+      type: object
+      description: Chat Completions 的文件输入内容片段。这里不支持外部文件 URL；如需传入文件 URL，请使用 Responses 的 input_file.file_url。
+      properties:
+        type:
+          type: string
+          description: 内容片段类型。
+          enum:
+            - file
+        file:
+          $ref: '#/components/schemas/ChatMessageFileObject'
+      required:
+        - type
+        - file
+    ChatToolFunction:
+      type: object
+      description: 工具声明中的函数定义。
+      properties:
+        name:
+          type: string
+          description: 函数名。
+        description:
+          type: string
+          description: 函数说明。
+        parameters:
+          type: object
+          description: 描述函数参数的 JSON Schema。
+          additionalProperties: true
+        strict:
+          type: boolean
+          description: 是否严格遵循 schema。
+      required:
+        - name
+      additionalProperties: true
+    ChatCustomTool:
+      type: object
+      description: 工具声明中的自定义工具定义。
+      properties:
+        name:
+          type: string
+          description: 自定义工具名称。
+        description:
+          type: string
+          description: 自定义工具说明。
+        format:
+          type: object
+          description: 可选的自定义工具输入格式定义。
+          additionalProperties: true
+      required:
+        - name
+      additionalProperties: true
+    ChatFunctionToolDefinition:
+      type: object
+      description: Chat Completions 中的函数工具声明。
+      properties:
+        type:
+          type: string
+          description: 工具类型。
+          enum:
+            - function
+        function:
+          $ref: '#/components/schemas/ChatToolFunction'
+      required:
+        - type
+        - function
+      additionalProperties: true
+    ChatCustomToolDefinition:
+      type: object
+      description: Chat Completions 中的自定义工具声明。
+      properties:
+        type:
+          type: string
+          description: 工具类型。
+          enum:
+            - custom
+        custom:
+          $ref: '#/components/schemas/ChatCustomTool'
+      required:
+        - type
+        - custom
+      additionalProperties: true
+    ChatToolDefinition:
+      description: Chat Completions 中的工具声明。
+      oneOf:
+        - $ref: '#/components/schemas/ChatFunctionToolDefinition'
+        - $ref: '#/components/schemas/ChatCustomToolDefinition'
+    ChatNamedFunctionToolChoice:
+      type: object
+      description: 显式选择指定函数工具。
+      properties:
+        type:
+          type: string
+          enum:
+            - function
+        function:
+          type: object
+          properties:
+            name:
+              type: string
+              description: 函数工具名称。
+          required:
+            - name
+          additionalProperties: true
+      required:
+        - type
+        - function
+      additionalProperties: true
+    ChatNamedCustomToolChoice:
+      type: object
+      description: 显式选择指定自定义工具。
+      properties:
+        type:
+          type: string
+          enum:
+            - custom
+        custom:
+          type: object
+          properties:
+            name:
+              type: string
+              description: 自定义工具名称。
+          required:
+            - name
+          additionalProperties: true
+      required:
+        - type
+        - custom
+      additionalProperties: true
+    ChatAllowedToolsChoice:
+      type: object
+      description: 将工具选择限制到指定工具子集。
+      properties:
+        type:
+          type: string
+          enum:
+            - allowed_tools
+        allowed_tools:
+          type: object
+          description: 允许调用的工具选择配置。
+          properties:
+            mode:
+              type: string
+              description: 限定工具集合内的选择模式。
+            tools:
+              type: array
+              description: 允许调用的工具声明。
+              items:
+                $ref: '#/components/schemas/ChatToolDefinition'
+          required:
+            - mode
+            - tools
+          additionalProperties: true
+      required:
+        - type
+        - allowed_tools
+      additionalProperties: true
+    ChatToolChoice:
+      description: 工具选择策略。
+      anyOf:
+        - type: string
+          description: 简单策略，例如 none、auto、required。
+          enum:
+            - none
+            - auto
+            - required
+        - $ref: '#/components/schemas/ChatNamedFunctionToolChoice'
+        - $ref: '#/components/schemas/ChatNamedCustomToolChoice'
+        - $ref: '#/components/schemas/ChatAllowedToolsChoice'
+        - type: object
+          description: 厂家扩展的工具选择对象结构。
+          additionalProperties: true
+    ChatResponseFormat:
+      type: object
+      description: 结构化输出格式配置。
+      properties:
+        type:
+          type: string
+          description: 返回格式类型，例如 text、json_object、json_schema。
+        json_schema:
+          type: object
+          description: 当 type=json_schema 时使用的 JSON Schema 配置。
+          additionalProperties: true
+      additionalProperties: true
+    ChatAudioRequestConfig:
+      type: object
+      description: 音频输出请求配置。
+      properties:
+        voice:
+          type: string
+          description: 音频输出使用的声音名称。
+        format:
+          type: string
+          description: 音频格式。
+      additionalProperties: true
+    ChatAudioResponseMetadata:
+      type: object
+      description: 聊天消息返回的音频元数据。
+      properties:
+        id:
+          type: string
+          description: 音频对象 ID。
+        expires_at:
+          type: integer
+          description: 过期时间戳（如有）。
+        transcript:
+          type: string
+          description: 与音频对应的转写文本。
+      additionalProperties: true
+    ChatStreamOptions:
+      type: object
+      description: Chat Completions 的流式选项。
+      properties:
+        include_usage:
+          type: boolean
+          description: 在流式返回末尾附带 usage 信息。
+        include_obfuscation:
+          type: boolean
+          description: 在支持时附带 obfuscation 元数据。
+      additionalProperties: true
+    ChatCompletionFunctionCall:
+      type: object
+      description: 某些模型仍可能返回的已废弃 function_call 结构。
+      properties:
+        name:
+          type: string
+          description: 函数名。
+        arguments:
+          type: string
+          description: JSON 字符串形式的函数参数。
+      additionalProperties: true
+    ChatCompletionFunctionToolCall:
+      type: object
+      description: assistant 返回的函数工具调用结构。
+      properties:
+        id:
+          type: string
+          description: 工具调用 ID。
+        type:
+          type: string
+          description: 工具调用类型。
+          enum:
+            - function
+        function:
+          $ref: '#/components/schemas/ChatCompletionFunctionCall'
+      required:
+        - id
+        - type
+        - function
+      additionalProperties: true
+    ChatCompletionCustomToolCall:
+      type: object
+      description: assistant 返回的自定义工具调用结构。
+      properties:
+        id:
+          type: string
+          description: 工具调用 ID。
+        type:
+          type: string
+          description: 工具调用类型。
+          enum:
+            - custom
+        custom:
+          type: object
+          description: 自定义工具调用负载。
+          additionalProperties: true
+      required:
+        - id
+        - type
+        - custom
+      additionalProperties: true
+    ChatCompletionToolCall:
+      description: assistant 返回的工具调用结构。
+      oneOf:
+        - $ref: '#/components/schemas/ChatCompletionFunctionToolCall'
+        - $ref: '#/components/schemas/ChatCompletionCustomToolCall'
+    ChatCompletionAnnotation:
+      type: object
+      description: 响应消息上的附加标注信息。
+      additionalProperties: true
+    ChatTextOnlyContent:
+      description: 纯文本聊天消息内容。
+      oneOf:
+        - type: string
+          description: 纯文本内容。
+        - type: array
+          description: 文本内容片段数组。
+          items:
+            $ref: '#/components/schemas/ChatMessageTextPart'
+    ChatUserMessage:
+      type: object
+      description: 用户消息。支持文本、图片、音频和文件输入片段。
       properties:
         role:
           type: string
-          description: 消息发送方角色。
           enum:
-            - system
             - user
-            - assistant
-            - tool
+        name:
+          type: string
+          description: 可选的参与者名称。
         content:
-          description: 消息内容，可以是纯文本，也可以是多段结构化内容。
+          description: 用户消息内容。
           oneOf:
             - type: string
               description: 纯文本内容。
             - type: array
-              description: 多段结构化内容数组，常用于包含文本和一张或多张图片的多模态输入。
+              description: 多段结构化多模态内容数组。
               items:
                 oneOf:
                   - $ref: '#/components/schemas/ChatMessageTextPart'
                   - $ref: '#/components/schemas/ChatMessageImagePart'
+                  - $ref: '#/components/schemas/ChatMessageInputAudioPart'
+                  - $ref: '#/components/schemas/ChatMessageFilePart'
       required:
         - role
         - content
+      additionalProperties: true
+    ChatDeveloperMessage:
+      type: object
+      description: 开发者消息。仅支持文本内容。
+      properties:
+        role:
+          type: string
+          enum:
+            - developer
+        name:
+          type: string
+          description: 可选的参与者名称。
+        content:
+          $ref: '#/components/schemas/ChatTextOnlyContent'
+      required:
+        - role
+        - content
+      additionalProperties: true
+    ChatSystemMessage:
+      type: object
+      description: 系统消息。仅支持文本内容。
+      properties:
+        role:
+          type: string
+          enum:
+            - system
+        name:
+          type: string
+          description: 可选的参与者名称。
+        content:
+          $ref: '#/components/schemas/ChatTextOnlyContent'
+      required:
+        - role
+        - content
+      additionalProperties: true
+    ChatAssistantMessage:
+      type: object
+      description: assistant 消息，可包含工具调用。
+      properties:
+        role:
+          type: string
+          enum:
+            - assistant
+        name:
+          type: string
+          description: 可选的参与者名称。
+        content:
+          description: assistant 消息内容。
+          oneOf:
+            - $ref: '#/components/schemas/ChatTextOnlyContent'
+            - type: 'null'
+              description: 空内容，常见于 assistant 发起工具调用时。
+        tool_calls:
+          type: array
+          description: assistant 发出的工具调用列表。
+          items:
+            $ref: '#/components/schemas/ChatCompletionToolCall'
+        function_call:
+          oneOf:
+            - $ref: '#/components/schemas/ChatCompletionFunctionCall'
+            - type: 'null'
+          description: 已废弃的单函数调用结构。
+        refusal:
+          type:
+            - string
+            - 'null'
+          description: 模型拒答时返回的拒绝内容。
+        audio:
+          oneOf:
+            - $ref: '#/components/schemas/ChatAudioResponseMetadata'
+            - type: 'null'
+          description: 与消息关联的音频信息。
+      required:
+        - role
+      additionalProperties: true
+    ChatToolMessage:
+      type: object
+      description: 工具结果消息。仅支持文本内容，并必须包含关联的 tool call ID。
+      properties:
+        role:
+          type: string
+          enum:
+            - tool
+        content:
+          $ref: '#/components/schemas/ChatTextOnlyContent'
+        tool_call_id:
+          type: string
+          description: 此消息响应的工具调用 ID。
+      required:
+        - role
+        - content
+        - tool_call_id
+      additionalProperties: true
+    ChatFunctionMessage:
+      type: object
+      description: 已废弃的函数结果消息。新集成应使用 tool 消息。
+      properties:
+        role:
+          type: string
+          enum:
+            - function
+        name:
+          type: string
+          description: 函数名。
+        content:
+          type:
+            - string
+            - 'null'
+          description: 函数结果内容。
+      required:
+        - role
+        - name
+        - content
+      additionalProperties: true
+    ChatMessage:
+      description: 聊天消息对象。
+      oneOf:
+        - $ref: '#/components/schemas/ChatDeveloperMessage'
+        - $ref: '#/components/schemas/ChatSystemMessage'
+        - $ref: '#/components/schemas/ChatUserMessage'
+        - $ref: '#/components/schemas/ChatAssistantMessage'
+        - $ref: '#/components/schemas/ChatToolMessage'
+        - $ref: '#/components/schemas/ChatFunctionMessage'
     Usage:
       type: object
       description: Token 使用量统计。
@@ -404,6 +865,22 @@ components:
           type: number
           description: 采样温度，值越高结果越随机。
           default: 1
+        top_p:
+          type: number
+          description: 核采样参数。
+        presence_penalty:
+          type: number
+          description: 根据 token 是否已出现施加惩罚。
+        frequency_penalty:
+          type: number
+          description: 根据 token 出现频率施加惩罚。
+        stop:
+          description: 最多四个停止序列。
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
         max_completion_tokens:
           type: integer
           description: 允许生成的最大输出 token 数。
@@ -411,10 +888,50 @@ components:
           type: integer
           description: 为同一请求生成的候选回复数量。
           default: 1
+        seed:
+          type: integer
+          description: 尽力保证可复现的采样随机种子。
+        reasoning_effort:
+          type: string
+          description: 推理模型支持的 reasoning 强度等级。
+        response_format:
+          $ref: '#/components/schemas/ChatResponseFormat'
+        modalities:
+          type: array
+          description: 期望返回的输出模态，例如 text 或 audio。
+          items:
+            type: string
+        audio:
+          $ref: '#/components/schemas/ChatAudioRequestConfig'
+        store:
+          type: boolean
+          description: 是否存储本次响应以供后续检索或蒸馏使用。
+        metadata:
+          type: object
+          description: 开发者自定义元数据。
+          additionalProperties: true
+        service_tier:
+          type: string
+          description: 支持时请求的服务层级。
+        user:
+          type: string
+          description: 终端用户标识。
+        tools:
+          type: array
+          description: 提供给模型可调用的工具声明。
+          items:
+            $ref: '#/components/schemas/ChatToolDefinition'
+        tool_choice:
+          $ref: '#/components/schemas/ChatToolChoice'
+        parallel_tool_calls:
+          type: boolean
+          description: 是否允许模型并行返回多个工具调用。
         stream:
           type: boolean
           description: 是否以流式方式返回响应。
           default: false
+        stream_options:
+          $ref: '#/components/schemas/ChatStreamOptions'
       required:
         - model
         - messages
@@ -430,6 +947,31 @@ components:
           type:
             - string
             - 'null'
+        refusal:
+          type:
+            - string
+            - 'null'
+          description: assistant 拒答时返回的拒绝内容。
+        annotations:
+          type: array
+          description: 可选标注信息，例如引用或 URL 标记。
+          items:
+            $ref: '#/components/schemas/ChatCompletionAnnotation'
+        tool_calls:
+          type: array
+          description: assistant 返回的工具调用列表。
+          items:
+            $ref: '#/components/schemas/ChatCompletionToolCall'
+        function_call:
+          oneOf:
+            - $ref: '#/components/schemas/ChatCompletionFunctionCall'
+            - type: 'null'
+          description: 已废弃的单函数调用结构。
+        audio:
+          oneOf:
+            - $ref: '#/components/schemas/ChatAudioResponseMetadata'
+            - type: 'null'
+          description: 与消息一起返回的音频信息。
     ChatCompletionChoice:
       type: object
       description: 单个候选回复。
@@ -444,6 +986,12 @@ components:
           type:
             - string
             - 'null'
+        logprobs:
+          type:
+            - object
+            - 'null'
+          description: 可选的 token 级 log probability 细节。
+          additionalProperties: true
     ChatCompletionResponse:
       type: object
       description: Chat Completions 成功响应。
@@ -460,6 +1008,15 @@ components:
         model:
           type: string
           description: 实际使用的模型 ID。
+        service_tier:
+          type: string
+          description: 实际使用的服务层级（如有）。
+        system_fingerprint:
+          type: string
+          description: 后端配置指纹（如有）。
+        request_id:
+          type: string
+          description: 服务端暴露的请求 ID（如有）。
         choices:
           type: array
           description: 模型返回的候选结果列表。
@@ -578,11 +1135,11 @@ components:
       additionalProperties: true
     ResponseInputTextPart:
       type: object
-      description: Responses 协议的文本输入内容片段。
+      description: Responses 协议中的文本输入内容片段。
       properties:
         type:
           type: string
-          description: 输入内容片段类型。
+          description: 输入片段类型。
           enum:
             - input_text
         text:
@@ -594,48 +1151,61 @@ components:
       additionalProperties: true
     ResponseInputImagePart:
       type: object
-      description: Responses 协议的图片输入内容片段。可添加多个 input_image 内容片段来发送多张图片。
+      description: Responses 协议中的图片输入内容片段。可通过多个 input_image 片段传递多张图片。
       properties:
         type:
           type: string
-          description: 输入内容片段类型。
+          description: 输入片段类型。
           enum:
             - input_image
         image_url:
           type: string
           description: '可公开访问的图片 URL 或图片 data URL。支持常见图片格式，例如 data:image/png;base64,...。'
+        file_id:
+          type: string
+          description: 预先上传的图片文件 ID。
         detail:
           type: string
           description: 支持时用于控制图片理解的细节等级。
+          default: auto
           enum:
             - auto
             - low
             - high
       required:
         - type
-        - image_url
+      anyOf:
+        - required:
+            - image_url
+        - required:
+            - file_id
       additionalProperties: true
     ResponseInputFilePart:
       type: object
-      description: Responses 协议的文件输入内容片段。支持常见文档和文本格式，PDF 只是其中一种示例。
+      description: Responses 协议中的文件输入内容片段。支持常见文档和文本格式，PDF 仅为示例。
       properties:
         type:
           type: string
-          description: 输入内容片段类型。
+          description: 输入片段类型。
           enum:
             - input_file
+        file_id:
+          type: string
+          description: 预先上传的文件 ID。
         file_url:
           type: string
-          description: 文件输入内容片段使用的可公开访问文件 URL。支持常见文档和文本格式。
+          description: 用于文件输入的可公开访问文件 URL。支持常见文档和文本格式。
         filename:
           type: string
-          description: 与 file_data 内联文件上传一起使用的文件名。
+          description: 以内联方式传递文件内容时使用的文件名。
         file_data:
           type: string
-          description: '包含 base64 编码文件内容的 data URL，例如 data:application/pdf;base64,... 或 data:text/plain;base64,...。'
+          description: '以 data URL 形式传递的 base64 编码文件内容，例如 data:application/pdf;base64,... 或 data:text/plain;base64,...'
       required:
         - type
       anyOf:
+        - required:
+            - file_id
         - required:
             - file_url
         - required:
@@ -643,24 +1213,24 @@ components:
             - file_data
       additionalProperties: true
     ResponseInputContentPart:
-      description: Responses 输入内容片段。支持的输入类型包括 input_text、input_image 和 input_file。
+      description: Responses 协议输入内容片段。支持的输入类型包括 input_text、input_image 和 input_file。
       oneOf:
         - $ref: '#/components/schemas/ResponseInputTextPart'
         - $ref: '#/components/schemas/ResponseInputImagePart'
         - $ref: '#/components/schemas/ResponseInputFilePart'
     ResponseContentPart:
       type: object
-      description: Responses 输出项中使用的宽松输出内容片段。
+      description: Responses 输出项中使用的宽松内容片段结构。
       properties:
         type:
           type: string
-          description: 输出内容片段类型，例如 output_text 或 tool_result。
+          description: 输出片段类型，例如 output_text 或 tool_result。
         text:
           type: string
-          description: 内容片段携带的文本值。
+          description: 内容片段中的文本值。
         annotations:
           type: array
-          description: 附加标注信息。
+          description: 附加在内容片段上的可选标注信息。
           items:
             type: object
             additionalProperties: true

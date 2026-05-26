@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: LiteLLM API Documentation
-  description: 'Self-hosted LiteLLM gateway API documentation, fully compatible with OpenAI format.'
+  title: NSCloud AI API Documentation
+  description: API documentation for OpenAI-compatible and provider-compatible AI endpoints.
   version: 1.11.0
 servers:
   - url: 'https://aillm.nscloud.ai'
@@ -10,7 +10,7 @@ tags:
   - name: chat_completions
     x-page-title: Chat Completions
     x-page-icon: message
-    description: 'Chat completion related APIs, including chat completions and text completions'
+    description: Chat completion related APIs.
   - name: embeddings
     x-page-title: Embeddings
     x-page-icon: database
@@ -32,11 +32,6 @@ tags:
     x-page-title: Volcengine
     x-page-icon: brain
     description: Volcengine's chat completions API
-  - name: completions_volcengine
-    x-parent: chat_completions
-    x-page-title: Volcengine
-    x-page-icon: brain
-    description: Volcengine's text completions API
   - name: responses_volcengine
     x-parent: chat_completions
     x-page-title: Volcengine
@@ -53,7 +48,7 @@ paths:
       tags:
         - chat_completions_volcengine
       summary: Create chat completion
-      description: Generate chat completion based on provided message history. Compatible with OpenAI's Chat Completions API.
+      description: Provides an OpenAI-compatible Chat Completions endpoint. Supported parameters and behavior may vary by model.
       operationId: createChatCompletion_volcengine
       security:
         - APIKeyHeader: []
@@ -221,94 +216,12 @@ paths:
           $ref: '#/components/responses/ErrorResponse'
         '429':
           $ref: '#/components/responses/ErrorResponse'
-  /v1/completions:
-    post:
-      tags:
-        - completions_volcengine
-      summary: Create text completion
-      description: Generate one or more completions based on the provided prompt. Compatible with OpenAI's Completions API.
-      operationId: createCompletion_volcengine
-      security:
-        - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateCompletionRequest'
-            examples:
-              default:
-                summary: Basic
-                description: A simple text completion example.
-                value:
-                  model: doubao-seed-2-0-lite-260215
-                  prompt: Say this is a test
-                  max_tokens: 7
-                  temperature: 0
-                  'n': 1
-                  stream: false
-              streaming:
-                summary: Streaming
-                description: 'Enable streaming response by setting stream: true.'
-                value:
-                  model: doubao-seed-2-0-lite-260215
-                  prompt: The future of AI is
-                  max_tokens: 30
-                  temperature: 0.8
-                  stream: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CompletionResponse'
-              examples:
-                default-response:
-                  summary: Basic Response
-                  description: Response example corresponding to basic text completion request.
-                  value:
-                    id: 0217728646073678cf12c1a4b092384500fba0fc49677b04d2fb3
-                    object: text_completion
-                    created: 1772864610
-                    model: doubao-seed-2-0-lite-260215
-                    choices:
-                      - text: This is a test
-                        index: 0
-                        finish_reason: stop
-                    usage:
-                      prompt_tokens: 53
-                      completion_tokens: 119
-                      total_tokens: 172
-            text/event-stream:
-              schema:
-                type: string
-                description: 'Streaming response is returned in Server-Sent Events format, each event is a line of JSON data block starting with ''data: '', ending with ''data: [DONE]''.'
-              examples:
-                streaming-response:
-                  summary: Streaming Response Example
-                  description: Shows events sent continuously during streaming text completion process.
-                  value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":".","index":0,"finish_reason":"length"}]}
-                    data: [DONE]
-        '400':
-          $ref: '#/components/responses/ErrorResponse'
-        '401':
-          $ref: '#/components/responses/ErrorResponse'
-        '429':
-          $ref: '#/components/responses/ErrorResponse'
   /v1/responses:
     post:
       tags:
         - responses_volcengine
       summary: Create Response
-      description: Create a model response using OpenAI Responses-compatible payload.
+      description: Provides an OpenAI-compatible Responses endpoint. Supported parameters and behavior may vary by model.
       operationId: createResponse_volcengine
       security:
         - APIKeyHeader: []
@@ -321,10 +234,22 @@ paths:
             examples:
               default:
                 summary: Basic
+                description: A simple text-only Responses request.
                 value:
                   model: doubao-seed-2-0-lite-260215
                   input: Hello
                   stream: false
+              streaming:
+                summary: Streaming
+                description: Enable semantic event streaming by setting stream to true.
+                value:
+                  model: doubao-seed-2-0-lite-260215
+                  input:
+                    - role: user
+                      content:
+                        - type: input_text
+                          text: Write a short welcome message for a new user.
+                  stream: true
       responses:
         '200':
           description: Success Response
@@ -351,6 +276,19 @@ paths:
                       input_tokens: 12
                       output_tokens: 9
                       total_tokens: 21
+            text/event-stream:
+              schema:
+                type: string
+                description: Responses streaming returns Server-Sent Events with typed semantic event payloads.
+              examples:
+                streaming-response:
+                  summary: Streaming Response Example
+                  description: Shows a minimal sequence of semantic events emitted during Responses streaming.
+                  value: |
+                    data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"in_progress","model":"doubao-seed-2-0-lite-260215"}}
+                    data: {"type":"response.output_text.delta","sequence_number":1,"item_id":"msg_123","output_index":0,"content_index":0,"delta":"Hello"}
+                    data: {"type":"response.output_text.delta","sequence_number":2,"item_id":"msg_123","output_index":0,"content_index":0,"delta":" there!"}
+                    data: {"type":"response.completed","sequence_number":3,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"completed","model":"doubao-seed-2-0-lite-260215","output":[{"id":"msg_123","type":"message","role":"assistant","status":"completed","content":[{"type":"output_text","text":"Hello there!"}]}]}}
         '400':
           $ref: '#/components/responses/ErrorResponse'
         '401':
@@ -362,7 +300,7 @@ paths:
       tags:
         - image_generations_volcengine
       summary: Generate image
-      description: Generate image based on text prompt. Compatible with OpenAI's Images API.
+      description: Provides an OpenAI-compatible Images generation endpoint. Supported capabilities may vary by model.
       operationId: createImage_volcengine
       security:
         - APIKeyHeader: []
@@ -425,12 +363,19 @@ components:
       properties:
         url:
           type: string
-          description: 'Publicly accessible image URL, or a base64 data URL.'
+          description: Publicly accessible image URL or image data URL. Common image formats are supported; PNG may be used in examples.
+        detail:
+          type: string
+          description: Optional image understanding detail level.
+          enum:
+            - auto
+            - low
+            - high
       required:
         - url
     ChatMessageImagePart:
       type: object
-      description: Image input content part.
+      description: Image input content part. Add multiple image_url parts to send multiple images.
       properties:
         type:
           type: string
@@ -442,32 +387,493 @@ components:
       required:
         - type
         - image_url
-    ChatMessage:
+    ChatMessageInputAudio:
       type: object
-      description: Chat message object.
+      description: Audio input payload.
+      properties:
+        data:
+          type: string
+          description: Base64-encoded audio data.
+        format:
+          type: string
+          description: Audio format.
+          enum:
+            - wav
+            - mp3
+      required:
+        - data
+        - format
+    ChatMessageInputAudioPart:
+      type: object
+      description: Audio input content part.
+      properties:
+        type:
+          type: string
+          description: Part type.
+          enum:
+            - input_audio
+        input_audio:
+          $ref: '#/components/schemas/ChatMessageInputAudio'
+      required:
+        - type
+        - input_audio
+    ChatMessageFileObject:
+      type: object
+      description: File payload passed in a Chat Completions content part. Chat file parts accept an uploaded file_id or inline file_data; they do not support file_url. Use Responses input_file.file_url for external file URLs.
+      properties:
+        file_id:
+          type: string
+          description: Previously uploaded file ID.
+        file_data:
+          type: string
+          description: Inline base64-encoded file content.
+        filename:
+          type: string
+          description: File name used together with inline file content.
+      anyOf:
+        - required:
+            - file_id
+        - required:
+            - file_data
+      additionalProperties: false
+    ChatMessageFilePart:
+      type: object
+      description: File input content part for Chat Completions. External file URLs are not supported here; use Responses input_file.file_url instead.
+      properties:
+        type:
+          type: string
+          description: Part type.
+          enum:
+            - file
+        file:
+          $ref: '#/components/schemas/ChatMessageFileObject'
+      required:
+        - type
+        - file
+    ChatToolFunction:
+      type: object
+      description: Function definition used by tool declarations.
+      properties:
+        name:
+          type: string
+          description: Function name.
+        description:
+          type: string
+          description: Human-readable function description.
+        parameters:
+          type: object
+          description: JSON Schema describing function arguments.
+          additionalProperties: true
+        strict:
+          type: boolean
+          description: Whether to enforce strict schema adherence.
+      required:
+        - name
+      additionalProperties: true
+    ChatCustomTool:
+      type: object
+      description: Custom tool definition used by tool declarations.
+      properties:
+        name:
+          type: string
+          description: Custom tool name.
+        description:
+          type: string
+          description: Human-readable custom tool description.
+        format:
+          type: object
+          description: Optional custom tool input format definition.
+          additionalProperties: true
+      required:
+        - name
+      additionalProperties: true
+    ChatFunctionToolDefinition:
+      type: object
+      description: Function tool declaration for Chat Completions.
+      properties:
+        type:
+          type: string
+          description: Tool type.
+          enum:
+            - function
+        function:
+          $ref: '#/components/schemas/ChatToolFunction'
+      required:
+        - type
+        - function
+      additionalProperties: true
+    ChatCustomToolDefinition:
+      type: object
+      description: Custom tool declaration for Chat Completions.
+      properties:
+        type:
+          type: string
+          description: Tool type.
+          enum:
+            - custom
+        custom:
+          $ref: '#/components/schemas/ChatCustomTool'
+      required:
+        - type
+        - custom
+      additionalProperties: true
+    ChatToolDefinition:
+      description: Tool declaration for Chat Completions.
+      oneOf:
+        - $ref: '#/components/schemas/ChatFunctionToolDefinition'
+        - $ref: '#/components/schemas/ChatCustomToolDefinition'
+    ChatNamedFunctionToolChoice:
+      type: object
+      description: Explicitly choose a named function tool.
+      properties:
+        type:
+          type: string
+          enum:
+            - function
+        function:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Function tool name.
+          required:
+            - name
+          additionalProperties: true
+      required:
+        - type
+        - function
+      additionalProperties: true
+    ChatNamedCustomToolChoice:
+      type: object
+      description: Explicitly choose a named custom tool.
+      properties:
+        type:
+          type: string
+          enum:
+            - custom
+        custom:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Custom tool name.
+          required:
+            - name
+          additionalProperties: true
+      required:
+        - type
+        - custom
+      additionalProperties: true
+    ChatAllowedToolsChoice:
+      type: object
+      description: Restrict tool choice to an allowed subset of tools.
+      properties:
+        type:
+          type: string
+          enum:
+            - allowed_tools
+        allowed_tools:
+          type: object
+          description: Allowed tool choice configuration.
+          properties:
+            mode:
+              type: string
+              description: Tool selection mode for the allowed subset.
+            tools:
+              type: array
+              description: Allowed tool declarations.
+              items:
+                $ref: '#/components/schemas/ChatToolDefinition'
+          required:
+            - mode
+            - tools
+          additionalProperties: true
+      required:
+        - type
+        - allowed_tools
+      additionalProperties: true
+    ChatToolChoice:
+      description: Tool choice strategy.
+      anyOf:
+        - type: string
+          description: 'Simple strategy such as none, auto, or required.'
+          enum:
+            - none
+            - auto
+            - required
+        - $ref: '#/components/schemas/ChatNamedFunctionToolChoice'
+        - $ref: '#/components/schemas/ChatNamedCustomToolChoice'
+        - $ref: '#/components/schemas/ChatAllowedToolsChoice'
+        - type: object
+          description: Provider-specific tool choice object.
+          additionalProperties: true
+    ChatResponseFormat:
+      type: object
+      description: Structured output format configuration.
+      properties:
+        type:
+          type: string
+          description: 'Response format type such as text, json_object, or json_schema.'
+        json_schema:
+          type: object
+          description: JSON Schema configuration when type=json_schema.
+          additionalProperties: true
+      additionalProperties: true
+    ChatAudioRequestConfig:
+      type: object
+      description: Audio output request configuration.
+      properties:
+        voice:
+          type: string
+          description: Voice name for audio output.
+        format:
+          type: string
+          description: Audio format.
+      additionalProperties: true
+    ChatAudioResponseMetadata:
+      type: object
+      description: Audio metadata returned with a chat message.
+      properties:
+        id:
+          type: string
+          description: Audio object identifier.
+        expires_at:
+          type: integer
+          description: Expiration timestamp when provided.
+        transcript:
+          type: string
+          description: Transcript associated with the audio output.
+      additionalProperties: true
+    ChatStreamOptions:
+      type: object
+      description: Streaming options for Chat Completions.
+      properties:
+        include_usage:
+          type: boolean
+          description: Include a final usage chunk in streamed responses.
+        include_obfuscation:
+          type: boolean
+          description: Include obfuscation metadata when supported.
+      additionalProperties: true
+    ChatCompletionFunctionCall:
+      type: object
+      description: Deprecated function call structure returned by some models.
+      properties:
+        name:
+          type: string
+          description: Function name.
+        arguments:
+          type: string
+          description: JSON string containing function arguments.
+      additionalProperties: true
+    ChatCompletionFunctionToolCall:
+      type: object
+      description: Function tool call emitted by the assistant.
+      properties:
+        id:
+          type: string
+          description: Tool call identifier.
+        type:
+          type: string
+          description: Tool call type.
+          enum:
+            - function
+        function:
+          $ref: '#/components/schemas/ChatCompletionFunctionCall'
+      required:
+        - id
+        - type
+        - function
+      additionalProperties: true
+    ChatCompletionCustomToolCall:
+      type: object
+      description: Custom tool call emitted by the assistant.
+      properties:
+        id:
+          type: string
+          description: Tool call identifier.
+        type:
+          type: string
+          description: Tool call type.
+          enum:
+            - custom
+        custom:
+          type: object
+          description: Custom tool call payload.
+          additionalProperties: true
+      required:
+        - id
+        - type
+        - custom
+      additionalProperties: true
+    ChatCompletionToolCall:
+      description: Tool call emitted by the assistant.
+      oneOf:
+        - $ref: '#/components/schemas/ChatCompletionFunctionToolCall'
+        - $ref: '#/components/schemas/ChatCompletionCustomToolCall'
+    ChatCompletionAnnotation:
+      type: object
+      description: Annotation attached to a response message.
+      additionalProperties: true
+    ChatTextOnlyContent:
+      description: Text-only chat message content.
+      oneOf:
+        - type: string
+          description: Plain text content.
+        - type: array
+          description: Array of text content parts.
+          items:
+            $ref: '#/components/schemas/ChatMessageTextPart'
+    ChatUserMessage:
+      type: object
+      description: 'User message. Supports text, image, audio, and file input parts.'
       properties:
         role:
           type: string
-          description: Role of the message sender.
           enum:
-            - system
             - user
-            - assistant
-            - tool
+        name:
+          type: string
+          description: Optional participant name.
         content:
-          description: 'Message content, either plain text or structured multimodal parts.'
+          description: User message content.
           oneOf:
             - type: string
               description: Plain text content.
             - type: array
-              description: 'Array of structured content parts, typically used for multimodal input.'
+              description: Array of structured multimodal content parts.
               items:
                 oneOf:
                   - $ref: '#/components/schemas/ChatMessageTextPart'
                   - $ref: '#/components/schemas/ChatMessageImagePart'
+                  - $ref: '#/components/schemas/ChatMessageInputAudioPart'
+                  - $ref: '#/components/schemas/ChatMessageFilePart'
       required:
         - role
         - content
+      additionalProperties: true
+    ChatDeveloperMessage:
+      type: object
+      description: Developer message. Supports text-only content.
+      properties:
+        role:
+          type: string
+          enum:
+            - developer
+        name:
+          type: string
+          description: Optional participant name.
+        content:
+          $ref: '#/components/schemas/ChatTextOnlyContent'
+      required:
+        - role
+        - content
+      additionalProperties: true
+    ChatSystemMessage:
+      type: object
+      description: System message. Supports text-only content.
+      properties:
+        role:
+          type: string
+          enum:
+            - system
+        name:
+          type: string
+          description: Optional participant name.
+        content:
+          $ref: '#/components/schemas/ChatTextOnlyContent'
+      required:
+        - role
+        - content
+      additionalProperties: true
+    ChatAssistantMessage:
+      type: object
+      description: 'Assistant message, including optional tool calls.'
+      properties:
+        role:
+          type: string
+          enum:
+            - assistant
+        name:
+          type: string
+          description: Optional participant name.
+        content:
+          description: Assistant message content.
+          oneOf:
+            - $ref: '#/components/schemas/ChatTextOnlyContent'
+            - type: 'null'
+              description: 'Null content, typically used when assistant emits tool calls.'
+        tool_calls:
+          type: array
+          description: Tool calls emitted by the assistant.
+          items:
+            $ref: '#/components/schemas/ChatCompletionToolCall'
+        function_call:
+          oneOf:
+            - $ref: '#/components/schemas/ChatCompletionFunctionCall'
+            - type: 'null'
+          description: Deprecated single function call payload.
+        refusal:
+          type:
+            - string
+            - 'null'
+          description: Refusal text when the model declines the request.
+        audio:
+          oneOf:
+            - $ref: '#/components/schemas/ChatAudioResponseMetadata'
+            - type: 'null'
+          description: Audio payload metadata associated with the message.
+      required:
+        - role
+      additionalProperties: true
+    ChatToolMessage:
+      type: object
+      description: Tool result message. Supports text-only content and requires the related tool call ID.
+      properties:
+        role:
+          type: string
+          enum:
+            - tool
+        content:
+          $ref: '#/components/schemas/ChatTextOnlyContent'
+        tool_call_id:
+          type: string
+          description: Tool call identifier this message responds to.
+      required:
+        - role
+        - content
+        - tool_call_id
+      additionalProperties: true
+    ChatFunctionMessage:
+      type: object
+      description: Deprecated function result message. Use tool messages for new integrations.
+      properties:
+        role:
+          type: string
+          enum:
+            - function
+        name:
+          type: string
+          description: Function name.
+        content:
+          type:
+            - string
+            - 'null'
+          description: Function result content.
+      required:
+        - role
+        - name
+        - content
+      additionalProperties: true
+    ChatMessage:
+      description: Chat message object.
+      oneOf:
+        - $ref: '#/components/schemas/ChatDeveloperMessage'
+        - $ref: '#/components/schemas/ChatSystemMessage'
+        - $ref: '#/components/schemas/ChatUserMessage'
+        - $ref: '#/components/schemas/ChatAssistantMessage'
+        - $ref: '#/components/schemas/ChatToolMessage'
+        - $ref: '#/components/schemas/ChatFunctionMessage'
     Usage:
       type: object
       description: Token usage summary.
@@ -522,6 +928,22 @@ components:
           type: number
           description: Sampling temperature. Higher values make output more random.
           default: 1
+        top_p:
+          type: number
+          description: Nucleus sampling parameter.
+        presence_penalty:
+          type: number
+          description: Penalize tokens based on whether they have appeared.
+        frequency_penalty:
+          type: number
+          description: Penalize tokens based on how frequently they have appeared.
+        stop:
+          description: Up to four stop sequences.
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
         max_completion_tokens:
           type: integer
           description: Maximum number of output tokens the model may generate.
@@ -529,10 +951,50 @@ components:
           type: integer
           description: Number of candidate completions to generate.
           default: 1
+        seed:
+          type: integer
+          description: Best-effort deterministic sampling seed.
+        reasoning_effort:
+          type: string
+          description: Reasoning effort level for supported reasoning models.
+        response_format:
+          $ref: '#/components/schemas/ChatResponseFormat'
+        modalities:
+          type: array
+          description: 'Requested output modalities, such as text or audio.'
+          items:
+            type: string
+        audio:
+          $ref: '#/components/schemas/ChatAudioRequestConfig'
+        store:
+          type: boolean
+          description: Whether to store the response for later retrieval or distillation.
+        metadata:
+          type: object
+          description: Developer-defined metadata associated with the request.
+          additionalProperties: true
+        service_tier:
+          type: string
+          description: Requested service tier when supported.
+        user:
+          type: string
+          description: End-user identifier.
+        tools:
+          type: array
+          description: Tool declarations available to the model.
+          items:
+            $ref: '#/components/schemas/ChatToolDefinition'
+        tool_choice:
+          $ref: '#/components/schemas/ChatToolChoice'
+        parallel_tool_calls:
+          type: boolean
+          description: Whether the model may emit multiple tool calls in parallel.
         stream:
           type: boolean
           description: Whether to return the response as a stream.
           default: false
+        stream_options:
+          $ref: '#/components/schemas/ChatStreamOptions'
       required:
         - model
         - messages
@@ -548,6 +1010,31 @@ components:
           type:
             - string
             - 'null'
+        refusal:
+          type:
+            - string
+            - 'null'
+          description: Refusal text when the assistant declines to answer.
+        annotations:
+          type: array
+          description: Optional annotations such as citations or URL references.
+          items:
+            $ref: '#/components/schemas/ChatCompletionAnnotation'
+        tool_calls:
+          type: array
+          description: Tool calls emitted by the assistant.
+          items:
+            $ref: '#/components/schemas/ChatCompletionToolCall'
+        function_call:
+          oneOf:
+            - $ref: '#/components/schemas/ChatCompletionFunctionCall'
+            - type: 'null'
+          description: Deprecated single function call payload.
+        audio:
+          oneOf:
+            - $ref: '#/components/schemas/ChatAudioResponseMetadata'
+            - type: 'null'
+          description: Audio payload returned with the message.
     ChatCompletionChoice:
       type: object
       description: A single chat completion candidate.
@@ -562,6 +1049,12 @@ components:
           type:
             - string
             - 'null'
+        logprobs:
+          type:
+            - object
+            - 'null'
+          description: Optional token-level log probability details.
+          additionalProperties: true
     ChatCompletionResponse:
       type: object
       description: Chat Completions success response.
@@ -578,83 +1071,20 @@ components:
         model:
           type: string
           description: Model ID actually used for the request.
+        service_tier:
+          type: string
+          description: Service tier used for the request when provided.
+        system_fingerprint:
+          type: string
+          description: Backend configuration fingerprint when available.
+        request_id:
+          type: string
+          description: Request identifier when exposed by the provider.
         choices:
           type: array
           description: Candidate outputs returned by the model.
           items:
             $ref: '#/components/schemas/ChatCompletionChoice'
-        usage:
-          $ref: '#/components/schemas/Usage'
-    CreateCompletionRequest:
-      type: object
-      description: Text Completions request body.
-      properties:
-        model:
-          type: string
-          description: Model ID to invoke.
-        prompt:
-          description: Prompt used for text completion. Can be a single string or an array of strings.
-          oneOf:
-            - type: string
-              description: Single prompt string.
-            - type: array
-              description: Multiple prompt strings.
-              items:
-                type: string
-        temperature:
-          type: number
-          description: Sampling temperature. Higher values make output more random.
-          default: 1
-        max_tokens:
-          type: integer
-          description: Maximum number of output tokens.
-        'n':
-          type: integer
-          description: Number of completion candidates to return.
-          default: 1
-        stream:
-          type: boolean
-          description: Whether to return the response as a stream.
-          default: false
-      required:
-        - model
-        - prompt
-    CompletionChoice:
-      type: object
-      description: A single text completion candidate.
-      properties:
-        text:
-          type: string
-          description: Generated text output.
-        index:
-          type: integer
-          description: Zero-based position of this choice in the returned list.
-        finish_reason:
-          description: Reason generation stopped.
-          type:
-            - string
-            - 'null'
-    CompletionResponse:
-      type: object
-      description: Text Completions success response.
-      properties:
-        id:
-          type: string
-          description: Unique response ID.
-        object:
-          type: string
-          description: 'Object type, usually text_completion.'
-        created:
-          type: integer
-          description: Unix timestamp in seconds when the response was created.
-        model:
-          type: string
-          description: Model ID actually used for the request.
-        choices:
-          type: array
-          description: Completion candidates returned by the model.
-          items:
-            $ref: '#/components/schemas/CompletionChoice'
         usage:
           $ref: '#/components/schemas/Usage'
     MessageContentPart:
@@ -766,28 +1196,101 @@ components:
         usage:
           $ref: '#/components/schemas/Usage'
       additionalProperties: true
-    ResponseContentPart:
+    ResponseInputTextPart:
       type: object
-      description: Flexible content part used inside Responses input and output items.
+      description: Text input content part for the Responses protocol.
       properties:
         type:
           type: string
-          description: 'Part type, such as input_text, input_image, output_text, or tool_result.'
+          description: Input part type.
+          enum:
+            - input_text
         text:
           type: string
-          description: Text value carried by the part.
+          description: Text input value.
+      required:
+        - type
+        - text
+      additionalProperties: true
+    ResponseInputImagePart:
+      type: object
+      description: Image input content part for the Responses protocol. Add multiple input_image parts to send multiple images.
+      properties:
+        type:
+          type: string
+          description: Input part type.
+          enum:
+            - input_image
         image_url:
           type: string
-          description: Publicly accessible image URL or data URL used by image input parts.
+          description: 'Publicly accessible image URL or image data URL. Common image formats are supported; for example, data:image/png;base64,...'
         file_id:
           type: string
-          description: Referenced file identifier.
-        file_url:
-          type: string
-          description: Referenced file URL.
+          description: Previously uploaded image file ID.
         detail:
           type: string
           description: 'Detail level for image understanding, when supported.'
+          default: auto
+          enum:
+            - auto
+            - low
+            - high
+      required:
+        - type
+      anyOf:
+        - required:
+            - image_url
+        - required:
+            - file_id
+      additionalProperties: true
+    ResponseInputFilePart:
+      type: object
+      description: File input content part for the Responses protocol. Common document and text formats are supported; PDF is only one example.
+      properties:
+        type:
+          type: string
+          description: Input part type.
+          enum:
+            - input_file
+        file_id:
+          type: string
+          description: Previously uploaded file ID used by file input parts.
+        file_url:
+          type: string
+          description: Publicly accessible file URL used by file input parts. Common document and text formats are supported.
+        filename:
+          type: string
+          description: File name used together with file_data for inline file uploads.
+        file_data:
+          type: string
+          description: 'Data URL containing base64-encoded file content, such as data:application/pdf;base64,... or data:text/plain;base64,...'
+      required:
+        - type
+      anyOf:
+        - required:
+            - file_id
+        - required:
+            - file_url
+        - required:
+            - filename
+            - file_data
+      additionalProperties: true
+    ResponseInputContentPart:
+      description: 'Responses input content part. Supported input types are input_text, input_image, and input_file.'
+      oneOf:
+        - $ref: '#/components/schemas/ResponseInputTextPart'
+        - $ref: '#/components/schemas/ResponseInputImagePart'
+        - $ref: '#/components/schemas/ResponseInputFilePart'
+    ResponseContentPart:
+      type: object
+      description: Flexible output content part used inside Responses output items.
+      properties:
+        type:
+          type: string
+          description: 'Output part type, such as output_text or tool_result.'
+        text:
+          type: string
+          description: Text value carried by the part.
         annotations:
           type: array
           description: Optional annotations attached to the content part.
@@ -813,7 +1316,7 @@ components:
             - type: array
               description: Structured content part array.
               items:
-                $ref: '#/components/schemas/ResponseContentPart'
+                $ref: '#/components/schemas/ResponseInputContentPart'
       additionalProperties: true
     CreateResponseRequest:
       type: object

@@ -2,10 +2,10 @@
 
 ### 1. Overview
 
-OpenAI's Responses protocol capability.
+OpenAI exposes Responses capabilities in this environment.
 
 {% hint style="success" %}
-This API is compatible with the Responses protocol.
+This endpoint provides an OpenAI-compatible Responses path. Actual parameter support may vary by vendor and model.
 {% endhint %}
 
 **Supported models：**

@@ -59,7 +59,7 @@ paths:
         - chat_completions_volcengine
         # - chat_completions_volcengine_openai
       summary: 创建对话补全
-      description: 基于提供的消息历史，生成对话补全。与 OpenAI 的 Chat Completions API 兼容。
+      description: 提供与 OpenAI Chat Completions 兼容的对话接口。具体支持的参数和行为因模型而异。
       operationId: createChatCompletion_volcengine
       security:
         - APIKeyHeader: []

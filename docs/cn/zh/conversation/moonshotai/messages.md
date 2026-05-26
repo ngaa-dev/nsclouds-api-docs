@@ -2,10 +2,10 @@
 
 ### 1. 概述
 
-Moonshot AI 的 Messages 协议能力。
+Moonshot AI 在当前环境中提供的 Messages 协议能力。
 
 {% hint style="success" %}
-本 API 与 Messages 协议接口格式兼容。
+本接口提供与 Anthropic Messages 协议兼容的请求路径。具体行为以当前支持能力为准。
 {% endhint %}
 
 **模型列表：**

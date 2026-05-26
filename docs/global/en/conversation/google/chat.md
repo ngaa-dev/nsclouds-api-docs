@@ -2,10 +2,10 @@
 
 ### 1. Overview
 
-Google's conversation API capability.
+Google exposes conversation capabilities in this environment.
 
 {% hint style="success" %}
-This API is compatible with the OpenAI Chat Completions interface.
+This endpoint provides an OpenAI-compatible Chat Completions path. Actual parameter support may vary by vendor and model.
 {% endhint %}
 
 **Supported models：**

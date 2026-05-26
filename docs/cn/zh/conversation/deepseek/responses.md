@@ -2,10 +2,10 @@
 
 ### 1. 概述
 
-DeepSeek 的 Responses 协议能力。
+DeepSeek 在当前环境中提供的 Responses 协议能力。
 
 {% hint style="success" %}
-本 API 与 Responses 协议接口格式兼容。
+本接口提供与 OpenAI Responses 兼容的请求路径。不同厂家和模型的实际参数支持范围可能不同。
 {% endhint %}
 
 **模型列表：**

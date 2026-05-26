@@ -74,7 +74,7 @@ paths:
         - chat_completions_deepseek
         # - chat_completions_deepseek_openai
       summary: Create chat completion
-      description: Generate model response based on input messages. Fully compatible with OpenAI's Chat API.
+      description: Provides an OpenAI-compatible Chat Completions endpoint. Supported parameters and behavior may vary by model.
       operationId: createChatCompletion_deepseek
       security:
         - APIKeyHeader: []

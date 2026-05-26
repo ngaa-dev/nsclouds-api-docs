@@ -15,11 +15,6 @@ tags:
   x-page-title: Anthropic
   x-page-icon: brain
   description: Anthropic's chat completions API
-- name: completions_anthropic
-  x-parent: chat_completions
-  x-page-title: Anthropic
-  x-page-icon: brain
-  description: Anthropic's text completions API
 - name: messages_anthropic
   x-parent: chat_completions
   x-page-title: Anthropic
@@ -31,8 +26,8 @@ paths:
       tags:
       - chat_completions_anthropic
       summary: Create Chat Completion
-      description: Generate model responses based on input messages. Fully compatible
-        with OpenAI's Chat API.
+      description: Provides an OpenAI-compatible Chat Completions endpoint. Supported
+        parameters and behavior may vary by model.
       operationId: createChatCompletion_anthropic
       security:
       - APIKeyHeader: []
@@ -207,109 +202,12 @@ paths:
           "$ref": "#/components/responses/ErrorResponse"
         '429':
           "$ref": "#/components/responses/ErrorResponse"
-  "/v1/completions":
-    post:
-      tags:
-      - completions_anthropic
-      summary: Create Text Completion
-      description: Generate one or more completion results based on the provided prompt.
-        Compatible with OpenAI's Completions API.
-      operationId: createCompletion_anthropic
-      security:
-      - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/CreateCompletionRequest"
-            examples:
-              default:
-                summary: Basic
-                description: A simple text completion example.
-                value:
-                  model: claude-haiku-4-5-20251001
-                  prompt: Once upon a time
-                  max_tokens: 50
-                  temperature: 0.7
-                  n: 1
-                  stream: false
-              streaming:
-                summary: Streaming
-                description: 'Enable streaming response by setting stream: true.'
-                value:
-                  model: claude-haiku-4-5-20251001
-                  prompt: The future of AI is
-                  max_tokens: 30
-                  temperature: 0.8
-                  stream: true
-      responses:
-        '200':
-          description: Success Response
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/CompletionResponse"
-              examples:
-                default-response:
-                  summary: Basic Response
-                  description: Response example for basic text completion request.
-                  value:
-                    id: msg_01MMX9dbQ7ZPgjhMhgLPRuCz
-                    object: text_completion
-                    created: 1773223039
-                    model: claude-haiku-4-5-20251001
-                    choices:
-                    - finish_reason: stop
-                      index: 0
-                      text: This is a test.
-                      logprobs: 
-                    usage:
-                      completion_tokens: 8
-                      prompt_tokens: 12
-                      total_tokens: 20
-                      completion_tokens_details: 
-                      prompt_tokens_details:
-                        audio_tokens: 
-                        cached_tokens: 
-                        text_tokens: 
-                        image_tokens: 
-                        cached_tokens_details: {}
-                      claude_cache_creation_5_m_tokens: 0
-                      claude_cache_creation_1_h_tokens: 0
-                      web_search_queries: 0
-            text/event-stream:
-              schema:
-                type: string
-                description: 'Streaming responses are returned in Server-Sent Events
-                  format, each event is a JSON data block starting with ''data: ''
-                  and ending with ''data: [DONE]''.'
-              examples:
-                streaming-response:
-                  summary: Streaming Response Example
-                  description: Shows events sent sequentially during streaming text
-                    completion.
-                  value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-haiku-4-5-20251001","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-haiku-4-5-20251001","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-haiku-4-5-20251001","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-haiku-4-5-20251001","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-haiku-4-5-20251001","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-haiku-4-5-20251001","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"claude-haiku-4-5-20251001","choices":[{"text":".","index":0,"finish_reason":"length"}]}
-                    data: [DONE]
-        '400':
-          "$ref": "#/components/responses/ErrorResponse"
-        '401':
-          "$ref": "#/components/responses/ErrorResponse"
-        '429':
-          "$ref": "#/components/responses/ErrorResponse"
   "/v1/messages":
     post:
       tags:
       - messages_anthropic
       summary: Create Message
-      description: Create a message using Anthropic Messages-compatible payload.
+      description: Provides an Anthropic Messages-compatible endpoint.
       operationId: createMessage_anthropic
       security:
       - APIKeyHeader: []

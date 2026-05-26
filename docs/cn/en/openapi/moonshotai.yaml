@@ -26,8 +26,8 @@ paths:
       tags:
       - chat_completions_moonshotai
       summary: Create Chat Completion
-      description: Generate model responses based on input messages. Fully compatible
-        with OpenAI's Chat API.
+      description: Provides an OpenAI-compatible Chat Completions endpoint. Supported
+        parameters and behavior may vary by model.
       operationId: createChatCompletion_moonshotai
       security:
       - APIKeyHeader: []
@@ -220,7 +220,7 @@ paths:
       tags:
       - messages_moonshotai
       summary: Create Message
-      description: Create a message using Anthropic Messages-compatible payload.
+      description: Provides an Anthropic Messages-compatible endpoint.
       operationId: createMessage_moonshotai
       security:
       - APIKeyHeader: []

@@ -31,7 +31,7 @@ paths:
       tags:
       - chat_completions_deepseek
       summary: 创建聊天补全
-      description: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
+      description: 提供与 OpenAI Chat Completions 兼容的对话接口。具体支持的参数和行为因模型而异。
       operationId: createChatCompletion_deepseek
       security:
       - APIKeyHeader: []
@@ -214,7 +214,7 @@ paths:
       tags:
       - messages_deepseek
       summary: 创建 Messages 消息
-      description: 使用 Anthropic Messages 兼容格式创建消息响应。
+      description: 提供与 Anthropic Messages 协议兼容的接口。
       operationId: createMessage_deepseek
       security:
       - APIKeyHeader: []
@@ -266,7 +266,7 @@ paths:
       tags:
       - responses_deepseek
       summary: 创建 Responses 响应
-      description: 使用 OpenAI Responses 兼容格式创建模型响应。
+      description: 提供与 OpenAI Responses 兼容的接口。具体支持的参数和行为因模型而异。
       operationId: createResponse_deepseek
       security:
       - APIKeyHeader: []
@@ -279,10 +279,22 @@ paths:
             examples:
               default:
                 summary: 基础
+                description: 一个纯文本的基础 Responses 请求示例。
                 value:
                   model: deepseek-v3.2
                   input: Hello
                   stream: false
+              streaming:
+                summary: 流式
+                description: '通过设置 stream: true 启用语义化事件流返回。'
+                value:
+                  model: deepseek-v3.2
+                  input:
+                  - role: user
+                    content:
+                    - type: input_text
+                      text: Write a short welcome message for a new user.
+                  stream: true
       responses:
         '200':
           description: 成功响应
@@ -309,6 +321,19 @@ paths:
                       input_tokens: 12
                       output_tokens: 9
                       total_tokens: 21
+            text/event-stream:
+              schema:
+                type: string
+                description: Responses 流式返回使用 Server-Sent Events，并携带带类型的语义化事件。
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示 Responses 流式调用期间的最小事件序列。
+                  value: |
+                    data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"in_progress","model":"deepseek-v3.2"}}
+                    data: {"type":"response.output_text.delta","sequence_number":1,"item_id":"msg_123","output_index":0,"content_index":0,"delta":"Hello"}
+                    data: {"type":"response.output_text.delta","sequence_number":2,"item_id":"msg_123","output_index":0,"content_index":0,"delta":" there!"}
+                    data: {"type":"response.completed","sequence_number":3,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"completed","model":"deepseek-v3.2","output":[{"id":"msg_123","type":"message","role":"assistant","status":"completed","content":[{"type":"output_text","text":"Hello there!"}]}]}}
         '400':
           "$ref": "#/components/responses/ErrorResponse"
         '401':

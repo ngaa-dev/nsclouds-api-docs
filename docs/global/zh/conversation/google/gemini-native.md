@@ -2,10 +2,10 @@
 
 ### 1. 概述
 
-Google 的 Gemini 原生协议能力。
+Google 在当前环境中提供的 Gemini 原生协议能力。
 
 {% hint style="success" %}
-本 API 与 Gemini 原生接口格式兼容。
+本接口提供与 Google Gemini 原生协议兼容的请求路径。
 {% endhint %}
 
 **模型列表：**

@@ -46,7 +46,7 @@ paths:
       tags:
         - chat_completions_moonshotai
       summary: 创建聊天补全
-      description: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
+      description: 提供与 OpenAI Chat Completions 兼容的对话接口。具体支持的参数和行为因模型而异。
       operationId: createChatCompletion_moonshotai
       security:
         - APIKeyHeader: []

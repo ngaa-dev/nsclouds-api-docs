@@ -2,10 +2,10 @@
 
 ### 1. Overview
 
-Google's Gemini native protocol capability.
+Google exposes Gemini native protocol capabilities in this environment.
 
 {% hint style="success" %}
-This API is compatible with the Gemini native protocol.
+This endpoint provides a Google Gemini native-compatible path.
 {% endhint %}
 
 **Supported models：**

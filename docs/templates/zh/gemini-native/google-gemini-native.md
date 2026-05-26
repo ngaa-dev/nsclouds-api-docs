@@ -5,7 +5,7 @@
 Gemini 原生协议接口，支持 `generateContent` 与 `streamGenerateContent`。
 
 {% hint style="success" %}
-本 API 与 Gemini 原生接口格式兼容。
+本接口提供与 Google Gemini 原生协议兼容的请求路径。
 {% endhint %}
 
 ### 2. 接口详情

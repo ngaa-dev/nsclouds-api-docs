@@ -46,7 +46,7 @@ paths:
       tags:
         - chat_completions_openai
       summary: Create Chat Completion
-      description: Generate model responses based on input messages. Fully compatible with OpenAI's Chat API.
+      description: Follows the OpenAI Chat Completions protocol.
       operationId: createChatCompletion_openai
       security:
         - APIKeyHeader: []
@@ -59,11 +59,11 @@ paths:
             examples:
               default:
                 summary: Basic
-                description: A simple conversation example with system prompt and user message.
+                description: A simple conversation using the developer role plus a user message.
                 value:
                   model: gpt-5
                   messages:
-                    - role: system
+                    - role: developer
                       content: You are a helpful assistant.
                     - role: user
                       content: Hello!
@@ -73,22 +73,24 @@ paths:
                   stream: false
               streaming:
                 summary: Streaming
-                description: "Enable streaming response by setting stream: true."
+                description: "Enable streaming response and include a final usage chunk."
                 value:
                   model: gpt-5.2
                   messages:
-                    - role: system
+                    - role: developer
                       content: You are a helpful assistant.
                     - role: user
                       content: Tell me a story.
                   temperature: 0.7
                   max_completion_tokens: 100
                   stream: true
+                  stream_options:
+                    include_usage: true
               image_input:
                 summary: Image Input (URL)
                 description: Analyze one or more images by URL using image_url parts.
                 value:
-                  model: gpt-5.2
+                  model: gpt-5.4
                   messages:
                     - role: user
                       content:
@@ -97,12 +99,13 @@ paths:
                         - type: image_url
                           image_url:
                             url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
+                            detail: high
                   max_completion_tokens: 300
               image_data_url_input:
-                summary: Image Input (base64)
+                summary: Image Input (Base64)
                 description: Analyze one or more inline image data URLs using image_url parts. PNG is shown as an example format.
                 value:
-                  model: gpt-5.2
+                  model: gpt-5.4
                   messages:
                     - role: user
                       content:
@@ -112,9 +115,38 @@ paths:
                         - type: text
                           text: What's in this image?
                   max_completion_tokens: 300
-              functions:
-                summary: Function Calling
-                description: Define tools (functions) and let the model decide whether to call them.
+              file_input:
+                summary: File Input
+                description: Pass a previously uploaded file into Chat Completions. This endpoint does not accept file_url; use Responses input_file.file_url for external file URLs.
+                value:
+                  model: gpt-5
+                  messages:
+                    - role: user
+                      content:
+                        - type: text
+                          text: Summarize the attached document in five bullet points.
+                        - type: file
+                          file:
+                            file_id: file_abc123report
+                  max_completion_tokens: 300
+              audio_input:
+                summary: Audio Input
+                description: Send audio plus text instructions in a single chat request.
+                value:
+                  model: gpt-5.4
+                  messages:
+                    - role: user
+                      content:
+                        - type: text
+                          text: Transcribe this audio and extract the action items.
+                        - type: input_audio
+                          input_audio:
+                            data: UklGRsZrAABXQVZFZm10IBAAAAABAAEA...
+                            format: wav
+                  max_completion_tokens: 300
+              tools:
+                summary: Tool Calling
+                description: Define tools and let the model decide whether to call them.
                 value:
                   model: gpt-5.2
                   messages:
@@ -134,7 +166,33 @@ paths:
                           required:
                             - file_path
                   tool_choice: auto
+                  parallel_tool_calls: true
                   max_completion_tokens: 150
+              structured_output:
+                summary: Structured Output
+                description: Request JSON Schema-constrained output using response_format.
+                value:
+                  model: gpt-5
+                  messages:
+                    - role: user
+                      content: Extract the event name and date from "OpenAI Dev Day is on October 1, 2026."
+                  response_format:
+                    type: json_schema
+                    json_schema:
+                      name: event_extraction
+                      strict: true
+                      schema:
+                        type: object
+                        properties:
+                          event_name:
+                            type: string
+                          event_date:
+                            type: string
+                        additionalProperties: false
+                        required:
+                          - event_name
+                          - event_date
+                  max_completion_tokens: 120
       responses:
         '200':
           description: Success Response
@@ -181,24 +239,30 @@ paths:
                       completion_tokens: 49
                       prompt_tokens: 704
                       total_tokens: 753
-                functions-response:
-                  summary: Function Calling Response
-                  description: Model returns a function call request.
+                tools-response:
+                  summary: Tool Calling Response
+                  description: Model returns a tool call instead of plain text content.
                   value:
                     id: chatcmpl-ZjQIwmTgiAmyXrAeTCcoNXvvqiprq
                     created: 1773197541
                     model: gpt-5.2
                     object: chat.completion
+                    service_tier: default
                     choices:
                       - index: 0
                         message:
                           role: assistant
-                          content: I can't directly access or read files on your system. If you'd like to share the content of report.txt, you can copy and paste it here, and I'll help you analyze or work with it.
-                        finish_reason: stop
+                          tool_calls:
+                            - id: call_123
+                              type: function
+                              function:
+                                name: read_file
+                                arguments: '{"file_path":"report.txt"}'
+                        finish_reason: tool_calls
                     usage:
-                      completion_tokens: 74
+                      completion_tokens: 41
                       prompt_tokens: 13
-                      total_tokens: 87
+                      total_tokens: 54
             text/event-stream:
               schema:
                 type: string
@@ -374,63 +438,102 @@ paths:
             examples:
               default:
                 summary: Basic
+                description: A simple text-only Responses request.
                 value:
                   model: gpt-5.4
                   input: Hello
                   stream: false
-              image_input:
-                summary: Image Input (URL)
-                description: Analyze one or more image URLs using input_image parts.
+              streaming:
+                summary: Streaming
+                description: "Enable semantic event streaming by setting stream to true."
                 value:
                   model: gpt-5.4
                   input:
                     - role: user
                       content:
-                        - type: input_image
-                          image_url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
-                          detail: high
                         - type: input_text
-                          text: Describe the image and list any visible text.
+                          text: Write a short welcome message for a new user.
+                  stream: true
+              image_url_input:
+                summary: Image Input (URL)
+                description: Analyze an image from a public URL with a Responses-compatible multimodal payload.
+                value:
+                  model: gpt-5.4
+                  input:
+                    - role: user
+                      content:
+                        - type: input_text
+                          text: What is in this image?
+                        - type: input_image
+                          image_url: https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg
+                          detail: high
                   stream: false
               image_data_url_input:
-                summary: Image Input (base64)
+                summary: Image Input (Base64)
                 description: Analyze one or more inline image data URLs using input_image parts. PNG is shown as an example format.
                 value:
                   model: gpt-5.4
                   input:
                     - role: user
                       content:
-                        - type: input_image
-                          image_url: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=
                         - type: input_text
                           text: What's in this image?
+                        - type: input_image
+                          image_url: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=
+                  stream: false
+              image_file_input:
+                summary: Image Input (File ID)
+                description: Analyze an uploaded image by passing its file ID.
+                value:
+                  model: gpt-5.4
+                  input:
+                    - role: user
+                      content:
+                        - type: input_text
+                          text: What's in this image?
+                        - type: input_image
+                          file_id: file_abc123image
                   stream: false
               file_url_input:
-                summary: File Input (file_url)
-                description: Analyze a publicly accessible file with an input_file part and file_url. Common document and text formats are supported; PDF is shown as an example.
+                summary: File Input (URL)
+                description: Reference an external PDF or document URL as input_file.
                 value:
-                  model: gpt-5.4
-                  stream: true
+                  model: gpt-5
                   input:
                     - role: user
                       content:
                         - type: input_file
-                          file_url: https://arxiv.org/pdf/1706.03762v7
+                          file_url: https://www.berkshirehathaway.com/letters/2024ltr.pdf
                         - type: input_text
-                          text: Summarize this paper's core idea.
-              file_data_input:
-                summary: File Input (file_data)
-                description: Analyze an inline uploaded file with filename and a base64 data URL in file_data. Common document and text formats are supported; PDF is shown as an example.
+                          text: Analyze the document and summarize the key points.
+                  stream: false
+              file_id_input:
+                summary: File Input (File ID)
+                description: Reference a previously uploaded file from the Files API.
                 value:
-                  model: gpt-5.4
+                  model: gpt-5
                   input:
                     - role: user
                       content:
                         - type: input_file
-                          filename: 1706.03762v7.pdf
-                          file_data: data:application/pdf;base64,JVBERi0x...
+                          file_id: file_abc123pdf
                         - type: input_text
-                          text: Summarize this paper's core idea.
+                          text: What is the first major topic discussed in this file?
+                  stream: false
+              file_base64_input:
+                summary: File Input (Base64)
+                description: "Send inline file data using filename plus a base64 data URL."
+                value:
+                  model: gpt-5
+                  input:
+                    - role: user
+                      content:
+                        - type: input_file
+                          filename: report.pdf
+                          file_data: data:application/pdf;base64,JVBERi0xLjQKJcfs...
+                        - type: input_text
+                          text: Extract the action items from this file.
+                  stream: false
       responses:
         '200':
           description: Success Response
@@ -457,6 +560,19 @@ paths:
                       input_tokens: 12
                       output_tokens: 9
                       total_tokens: 21
+            text/event-stream:
+              schema:
+                type: string
+                description: Responses streaming returns Server-Sent Events with typed semantic event payloads.
+              examples:
+                streaming-response:
+                  summary: Streaming Response Example
+                  description: Shows a minimal sequence of semantic events emitted during Responses streaming.
+                  value: |
+                    data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"in_progress","model":"gpt-5.4"}}
+                    data: {"type":"response.output_text.delta","sequence_number":1,"item_id":"msg_123","output_index":0,"content_index":0,"delta":"Hello"}
+                    data: {"type":"response.output_text.delta","sequence_number":2,"item_id":"msg_123","output_index":0,"content_index":0,"delta":" there!"}
+                    data: {"type":"response.completed","sequence_number":3,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"completed","model":"gpt-5.4","output":[{"id":"msg_123","type":"message","role":"assistant","status":"completed","content":[{"type":"output_text","text":"Hello there!"}]}]}}
         '400':
           $ref: '#/components/responses/ErrorResponse'
         '401':

@@ -5,7 +5,7 @@
 Gemini native protocol APIs for `generateContent` and `streamGenerateContent`.
 
 {% hint style="success" %}
-This API is compatible with Gemini native protocol format.
+This endpoint provides a Google Gemini native-compatible path.
 {% endhint %}
 
 ### 2. API Details

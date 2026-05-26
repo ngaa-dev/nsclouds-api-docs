@@ -15,11 +15,6 @@ tags:
   x-page-title: OpenAI
   x-page-icon: brain
   description: OpenAI 的对话生成 API
-- name: completions_openai
-  x-parent: chat_completions
-  x-page-title: OpenAI
-  x-page-icon: brain
-  description: OpenAI 的文本补全 API
 - name: responses_openai
   x-parent: chat_completions
   x-page-title: OpenAI
@@ -31,7 +26,7 @@ paths:
       tags:
       - chat_completions_openai
       summary: 创建聊天补全
-      description: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
+      description: 遵循 OpenAI Chat Completions 协议。
       operationId: createChatCompletion_openai
       security:
       - APIKeyHeader: []
@@ -44,11 +39,11 @@ paths:
             examples:
               default:
                 summary: 基础
-                description: 一个简单的对话示例，包含系统提示和用户消息。
+                description: 一个使用 developer 角色和用户消息的基础对话示例。
                 value:
                   model: gpt-5
                   messages:
-                  - role: system
+                  - role: developer
                     content: You are a helpful assistant.
                   - role: user
                     content: Hello!
@@ -58,22 +53,24 @@ paths:
                   stream: false
               streaming:
                 summary: 流式
-                description: '通过设置 stream: true 启用流式响应。'
+                description: '通过设置 stream: true 启用流式响应，并在末尾附带 usage。'
                 value:
-                  model: gpt-5
+                  model: gpt-5.2
                   messages:
-                  - role: system
+                  - role: developer
                     content: You are a helpful assistant.
                   - role: user
                     content: Tell me a story.
                   temperature: 0.7
                   max_completion_tokens: 100
                   stream: true
+                  stream_options:
+                    include_usage: true
               image_input:
                 summary: 图像输入（URL）
                 description: 使用 image_url 内容片段分析一个或多个图片 URL。
                 value:
-                  model: gpt-5
+                  model: gpt-5.4
                   messages:
                   - role: user
                     content:
@@ -82,12 +79,13 @@ paths:
                     - type: image_url
                       image_url:
                         url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
+                        detail: high
                   max_completion_tokens: 300
               image_data_url_input:
                 summary: 图像输入（base64）
                 description: 使用 image_url 内容片段分析一个或多个内联图片 data URL。这里以 PNG 格式为例。
                 value:
-                  model: gpt-5
+                  model: gpt-5.4
                   messages:
                   - role: user
                     content:
@@ -97,11 +95,41 @@ paths:
                     - type: text
                       text: What's in this image?
                   max_completion_tokens: 300
-              functions:
-                summary: 函数调用
-                description: 定义工具（函数）并让模型决定是否调用。
+              file_input:
+                summary: 文件输入
+                description: 在 Chat Completions 中传入已上传的文件。此端点不接受 file_url；外部文件 URL
+                  请使用 Responses 的 input_file.file_url。
                 value:
                   model: gpt-5
+                  messages:
+                  - role: user
+                    content:
+                    - type: text
+                      text: Summarize the attached document in five bullet points.
+                    - type: file
+                      file:
+                        file_id: file_abc123report
+                  max_completion_tokens: 300
+              audio_input:
+                summary: 音频输入
+                description: 在单次 chat 请求中同时发送音频和文本指令。
+                value:
+                  model: gpt-5.4
+                  messages:
+                  - role: user
+                    content:
+                    - type: text
+                      text: Transcribe this audio and extract the action items.
+                    - type: input_audio
+                      input_audio:
+                        data: UklGRsZrAABXQVZFZm10IBAAAAABAAEA...
+                        format: wav
+                  max_completion_tokens: 300
+              tools:
+                summary: 工具调用
+                description: 定义工具并让模型决定是否调用。
+                value:
+                  model: gpt-5.2
                   messages:
                   - role: user
                     content: Read the content of the file report.txt
@@ -119,7 +147,34 @@ paths:
                         required:
                         - file_path
                   tool_choice: auto
+                  parallel_tool_calls: true
                   max_completion_tokens: 150
+              structured_output:
+                summary: 结构化输出
+                description: 使用 response_format 请求符合 JSON Schema 的结构化结果。
+                value:
+                  model: gpt-5
+                  messages:
+                  - role: user
+                    content: Extract the event name and date from "OpenAI Dev Day
+                      is on October 1, 2026."
+                  response_format:
+                    type: json_schema
+                    json_schema:
+                      name: event_extraction
+                      strict: true
+                      schema:
+                        type: object
+                        properties:
+                          event_name:
+                            type: string
+                          event_date:
+                            type: string
+                        additionalProperties: false
+                        required:
+                        - event_name
+                        - event_date
+                  max_completion_tokens: 120
       responses:
         '200':
           description: 成功响应
@@ -156,7 +211,7 @@ paths:
                   value:
                     id: chatcmpl-s71Ce6GRN8PzAOB0PbVmNFGdSlGjS
                     created: 1773197559
-                    model: gpt-5
+                    model: gpt-5.2
                     object: chat.completion
                     choices:
                     - index: 0
@@ -171,27 +226,30 @@ paths:
                       completion_tokens: 49
                       prompt_tokens: 704
                       total_tokens: 753
-                functions-response:
-                  summary: 函数调用响应
-                  description: 模型返回一个函数调用请求。
+                tools-response:
+                  summary: 工具调用响应
+                  description: 模型返回 tool call，而不是普通文本内容。
                   value:
                     id: chatcmpl-ZjQIwmTgiAmyXrAeTCcoNXvvqiprq
                     created: 1773197541
-                    model: gpt-5
+                    model: gpt-5.2
                     object: chat.completion
+                    service_tier: default
                     choices:
                     - index: 0
                       message:
                         role: assistant
-                        content: I can't directly access or read files on your system.
-                          If you'd like to share the content of report.txt, you can
-                          copy and paste it here, and I'll help you analyze or work
-                          with it.
-                      finish_reason: stop
+                        tool_calls:
+                        - id: call_123
+                          type: function
+                          function:
+                            name: read_file
+                            arguments: '{"file_path":"report.txt"}'
+                      finish_reason: tool_calls
                     usage:
-                      completion_tokens: 74
+                      completion_tokens: 41
                       prompt_tokens: 13
-                      total_tokens: 87
+                      total_tokens: 54
             text/event-stream:
               schema:
                 type: string
@@ -202,93 +260,10 @@ paths:
                   summary: 流式响应示例
                   description: 展示流式聊天过程中陆续发送的事件。
                   value: |
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
-                    data: [DONE]
-        '400':
-          "$ref": "#/components/responses/ErrorResponse"
-        '401':
-          "$ref": "#/components/responses/ErrorResponse"
-        '429':
-          "$ref": "#/components/responses/ErrorResponse"
-  "/v1/completions":
-    post:
-      tags:
-      - completions_openai
-      summary: 创建文本补全
-      description: 基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
-      operationId: createCompletion_openai
-      security:
-      - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/CreateCompletionRequest"
-            examples:
-              default:
-                summary: 基础
-                description: 一个简单的文本补全示例。
-                value:
-                  model: gpt-5
-                  prompt: Once upon a time
-                  max_tokens: 50
-                  temperature: 0.7
-                  n: 1
-                  stream: false
-              streaming:
-                summary: 流式
-                description: '通过设置 stream: true 启用流式响应。'
-                value:
-                  model: gpt-5
-                  prompt: The future of AI is
-                  max_tokens: 30
-                  temperature: 0.8
-                  stream: true
-      responses:
-        '200':
-          description: 成功响应
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/CompletionResponse"
-              examples:
-                default-response:
-                  summary: 基础响应
-                  description: 对应基础文本补全请求的响应示例。
-                  value:
-                    id: cmpl-123
-                    object: text_completion
-                    created: 1677652288
-                    model: gpt-5
-                    choices:
-                    - text: " in a small village, there lived a young girl named Lily."
-                      index: 0
-                      finish_reason: length
-                    usage:
-                      prompt_tokens: 4
-                      completion_tokens: 12
-                      total_tokens: 16
-            text/event-stream:
-              schema:
-                type: string
-                description: '流式响应以 Server-Sent Events 格式返回，每个事件是一行以 ''data: '' 开头的
-                  JSON 数据块，最后以 ''data: [DONE]'' 结束。'
-              examples:
-                streaming-response:
-                  summary: 流式响应示例
-                  description: 展示流式文本补全过程中陆续发送的事件。
-                  value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gpt-5","choices":[{"text":".","index":0,"finish_reason":"length"}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5.2","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5.2","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5.2","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"gpt-5.2","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
                     data: [DONE]
         '400':
           "$ref": "#/components/responses/ErrorResponse"
@@ -314,65 +289,102 @@ paths:
             examples:
               default:
                 summary: 基础
+                description: 一个纯文本的基础 Responses 请求示例。
                 value:
-                  model: gpt-5
+                  model: gpt-5.4
                   input: Hello
                   stream: false
-              image_input:
-                summary: 图像输入（URL）
-                description: 使用 input_image 内容片段分析一个或多个图片 URL。
+              streaming:
+                summary: 流式
+                description: '通过设置 stream: true 启用语义化事件流返回。'
                 value:
-                  model: gpt-5
+                  model: gpt-5.4
                   input:
                   - role: user
                     content:
-                    - type: input_image
-                      image_url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
-                      detail: high
                     - type: input_text
-                      text: Describe the image and list any visible text.
+                      text: Write a short welcome message for a new user.
+                  stream: true
+              image_url_input:
+                summary: 图像输入（URL）
+                description: 使用公开图片 URL 按 Responses 多模态格式发起分析请求。
+                value:
+                  model: gpt-5.4
+                  input:
+                  - role: user
+                    content:
+                    - type: input_text
+                      text: What is in this image?
+                    - type: input_image
+                      image_url: https://api.nga.gov/iiif/a2e6da57-3cd1-4235-b20e-95dcaefed6c8/full/!800,800/0/default.jpg
+                      detail: high
                   stream: false
               image_data_url_input:
                 summary: 图像输入（base64）
                 description: 使用 input_image 内容片段分析一个或多个内联图片 data URL。这里以 PNG 格式为例。
                 value:
-                  model: gpt-5
+                  model: gpt-5.4
                   input:
                   - role: user
                     content:
-                    - type: input_image
-                      image_url: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=
                     - type: input_text
                       text: What's in this image?
+                    - type: input_image
+                      image_url: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=
+                  stream: false
+              image_file_input:
+                summary: 图像输入（File ID）
+                description: 通过已上传文件的 file_id 分析图片内容。
+                value:
+                  model: gpt-5.4
+                  input:
+                  - role: user
+                    content:
+                    - type: input_text
+                      text: What's in this image?
+                    - type: input_image
+                      file_id: file_abc123image
                   stream: false
               file_url_input:
-                summary: 文件输入（file_url）
-                description: 使用 input_file 内容片段和 file_url 分析可公开访问的文件。支持常见文档和文本格式，这里以
-                  PDF 为例。
-                value:
-                  model: gpt-5
-                  stream: true
-                  input:
-                  - role: user
-                    content:
-                    - type: input_file
-                      file_url: https://arxiv.org/pdf/1706.03762v7
-                    - type: input_text
-                      text: Summarize this paper's core idea.
-              file_data_input:
-                summary: 文件输入（file_data）
-                description: 使用 filename 和 base64 data URL 形式的 file_data 分析内联上传文件。支持常见文档和文本格式，这里以
-                  PDF 为例。
+                summary: 文件输入（URL）
+                description: 通过 input_file 引用外部 PDF 或文档 URL。
                 value:
                   model: gpt-5
                   input:
                   - role: user
                     content:
-                    - type: input_file
-                      filename: 1706.03762v7.pdf
-                      file_data: data:application/pdf;base64,JVBERi0x...
                     - type: input_text
-                      text: Summarize this paper's core idea.
+                      text: Analyze the document and summarize the key points.
+                    - type: input_file
+                      file_url: https://www.berkshirehathaway.com/letters/2024ltr.pdf
+                  stream: false
+              file_id_input:
+                summary: 文件输入（File ID）
+                description: 引用通过 Files API 预先上传的文件。
+                value:
+                  model: gpt-5
+                  input:
+                  - role: user
+                    content:
+                    - type: input_file
+                      file_id: file_abc123pdf
+                    - type: input_text
+                      text: What is the first major topic discussed in this file?
+                  stream: false
+              file_base64_input:
+                summary: 文件输入（Base64）
+                description: 通过 filename 加 base64 data URL 直接内联传递文件内容。
+                value:
+                  model: gpt-5
+                  input:
+                  - role: user
+                    content:
+                    - type: input_file
+                      filename: report.pdf
+                      file_data: data:application/pdf;base64,JVBERi0xLjQKJcfs...
+                    - type: input_text
+                      text: Extract the action items from this file.
+                  stream: false
       responses:
         '200':
           description: 成功响应
@@ -386,7 +398,7 @@ paths:
                   value:
                     id: resp_123
                     object: response
-                    model: gpt-5
+                    model: gpt-5.4
                     output:
                     - id: msg_123
                       type: message
@@ -399,6 +411,19 @@ paths:
                       input_tokens: 12
                       output_tokens: 9
                       total_tokens: 21
+            text/event-stream:
+              schema:
+                type: string
+                description: Responses 流式返回使用 Server-Sent Events，并携带带类型的语义化事件。
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示 Responses 流式调用期间的最小事件序列。
+                  value: |
+                    data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"in_progress","model":"gpt-5.4"}}
+                    data: {"type":"response.output_text.delta","sequence_number":1,"item_id":"msg_123","output_index":0,"content_index":0,"delta":"Hello"}
+                    data: {"type":"response.output_text.delta","sequence_number":2,"item_id":"msg_123","output_index":0,"content_index":0,"delta":" there!"}
+                    data: {"type":"response.completed","sequence_number":3,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"completed","model":"gpt-5.4","output":[{"id":"msg_123","type":"message","role":"assistant","status":"completed","content":[{"type":"output_text","text":"Hello there!"}]}]}}
         '400':
           "$ref": "#/components/responses/ErrorResponse"
         '401':

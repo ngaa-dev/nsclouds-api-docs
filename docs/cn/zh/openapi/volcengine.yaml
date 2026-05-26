@@ -36,7 +36,7 @@ paths:
       tags:
       - chat_completions_volcengine
       summary: 创建对话补全
-      description: 基于提供的消息历史，生成对话补全。与 OpenAI 的 Chat Completions API 兼容。
+      description: 提供与 OpenAI Chat Completions 兼容的对话接口。具体支持的参数和行为因模型而异。
       operationId: createChatCompletion_volcengine
       security:
       - APIKeyHeader: []
@@ -240,7 +240,7 @@ paths:
       tags:
       - responses_volcengine
       summary: 创建 Responses 响应
-      description: 使用 OpenAI Responses 兼容格式创建模型响应。
+      description: 提供与 OpenAI Responses 兼容的接口。具体支持的参数和行为因模型而异。
       operationId: createResponse_volcengine
       security:
       - APIKeyHeader: []
@@ -253,10 +253,22 @@ paths:
             examples:
               default:
                 summary: 基础
+                description: 一个纯文本的基础 Responses 请求示例。
                 value:
                   model: doubao-seed-2-0-lite-260215
                   input: Hello
                   stream: false
+              streaming:
+                summary: 流式
+                description: '通过设置 stream: true 启用语义化事件流返回。'
+                value:
+                  model: doubao-seed-2-0-lite-260215
+                  input:
+                  - role: user
+                    content:
+                    - type: input_text
+                      text: Write a short welcome message for a new user.
+                  stream: true
       responses:
         '200':
           description: 成功响应
@@ -283,6 +295,19 @@ paths:
                       input_tokens: 12
                       output_tokens: 9
                       total_tokens: 21
+            text/event-stream:
+              schema:
+                type: string
+                description: Responses 流式返回使用 Server-Sent Events，并携带带类型的语义化事件。
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示 Responses 流式调用期间的最小事件序列。
+                  value: |
+                    data: {"type":"response.created","sequence_number":0,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"in_progress","model":"doubao-seed-2-0-lite-260215"}}
+                    data: {"type":"response.output_text.delta","sequence_number":1,"item_id":"msg_123","output_index":0,"content_index":0,"delta":"Hello"}
+                    data: {"type":"response.output_text.delta","sequence_number":2,"item_id":"msg_123","output_index":0,"content_index":0,"delta":" there!"}
+                    data: {"type":"response.completed","sequence_number":3,"response":{"id":"resp_123","object":"response","created_at":1741487325,"status":"completed","model":"doubao-seed-2-0-lite-260215","output":[{"id":"msg_123","type":"message","role":"assistant","status":"completed","content":[{"type":"output_text","text":"Hello there!"}]}]}}
         '400':
           "$ref": "#/components/responses/ErrorResponse"
         '401':
@@ -294,7 +319,7 @@ paths:
       tags:
       - image_generations_volcengine
       summary: 生成图像
-      description: 根据文本提示生成图像。与 OpenAI 的 Images API 兼容。
+      description: 提供与 OpenAI Images 兼容的图像生成接口。具体支持的能力因模型而异。
       operationId: createImage_volcengine
       security:
       - APIKeyHeader: []
@@ -339,7 +364,7 @@ paths:
       tags:
       - image_edits_volcengine
       summary: 编辑图像
-      description: 编辑和扩展图像。与 OpenAI 的 Images API 兼容。
+      description: 提供与 OpenAI Images 兼容的图像编辑接口。具体支持的能力因模型而异。
       operationId: createImageEdit_volcengine
       security:
       - APIKeyHeader: []

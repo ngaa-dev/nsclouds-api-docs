@@ -2,10 +2,10 @@
 
 ### 1. Overview
 
-DashScope's image generation capability.
+DashScope exposes image generation capabilities in this environment.
 
 {% hint style="success" %}
-This API is compatible with the OpenAI Images interface.
+This endpoint provides an OpenAI-compatible Images path. Actual capabilities may vary by vendor and model.
 {% endhint %}
 
 **Supported models：**

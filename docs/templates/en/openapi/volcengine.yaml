@@ -59,7 +59,7 @@ paths:
         - chat_completions_volcengine
         # - chat_completions_volcengine_openai
       summary: Create chat completion
-      description: Generate chat completion based on provided message history. Compatible with OpenAI's Chat Completions API.
+      description: Provides an OpenAI-compatible Chat Completions endpoint. Supported parameters and behavior may vary by model.
       operationId: createChatCompletion_volcengine
       security:
         - APIKeyHeader: []

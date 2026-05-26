@@ -2,10 +2,10 @@
 
 ### 1. 概述
 
-DashScope 的图像编辑能力。
+DashScope 在当前环境中提供的图像编辑能力。
 
 {% hint style="success" %}
-本 API 与 OpenAI Images 接口格式兼容。
+本接口提供与 OpenAI Images 兼容的请求路径。不同厂家和模型的实际能力可能不同。
 {% endhint %}
 
 **模型列表：**

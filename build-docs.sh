@@ -67,6 +67,14 @@ generate_bundled() {
   rm -rf $temp_dir
 }
 
+trim_trailing_whitespace() {
+  local target_dir=$1
+
+  if [ -d "$target_dir" ]; then
+    find "$target_dir" -name "*.yaml" -exec ruby -pi -e 'gsub!(/[ \t]+$/, "")' {} +
+  fi
+}
+
 # 生成文档的函数
 generate_docs() {
   local env=$1
@@ -92,6 +100,7 @@ generate_docs() {
 
   python3 scripts/generate_env_docs.py render-env "${env}"
   ruby scripts/render_env_openapi.rb "${env}" "docs/${env}"
+  trim_trailing_whitespace "docs/${env}/openapi"
 }
 
 # 生成国内版本
@@ -121,7 +130,7 @@ build_global() {
 }
 
 # 主逻辑
-case "$1" in
+case "${1:-}" in
   "cn")
     build_cn
     ;;

@@ -2,10 +2,10 @@
 
 ### 1. Overview
 
-DeepSeek's Messages protocol capability.
+DeepSeek exposes Messages protocol capabilities in this environment.
 
 {% hint style="success" %}
-This API is compatible with the Messages protocol.
+This endpoint provides an Anthropic Messages-compatible path. Actual behavior depends on current supported capabilities.
 {% endhint %}
 
 **Supported models：**

@@ -57,8 +57,8 @@ BRAND_NAMES = {
     "zai": "Z.AI",
 }
 
-# Keep Text Completions pages generated but hidden from top-level navigation.
-# Flip this to true if the legacy /v1/completions docs need to be exposed again.
+# Keep legacy Text Completions pages out of generated docs unless explicitly enabled.
+# Flip this to true if the /v1/completions docs and OpenAPI specs need to be exposed again.
 SHOW_TEXT_COMPLETIONS = False
 
 @dataclass(frozen=True)
@@ -92,21 +92,21 @@ LANG_CONFIG = {
         "readme_image_edits": "图像编辑能力仅展示当前环境对外公开可用的厂家。",
         "readme_audio": "音频转录能力仅展示当前环境对外公开可用的厂家。",
         "vendor_overview": "{vendor} 在当前环境下提供以下公开能力。",
-        "hint_chat": "本 API 与 OpenAI Chat Completions 接口格式兼容。",
-        "hint_completions": "本 API 与 OpenAI Completions 接口格式兼容。",
-        "hint_messages": "本 API 与 Messages 协议接口格式兼容。",
-        "hint_responses": "本 API 与 Responses 协议接口格式兼容。",
-        "hint_gemini": "本 API 与 Gemini 原生接口格式兼容。",
-        "hint_images": "本 API 与 OpenAI Images 接口格式兼容。",
-        "hint_audio": "本 API 与 OpenAI Audio Transcriptions 接口格式兼容。",
-        "overview_chat": "{vendor} 的对话接口能力。",
-        "overview_completions": "{vendor} 的文本补全能力。",
-        "overview_messages": "{vendor} 的 Messages 协议能力。",
-        "overview_responses": "{vendor} 的 Responses 协议能力。",
-        "overview_gemini": "{vendor} 的 Gemini 原生协议能力。",
-        "overview_image_generations": "{vendor} 的图像生成能力。",
-        "overview_image_edits": "{vendor} 的图像编辑能力。",
-        "overview_audio_transcriptions": "{vendor} 的音频转录能力。",
+        "hint_chat": "本接口提供与 OpenAI Chat Completions 兼容的请求路径。不同厂家和模型的实际参数支持范围可能不同。",
+        "hint_completions": "本接口提供与 OpenAI Completions 兼容的请求路径。不同厂家和模型的实际参数支持范围可能不同。",
+        "hint_messages": "本接口提供与 Anthropic Messages 协议兼容的请求路径。具体行为以当前支持能力为准。",
+        "hint_responses": "本接口提供与 OpenAI Responses 兼容的请求路径。不同厂家和模型的实际参数支持范围可能不同。",
+        "hint_gemini": "本接口提供与 Google Gemini 原生协议兼容的请求路径。",
+        "hint_images": "本接口提供与 OpenAI Images 兼容的请求路径。不同厂家和模型的实际能力可能不同。",
+        "hint_audio": "本接口提供与 OpenAI Audio Transcriptions 兼容的请求路径。不同厂家和模型的实际能力可能不同。",
+        "overview_chat": "{vendor} 在当前环境中提供的对话生成能力。",
+        "overview_completions": "{vendor} 在当前环境中提供的文本补全能力。",
+        "overview_messages": "{vendor} 在当前环境中提供的 Messages 协议能力。",
+        "overview_responses": "{vendor} 在当前环境中提供的 Responses 协议能力。",
+        "overview_gemini": "{vendor} 在当前环境中提供的 Gemini 原生协议能力。",
+        "overview_image_generations": "{vendor} 在当前环境中提供的图像生成能力。",
+        "overview_image_edits": "{vendor} 在当前环境中提供的图像编辑能力。",
+        "overview_audio_transcriptions": "{vendor} 在当前环境中提供的音频转写能力。",
         "openapi_section": "### 2. 接口详情",
         "overview_section": "### 1. 概述",
     },
@@ -133,21 +133,21 @@ LANG_CONFIG = {
         "readme_image_edits": "Image edits only list vendors that are publicly available in this environment.",
         "readme_audio": "Audio transcriptions only list vendors that are publicly available in this environment.",
         "vendor_overview": "{vendor} exposes the following public capabilities in this environment.",
-        "hint_chat": "This API is compatible with the OpenAI Chat Completions interface.",
-        "hint_completions": "This API is compatible with the OpenAI Completions interface.",
-        "hint_messages": "This API is compatible with the Messages protocol.",
-        "hint_responses": "This API is compatible with the Responses protocol.",
-        "hint_gemini": "This API is compatible with the Gemini native protocol.",
-        "hint_images": "This API is compatible with the OpenAI Images interface.",
-        "hint_audio": "This API is compatible with the OpenAI Audio Transcriptions interface.",
-        "overview_chat": "{vendor}'s conversation API capability.",
-        "overview_completions": "{vendor}'s text completions capability.",
-        "overview_messages": "{vendor}'s Messages protocol capability.",
-        "overview_responses": "{vendor}'s Responses protocol capability.",
-        "overview_gemini": "{vendor}'s Gemini native protocol capability.",
-        "overview_image_generations": "{vendor}'s image generation capability.",
-        "overview_image_edits": "{vendor}'s image edits capability.",
-        "overview_audio_transcriptions": "{vendor}'s audio transcription capability.",
+        "hint_chat": "This endpoint provides an OpenAI-compatible Chat Completions path. Actual parameter support may vary by vendor and model.",
+        "hint_completions": "This endpoint provides an OpenAI-compatible Completions path. Actual parameter support may vary by vendor and model.",
+        "hint_messages": "This endpoint provides an Anthropic Messages-compatible path. Actual behavior depends on current supported capabilities.",
+        "hint_responses": "This endpoint provides an OpenAI-compatible Responses path. Actual parameter support may vary by vendor and model.",
+        "hint_gemini": "This endpoint provides a Google Gemini native-compatible path.",
+        "hint_images": "This endpoint provides an OpenAI-compatible Images path. Actual capabilities may vary by vendor and model.",
+        "hint_audio": "This endpoint provides an OpenAI-compatible Audio Transcriptions path. Actual capabilities may vary by vendor and model.",
+        "overview_chat": "{vendor} exposes conversation capabilities in this environment.",
+        "overview_completions": "{vendor} exposes text completion capabilities in this environment.",
+        "overview_messages": "{vendor} exposes Messages protocol capabilities in this environment.",
+        "overview_responses": "{vendor} exposes Responses capabilities in this environment.",
+        "overview_gemini": "{vendor} exposes Gemini native protocol capabilities in this environment.",
+        "overview_image_generations": "{vendor} exposes image generation capabilities in this environment.",
+        "overview_image_edits": "{vendor} exposes image edit capabilities in this environment.",
+        "overview_audio_transcriptions": "{vendor} exposes audio transcription capabilities in this environment.",
         "openapi_section": "### 2. API Details",
         "overview_section": "### 1. Overview",
     },
@@ -157,11 +157,12 @@ LANG_CONFIG["zh"]["navigation_label"] = "页面导航"
 LANG_CONFIG["en"]["navigation_label"] = "Available pages"
 
 CHAT_LEAF_ORDER = ("chat", "messages", "responses", "gemini")
-GEMINI_NATIVE_ENDPOINTS = (
+GEMINI_NATIVE_DOC_PATHS = (
     "/v1/models/{model}:generateContent",
     "/v1beta/models/{model}:generateContent",
     "/v1beta/models/{model}:streamGenerateContent",
 )
+GEMINI_NATIVE_ENDPOINTS = GEMINI_NATIVE_DOC_PATHS
 
 
 def read_text(path: Path) -> str:
@@ -395,11 +396,7 @@ def openapi_spec_vendor(vendor: str, capability: str) -> str:
 
 def openapi_path(capability: str) -> list[str]:
     if capability == "gemini":
-        return [
-            "/v1/models/{model}:generateContent",
-            "/v1beta/models/{model}:generateContent",
-            "/v1beta/models/{model}:streamGenerateContent",
-        ]
+        return list(GEMINI_NATIVE_DOC_PATHS)
     return [
         {
             "chat": "/v1/chat/completions",
@@ -599,13 +596,10 @@ def render_env(env: str) -> None:
 
         if SHOW_TEXT_COMPLETIONS:
             summary_lines.append(f"* [{cfg['completions_root']}]({category_summary_target('completions')})")
-        for vendor in env_index["completion_vendors"]:
-            page = build_capability_page(env, lang, vendor, "completions", models_for_capability(env_index, vendor, "completions"))
-            if SHOW_TEXT_COMPLETIONS:
+            for vendor in env_index["completion_vendors"]:
+                page = build_capability_page(env, lang, vendor, "completions", models_for_capability(env_index, vendor, "completions"))
                 summary_lines.append(f"  * [{vendor_name(vendor)}](completions/{vendor}.md)")
-            else:
-                page = hidden_frontmatter(page)
-            write_text(base / "completions" / f"{vendor}.md", page)
+                write_text(base / "completions" / f"{vendor}.md", page)
 
         summary_lines.append(f"* [{cfg['image_gen_root']}]({category_summary_target('image_generations')})")
         for vendor in env_index["image_gen_vendors"]:

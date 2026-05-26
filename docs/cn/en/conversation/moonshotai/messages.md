@@ -2,10 +2,10 @@
 
 ### 1. Overview
 
-Moonshot AI's Messages protocol capability.
+Moonshot AI exposes Messages protocol capabilities in this environment.
 
 {% hint style="success" %}
-This API is compatible with the Messages protocol.
+This endpoint provides an Anthropic Messages-compatible path. Actual behavior depends on current supported capabilities.
 {% endhint %}
 
 **Supported models：**

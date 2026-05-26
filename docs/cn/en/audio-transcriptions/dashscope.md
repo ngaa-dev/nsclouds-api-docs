@@ -2,10 +2,10 @@
 
 ### 1. Overview
 
-DashScope's audio transcription capability.
+DashScope exposes audio transcription capabilities in this environment.
 
 {% hint style="success" %}
-This API is compatible with the OpenAI Audio Transcriptions interface.
+This endpoint provides an OpenAI-compatible Audio Transcriptions path. Actual capabilities may vary by vendor and model.
 {% endhint %}
 
 **Supported models：**

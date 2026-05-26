@@ -2,10 +2,10 @@
 
 ### 1. Overview
 
-DashScope's Responses protocol capability.
+DashScope exposes Responses capabilities in this environment.
 
 {% hint style="success" %}
-This API is compatible with the Responses protocol.
+This endpoint provides an OpenAI-compatible Responses path. Actual parameter support may vary by vendor and model.
 {% endhint %}
 
 **Supported models：**

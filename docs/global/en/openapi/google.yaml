@@ -15,11 +15,6 @@ tags:
   x-page-title: Google
   x-page-icon: brain
   description: Google's chat completions API
-- name: completions_google
-  x-parent: chat_completions
-  x-page-title: Google
-  x-page-icon: brain
-  description: Google's text completions API
 - name: gemini_native_google
   x-parent: chat_completions
   x-page-title: Google
@@ -31,8 +26,8 @@ paths:
       tags:
       - chat_completions_google
       summary: Create chat completion
-      description: Generate model response based on input messages. Fully compatible
-        with OpenAI's Chat API.
+      description: Provides an OpenAI-compatible Chat Completions endpoint. Supported
+        parameters and behavior may vary by model.
       operationId: createChatCompletion_google
       security:
       - APIKeyHeader: []
@@ -208,115 +203,12 @@ paths:
           "$ref": "#/components/responses/ErrorResponse"
         '429':
           "$ref": "#/components/responses/ErrorResponse"
-  "/v1/completions":
-    post:
-      tags:
-      - completions_google
-      summary: Create text completion
-      description: Generate one or more completions based on the provided prompt.
-        Compatible with OpenAI's Completions API.
-      operationId: createCompletion_google
-      security:
-      - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/CreateCompletionRequest"
-            examples:
-              default:
-                summary: Basic
-                description: A simple text completion example.
-                value:
-                  model: gemini-3-flash-preview
-                  prompt: Once upon a time
-                  max_tokens: 50
-                  temperature: 0.7
-                  n: 1
-                  stream: false
-              streaming:
-                summary: Streaming
-                description: 'Enable streaming response by setting stream: true.'
-                value:
-                  model: gemini-3-flash-preview
-                  prompt: The future of AI is
-                  max_tokens: 30
-                  temperature: 0.8
-                  stream: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/CompletionResponse"
-              examples:
-                default-response:
-                  summary: Basic Response
-                  description: Response example corresponding to basic text completion
-                    request.
-                  value:
-                    id: chatcmpl-a51a50d7-0f0a-4db9-a268-ba0e4d49342b
-                    object: text_completion
-                    created: 1773220530
-                    model: gemini-3-flash-preview
-                    choices:
-                    - finish_reason: length
-                      index: 0
-                      text: ''
-                      logprobs: 
-                    usage:
-                      completion_tokens: 12
-                      prompt_tokens: 6
-                      total_tokens: 18
-                      completion_tokens_details:
-                        accepted_prediction_tokens: 
-                        audio_tokens: 
-                        reasoning_tokens: 12
-                        rejected_prediction_tokens: 
-                        text_tokens: 
-                      prompt_tokens_details:
-                        audio_tokens: 
-                        cached_tokens: 
-                        text_tokens: 6
-                        image_tokens: 
-                        cached_tokens_details: {}
-                      claude_cache_creation_5_m_tokens: 0
-                      claude_cache_creation_1_h_tokens: 0
-                      web_search_queries: 0
-            text/event-stream:
-              schema:
-                type: string
-                description: 'Streaming response is returned in Server-Sent Events
-                  format, each event is a line of JSON data block starting with ''data:
-                  '', ending with ''data: [DONE]''.'
-              examples:
-                streaming-response:
-                  summary: Streaming Response Example
-                  description: Shows events sent continuously during streaming text
-                    completion process.
-                  value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gemini-3-flash-preview","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gemini-3-flash-preview","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gemini-3-flash-preview","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gemini-3-flash-preview","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gemini-3-flash-preview","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gemini-3-flash-preview","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"gemini-3-flash-preview","choices":[{"text":".","index":0,"finish_reason":"length"}]}
-                    data: [DONE]
-        '400':
-          "$ref": "#/components/responses/ErrorResponse"
-        '401':
-          "$ref": "#/components/responses/ErrorResponse"
-        '429':
-          "$ref": "#/components/responses/ErrorResponse"
   "/v1/models/{model}:generateContent":
     post:
       tags:
       - gemini_native_google
       summary: Gemini Generate Content (v1)
-      description: Gemini native protocol endpoint for generateContent.
+      description: Provides a Google Gemini native-compatible endpoint.
       operationId: generateContentV1_google
       security:
       - APIKeyHeader: []
@@ -371,7 +263,7 @@ paths:
       tags:
       - gemini_native_google
       summary: Gemini Generate Content (v1beta)
-      description: Gemini native protocol endpoint for generateContent (v1beta).
+      description: Provides a Google Gemini native-compatible endpoint.
       operationId: generateContentV1beta_google
       security:
       - APIKeyHeader: []
@@ -426,7 +318,7 @@ paths:
       tags:
       - gemini_native_google
       summary: Gemini Stream Generate Content (v1beta)
-      description: Gemini native protocol endpoint for streamGenerateContent (v1beta).
+      description: Provides a Google Gemini native-compatible endpoint.
       operationId: streamGenerateContentV1beta_google
       security:
       - APIKeyHeader: []

@@ -2,10 +2,10 @@
 
 ### 1. 概述
 
-MiniMax 的对话接口能力。
+MiniMax 在当前环境中提供的对话生成能力。
 
 {% hint style="success" %}
-本 API 与 OpenAI Chat Completions 接口格式兼容。
+本接口提供与 OpenAI Chat Completions 兼容的请求路径。不同厂家和模型的实际参数支持范围可能不同。
 {% endhint %}
 
 **模型列表：**

@@ -15,19 +15,14 @@ tags:
   x-page-title: xAI
   x-page-icon: brain
   description: xAI's chat completions API
-- name: completions_xai
-  x-parent: chat_completions
-  x-page-title: xAI
-  x-page-icon: brain
-  description: xAI's text completions API
 paths:
   "/v1/chat/completions":
     post:
       tags:
       - chat_completions_xai
-      summary: Create Chat Completion
-      description: Generate model responses based on input messages. Fully compatible
-        with OpenAI's Chat API.
+      summary: Create chat completion
+      description: Provides an OpenAI-compatible Chat Completions endpoint. Supported
+        parameters and behavior may vary by model.
       operationId: createChatCompletion_xai
       security:
       - APIKeyHeader: []
@@ -66,47 +61,9 @@ paths:
                   temperature: 0.7
                   max_completion_tokens: 100
                   stream: true
-              image_input:
-                summary: Image Input (Multimodal)
-                description: Use vision-capable models to analyze images.
-                value:
-                  model: grok-code-fast-1
-                  messages:
-                  - role: user
-                    content:
-                    - type: text
-                      text: What is in this image?
-                    - type: image_url
-                      image_url:
-                        url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
-                  max_completion_tokens: 300
-              functions:
-                summary: Function Calling
-                description: Define tools (functions) and let the model decide whether
-                  to call them.
-                value:
-                  model: grok-code-fast-1
-                  messages:
-                  - role: user
-                    content: Read the content of the file report.txt
-                  tools:
-                  - type: function
-                    function:
-                      name: read_file
-                      description: Read the content of a file
-                      parameters:
-                        type: object
-                        properties:
-                          file_path:
-                            type: string
-                            description: The path to the file to read
-                        required:
-                        - file_path
-                  tool_choice: auto
-                  max_completion_tokens: 150
       responses:
         '200':
-          description: Success Response
+          description: Successful response
           content:
             application/json:
               schema:
@@ -114,170 +71,38 @@ paths:
               examples:
                 default-response:
                   summary: Basic Response
-                  description: Response example for basic chat request.
+                  description: Response example corresponding to basic chat request.
                   value:
-                    id: chatcmpl-BPzJw3iWI2jtsjCnR0rRCBvLCETq7
-                    created: 1773197421
-                    model: grok-code-fast-1
+                    id: chatcmpl-123
                     object: chat.completion
+                    created: 1677652288
+                    model: grok-code-fast-1
                     choices:
                     - index: 0
                       message:
                         role: assistant
-                        content: Hi! How can I help today? I can answer questions,
-                          explain topics, brainstorm ideas, write or edit text, solve
-                          problems, or analyze images.
+                        content: Hello there! How can I assist you today?
                       finish_reason: stop
                     usage:
-                      completion_tokens: 174
-                      prompt_tokens: 8
-                      total_tokens: 182
-                      completion_tokens_details:
-                        reasoning_tokens: 128
-                image_input-response:
-                  summary: Image Input Response
-                  description: Model-generated description based on image content.
-                  value:
-                    id: chatcmpl-s71Ce6GRN8PzAOB0PbVmNFGdSlGjS
-                    created: 1773197559
-                    model: grok-code-fast-1
-                    object: chat.completion
-                    choices:
-                    - index: 0
-                      message:
-                        role: assistant
-                        content: The image shows a person posing in a studio setup
-                          against a white backdrop, wearing a shiny, chrome-like metallic
-                          outfit with spiky, futuristic elements (including headpiece/hair).
-                          The face area is blurred/pixelated.
-                      finish_reason: stop
-                    usage:
-                      completion_tokens: 49
-                      prompt_tokens: 704
-                      total_tokens: 753
-                functions-response:
-                  summary: Function Calling Response
-                  description: Model returns a function call request.
-                  value:
-                    id: chatcmpl-ZjQIwmTgiAmyXrAeTCcoNXvvqiprq
-                    created: 1773197541
-                    model: grok-code-fast-1
-                    object: chat.completion
-                    choices:
-                    - index: 0
-                      message:
-                        role: assistant
-                        content: I can't directly access or read files on your system.
-                          If you'd like to share the content of report.txt, you can
-                          copy and paste it here, and I'll help you analyze or work
-                          with it.
-                      finish_reason: stop
-                    usage:
-                      completion_tokens: 74
-                      prompt_tokens: 13
-                      total_tokens: 87
+                      prompt_tokens: 9
+                      completion_tokens: 12
+                      total_tokens: 21
             text/event-stream:
               schema:
                 type: string
-                description: 'Streaming responses are returned in Server-Sent Events
-                  format, each event is a JSON data block starting with ''data: ''
-                  and ending with ''data: [DONE]''.'
+                description: 'Streaming response is returned in Server-Sent Events
+                  format, each event is a line of JSON data block starting with ''data:
+                  '', ending with ''data: [DONE]''.'
               examples:
                 streaming-response:
                   summary: Streaming Response Example
-                  description: Shows events sent sequentially during streaming chat
+                  description: Shows events sent continuously during streaming chat
                     process.
                   value: |
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"grok-code-fast-1","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"grok-code-fast-1","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"grok-code-fast-1","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"grok-code-fast-1","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
-                    data: [DONE]
-        '400':
-          "$ref": "#/components/responses/ErrorResponse"
-        '401':
-          "$ref": "#/components/responses/ErrorResponse"
-        '429':
-          "$ref": "#/components/responses/ErrorResponse"
-  "/v1/completions":
-    post:
-      tags:
-      - completions_xai
-      summary: Create Text Completion
-      description: Generate one or more completions based on provided prompts. Compatible
-        with OpenAI's Completions API.
-      operationId: createCompletion_xai
-      security:
-      - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/CreateCompletionRequest"
-            examples:
-              default:
-                summary: Basic
-                description: A simple text completion example.
-                value:
-                  model: grok-code-fast-1
-                  prompt: Once upon a time
-                  max_tokens: 50
-                  temperature: 0.7
-                  n: 1
-                  stream: false
-              streaming:
-                summary: Streaming
-                description: 'Enable streaming response by setting stream: true.'
-                value:
-                  model: grok-code-fast-1
-                  prompt: The future of AI is
-                  max_tokens: 30
-                  temperature: 0.8
-                  stream: true
-      responses:
-        '200':
-          description: Success Response
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/CompletionResponse"
-              examples:
-                default-response:
-                  summary: Basic Response
-                  description: Response example for basic text completion request.
-                  value:
-                    id: cmpl-123
-                    object: text_completion
-                    created: 1677652288
-                    model: grok-code-fast-1
-                    choices:
-                    - text: " in a small village, there lived a young girl named Lily."
-                      index: 0
-                      finish_reason: length
-                    usage:
-                      prompt_tokens: 4
-                      completion_tokens: 12
-                      total_tokens: 16
-            text/event-stream:
-              schema:
-                type: string
-                description: 'Streaming responses are returned in Server-Sent Events
-                  format, each event is a JSON data block starting with ''data: ''
-                  and ending with ''data: [DONE]''.'
-              examples:
-                streaming-response:
-                  summary: Streaming Response Example
-                  description: Shows events sent sequentially during streaming text
-                    completion process.
-                  value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"grok-code-fast-1","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"grok-code-fast-1","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"grok-code-fast-1","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"grok-code-fast-1","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"grok-code-fast-1","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"grok-code-fast-1","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"grok-code-fast-1","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
         '400':
           "$ref": "#/components/responses/ErrorResponse"
