@@ -10,7 +10,7 @@ tags:
   - name: chat_completions
     x-page-title: 对话生成
     x-page-icon: message
-    description: 对话生成相关的 API，包括聊天补全和文本补全
+    description: 对话生成相关的 API。
   - name: embeddings
     x-page-title: 向量嵌入
     x-page-icon: database
@@ -32,11 +32,6 @@ tags:
     x-page-title: Moonshot AI
     x-page-icon: brain
     description: Moonshot AI 的对话生成 API
-  - name: completions_moonshotai
-    x-parent: chat_completions
-    x-page-title: Moonshot AI
-    x-page-icon: brain
-    description: Moonshot AI 的文本补全 API
   - name: messages_moonshotai
     x-parent: chat_completions
     x-page-title: Moonshot AI
@@ -230,88 +225,6 @@ paths:
           $ref: '#/components/responses/ErrorResponse'
         '429':
           $ref: '#/components/responses/ErrorResponse'
-  /v1/completions:
-    post:
-      tags:
-        - completions_moonshotai
-      summary: 创建文本补全
-      description: 基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
-      operationId: createCompletion_moonshotai
-      security:
-        - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateCompletionRequest'
-            examples:
-              default:
-                summary: 基础
-                description: 一个简单的文本补全示例。
-                value:
-                  model: kimi-k2.6
-                  prompt: Once upon a time
-                  max_tokens: 50
-                  temperature: 0.7
-                  'n': 1
-                  stream: false
-              streaming:
-                summary: 流式
-                description: '通过设置 stream: true 启用流式响应。'
-                value:
-                  model: kimi-k2.6
-                  prompt: The future of AI is
-                  max_tokens: 30
-                  temperature: 0.8
-                  stream: true
-      responses:
-        '200':
-          description: 成功响应
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CompletionResponse'
-              examples:
-                default-response:
-                  summary: 基础响应
-                  description: 对应基础文本补全请求的响应示例。
-                  value:
-                    id: cmpl-123
-                    object: text_completion
-                    created: 1677652288
-                    model: kimi-k2.6
-                    choices:
-                      - text: ' in a small village, there lived a young girl named Lily.'
-                        index: 0
-                        finish_reason: length
-                    usage:
-                      prompt_tokens: 4
-                      completion_tokens: 12
-                      total_tokens: 16
-            text/event-stream:
-              schema:
-                type: string
-                description: '流式响应以 Server-Sent Events 格式返回，每个事件是一行以 ''data: '' 开头的 JSON 数据块，最后以 ''data: [DONE]'' 结束。'
-              examples:
-                streaming-response:
-                  summary: 流式响应示例
-                  description: 展示流式文本补全过程中陆续发送的事件。
-                  value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":".","index":0,"finish_reason":"length"}]}
-                    data: [DONE]
-        '400':
-          $ref: '#/components/responses/ErrorResponse'
-        '401':
-          $ref: '#/components/responses/ErrorResponse'
-        '429':
-          $ref: '#/components/responses/ErrorResponse'
   /v1/messages:
     post:
       tags:
@@ -387,12 +300,19 @@ components:
       properties:
         url:
           type: string
-          description: 可公开访问的图片 URL，或 base64 data URL。
+          description: 可公开访问的图片 URL 或图片 data URL。支持常见图片格式，示例中可使用 PNG。
+        detail:
+          type: string
+          description: 可选的图片理解细节等级。
+          enum:
+            - auto
+            - low
+            - high
       required:
         - url
     ChatMessageImagePart:
       type: object
-      description: 图片输入内容片段。
+      description: 图片输入内容片段。可添加多个 image_url 内容片段来发送多张图片。
       properties:
         type:
           type: string
@@ -422,7 +342,7 @@ components:
             - type: string
               description: 纯文本内容。
             - type: array
-              description: 多段内容数组，常用于多模态输入。
+              description: 多段结构化内容数组，常用于包含文本和一张或多张图片的多模态输入。
               items:
                 oneOf:
                   - $ref: '#/components/schemas/ChatMessageTextPart'
@@ -547,78 +467,6 @@ components:
             $ref: '#/components/schemas/ChatCompletionChoice'
         usage:
           $ref: '#/components/schemas/Usage'
-    CreateCompletionRequest:
-      type: object
-      description: Text Completions 请求体。
-      properties:
-        model:
-          type: string
-          description: 要调用的模型 ID。
-        prompt:
-          description: 用于生成补全的提示词，可以是单个字符串或字符串数组。
-          oneOf:
-            - type: string
-              description: 单条提示词。
-            - type: array
-              description: 多条提示词。
-              items:
-                type: string
-        temperature:
-          type: number
-          description: 采样温度，值越高结果越随机。
-          default: 1
-        max_tokens:
-          type: integer
-          description: 最大输出 token 数。
-        'n':
-          type: integer
-          description: 返回的候选补全数量。
-          default: 1
-        stream:
-          type: boolean
-          description: 是否以流式方式返回响应。
-          default: false
-      required:
-        - model
-        - prompt
-    CompletionChoice:
-      type: object
-      description: 单个文本补全候选结果。
-      properties:
-        text:
-          type: string
-          description: 生成出的文本内容。
-        index:
-          type: integer
-          description: 候选结果序号。
-        finish_reason:
-          description: 生成结束原因。
-          type:
-            - string
-            - 'null'
-    CompletionResponse:
-      type: object
-      description: Text Completions 成功响应。
-      properties:
-        id:
-          type: string
-          description: 本次响应的唯一 ID。
-        object:
-          type: string
-          description: 对象类型，通常为 text_completion。
-        created:
-          type: integer
-          description: 响应创建时间戳（Unix 秒）。
-        model:
-          type: string
-          description: 实际使用的模型 ID。
-        choices:
-          type: array
-          description: 返回的补全候选结果列表。
-          items:
-            $ref: '#/components/schemas/CompletionChoice'
-        usage:
-          $ref: '#/components/schemas/Usage'
     MessageContentPart:
       type: object
       description: Messages 兼容协议使用的宽松内容片段结构。
@@ -728,28 +576,88 @@ components:
         usage:
           $ref: '#/components/schemas/Usage'
       additionalProperties: true
-    ResponseContentPart:
+    ResponseInputTextPart:
       type: object
-      description: Responses 协议输入输出中使用的宽松内容片段结构。
+      description: Responses 协议的文本输入内容片段。
       properties:
         type:
           type: string
-          description: 内容片段类型，例如 input_text、input_image、output_text、tool_result。
+          description: 输入内容片段类型。
+          enum:
+            - input_text
         text:
           type: string
-          description: 文本值。
+          description: 文本输入值。
+      required:
+        - type
+        - text
+      additionalProperties: true
+    ResponseInputImagePart:
+      type: object
+      description: Responses 协议的图片输入内容片段。可添加多个 input_image 内容片段来发送多张图片。
+      properties:
+        type:
+          type: string
+          description: 输入内容片段类型。
+          enum:
+            - input_image
         image_url:
           type: string
-          description: 图片输入使用的可公开访问 URL 或 data URL。
-        file_id:
-          type: string
-          description: 文件 ID。
-        file_url:
-          type: string
-          description: 文件 URL。
+          description: '可公开访问的图片 URL 或图片 data URL。支持常见图片格式，例如 data:image/png;base64,...。'
         detail:
           type: string
-          description: 图片理解细节等级等扩展参数。
+          description: 支持时用于控制图片理解的细节等级。
+          enum:
+            - auto
+            - low
+            - high
+      required:
+        - type
+        - image_url
+      additionalProperties: true
+    ResponseInputFilePart:
+      type: object
+      description: Responses 协议的文件输入内容片段。支持常见文档和文本格式，PDF 只是其中一种示例。
+      properties:
+        type:
+          type: string
+          description: 输入内容片段类型。
+          enum:
+            - input_file
+        file_url:
+          type: string
+          description: 文件输入内容片段使用的可公开访问文件 URL。支持常见文档和文本格式。
+        filename:
+          type: string
+          description: 与 file_data 内联文件上传一起使用的文件名。
+        file_data:
+          type: string
+          description: '包含 base64 编码文件内容的 data URL，例如 data:application/pdf;base64,... 或 data:text/plain;base64,...。'
+      required:
+        - type
+      anyOf:
+        - required:
+            - file_url
+        - required:
+            - filename
+            - file_data
+      additionalProperties: true
+    ResponseInputContentPart:
+      description: Responses 输入内容片段。支持的输入类型包括 input_text、input_image 和 input_file。
+      oneOf:
+        - $ref: '#/components/schemas/ResponseInputTextPart'
+        - $ref: '#/components/schemas/ResponseInputImagePart'
+        - $ref: '#/components/schemas/ResponseInputFilePart'
+    ResponseContentPart:
+      type: object
+      description: Responses 输出项中使用的宽松输出内容片段。
+      properties:
+        type:
+          type: string
+          description: 输出内容片段类型，例如 output_text 或 tool_result。
+        text:
+          type: string
+          description: 内容片段携带的文本值。
         annotations:
           type: array
           description: 附加标注信息。
@@ -775,7 +683,7 @@ components:
             - type: array
               description: 结构化内容片段数组。
               items:
-                $ref: '#/components/schemas/ResponseContentPart'
+                $ref: '#/components/schemas/ResponseInputContentPart'
       additionalProperties: true
     CreateResponseRequest:
       type: object

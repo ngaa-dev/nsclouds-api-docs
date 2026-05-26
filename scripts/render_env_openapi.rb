@@ -17,6 +17,7 @@ BRAND_NAMES = {
   "dashscope" => "DashScope",
   "deepseek" => "DeepSeek",
   "google" => "Google",
+  "minimax" => "MiniMax",
   "moonshotai" => "Moonshot AI",
   "openai" => "OpenAI",
   "volcengine" => "Volcengine",
@@ -89,6 +90,7 @@ CAPABILITY_CONFIG = {
 }.freeze
 
 GEMINI_NATIVE_ENDPOINTS = CAPABILITY_CONFIG.fetch("gemini").fetch(:paths).freeze
+SHOW_TEXT_COMPLETIONS = false
 
 
 def deep_copy(value)
@@ -356,7 +358,7 @@ def capabilities_for_env(env)
     caps = []
     has_chat_completion = entries.any? { |entry| entry["endpoints"].include?("/v1/chat/completions") }
     caps << "chat" if has_chat_completion
-    caps << "completions" if has_chat_completion
+    caps << "completions" if SHOW_TEXT_COMPLETIONS && has_chat_completion
     caps << "messages" if entries.any? { |entry| entry["endpoints"].include?("/v1/messages") }
     caps << "responses" if entries.any? { |entry| entry["endpoints"].include?("/v1/responses") }
     caps << "image_generations" if entries.any? { |entry| entry["endpoints"].include?("/v1/images/generations") }
@@ -394,8 +396,21 @@ def build_vendor_spec(lang, vendor, capabilities, example_models)
   used_sources.uniq.each do |source_vendor|
     deep_merge_hash!(spec["components"], source_specs(lang).fetch(source_vendor).fetch("components"))
   end
+  unless SHOW_TEXT_COMPLETIONS
+    schemas = spec.dig("components", "schemas")
+    %w[CreateCompletionRequest CompletionChoice CompletionResponse].each { |schema| schemas&.delete(schema) }
+  end
 
   spec
+end
+
+def prune_hidden_common_openapi!(path)
+  return if SHOW_TEXT_COMPLETIONS
+
+  common = load_yaml(path)
+  schemas = common.dig("components", "schemas")
+  %w[CreateCompletionRequest CompletionChoice CompletionResponse].each { |schema| schemas&.delete(schema) }
+  File.write(path, YAML.dump(common))
 end
 
 
@@ -406,7 +421,9 @@ def render_openapi(env, output_root)
     lang_root = File.join(output_root, lang, "openapi")
     FileUtils.rm_rf(lang_root)
     FileUtils.mkdir_p(lang_root)
-    FileUtils.cp(File.join(TEMPLATES_DIR, lang, "openapi", "_common.yaml"), File.join(lang_root, "_common.yaml"))
+    common_path = File.join(lang_root, "_common.yaml")
+    FileUtils.cp(File.join(TEMPLATES_DIR, lang, "openapi", "_common.yaml"), common_path)
+    prune_hidden_common_openapi!(common_path)
     public_caps.each do |vendor, capabilities|
       next if capabilities.empty?
 

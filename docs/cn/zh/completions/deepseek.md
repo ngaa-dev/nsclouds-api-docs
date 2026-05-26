@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # DeepSeek - 文本补全
 
 ### 1. 概述

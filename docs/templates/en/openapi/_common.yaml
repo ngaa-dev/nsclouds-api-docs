@@ -11,7 +11,7 @@ tags:
   - name: chat_completions
     x-page-title: Chat Completions
     x-page-icon: message
-    description: Chat completion related APIs, including chat completions and text completions
+    description: Chat completion related APIs.
   - name: embeddings
     x-page-title: Embeddings
     x-page-icon: database

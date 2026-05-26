@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Volcengine - Text Completions
 
 ### 1. Overview

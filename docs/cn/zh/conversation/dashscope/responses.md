@@ -14,6 +14,7 @@ DashScope 的 Responses 协议能力。
 * `qwen3.5-plus`
 * `qwen3.6-flash`
 * `qwen3.6-plus`
+* `qwen3.7-max`
 
 
 ### 2. 接口详情

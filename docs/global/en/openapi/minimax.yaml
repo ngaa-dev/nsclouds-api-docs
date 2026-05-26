@@ -1,0 +1,301 @@
+---
+openapi: 3.1.0
+info:
+  "$ref": "./_common.yaml#/info"
+servers:
+  "$ref": "./_common.yaml#/servers"
+tags:
+- "$ref": "./_common.yaml#/tags/0"
+- "$ref": "./_common.yaml#/tags/1"
+- "$ref": "./_common.yaml#/tags/2"
+- "$ref": "./_common.yaml#/tags/3"
+- "$ref": "./_common.yaml#/tags/4"
+- name: chat_completions_minimax
+  x-parent: chat_completions
+  x-page-title: MiniMax
+  x-page-icon: brain
+  description: MiniMax's chat completions API
+- name: completions_minimax
+  x-parent: chat_completions
+  x-page-title: MiniMax
+  x-page-icon: brain
+  description: MiniMax's text completions API
+paths:
+  "/v1/chat/completions":
+    post:
+      tags:
+      - chat_completions_minimax
+      summary: Create Chat Completion
+      description: Generate model responses based on input messages. Fully compatible
+        with OpenAI's Chat API.
+      operationId: createChatCompletion_minimax
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateChatCompletionRequest"
+            examples:
+              default:
+                summary: Basic
+                description: A simple conversation example with system prompt and
+                  user message.
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                  - role: system
+                    content: You are a helpful assistant.
+                  - role: user
+                    content: Hello!
+                  temperature: 1
+                  max_completion_tokens: 50
+                  n: 1
+                  stream: false
+              streaming:
+                summary: Streaming
+                description: 'Enable streaming response by setting stream: true.'
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                  - role: system
+                    content: You are a helpful assistant.
+                  - role: user
+                    content: Tell me a story.
+                  temperature: 0.7
+                  max_completion_tokens: 100
+                  stream: true
+              image_input:
+                summary: Image Input (Multimodal)
+                description: Use vision-enabled models to analyze images.
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                  - role: user
+                    content:
+                    - type: text
+                      text: What's in this image?
+                    - type: image_url
+                      image_url:
+                        url: https://example.com/cat.jpg
+                  max_completion_tokens: 300
+              functions:
+                summary: Function Calling
+                description: Define tools (functions) and let the model decide whether
+                  to call them.
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                  - role: user
+                    content: What's the weather in Boston?
+                  tools:
+                  - type: function
+                    function:
+                      name: get_current_weather
+                      description: Get the current weather in a given location
+                      parameters:
+                        type: object
+                        properties:
+                          location:
+                            type: string
+                            description: The city and state, e.g. San Francisco, CA
+                          unit:
+                            type: string
+                            enum:
+                            - celsius
+                            - fahrenheit
+                        required:
+                        - location
+                  tool_choice: auto
+                  max_completion_tokens: 150
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ChatCompletionResponse"
+              examples:
+                default-response:
+                  summary: Basic Response
+                  description: Response example for basic chat request.
+                  value:
+                    id: chatcmpl-5f8c2c44-08dd-98f7-b111-c18d6281f6ee
+                    object: chat.completion
+                    created: 1773225557
+                    model: MiniMax-M2.5
+                    choices:
+                    - index: 0
+                      message:
+                        role: assistant
+                        content: Hello! How can I help you today?
+                        reasoning_content: The user has sent a simple greeting. I
+                          should respond in a friendly and helpful manner.
+                      finish_reason: stop
+                      provider_specific_fields: {}
+                    usage:
+                      prompt_tokens: 40
+                      completion_tokens: 31
+                      total_tokens: 71
+                      completion_tokens_details:
+                        reasoning_tokens: 17
+                      prompt_tokens_details:
+                        cached_tokens: 0
+                image_input-response:
+                  summary: Image Input Response
+                  description: Description generated by the model based on image content.
+                  value:
+                    id: chatcmpl-789
+                    object: chat.completion
+                    created: 1677652300
+                    model: MiniMax-M2.5
+                    choices:
+                    - index: 0
+                      message:
+                        role: assistant
+                        content: The image shows a cute cat sitting on a windowsill,
+                          looking outside.
+                      finish_reason: stop
+                    usage:
+                      prompt_tokens: 123
+                      completion_tokens: 15
+                      total_tokens: 138
+                functions-response:
+                  summary: Function Calling Response
+                  description: Model returns a function call request.
+                  value:
+                    id: chatcmpl-abc
+                    object: chat.completion
+                    created: 1677652310
+                    model: MiniMax-M2.5
+                    choices:
+                    - index: 0
+                      message:
+                        role: assistant
+                        content: 
+                        tool_calls:
+                        - id: call_123
+                          type: function
+                          function:
+                            name: get_current_weather
+                            arguments: '{"location": "Boston, MA", "unit": "fahrenheit"}'
+                      finish_reason: tool_calls
+                    usage:
+                      prompt_tokens: 50
+                      completion_tokens: 20
+                      total_tokens: 70
+            text/event-stream:
+              schema:
+                type: string
+                description: 'Streaming responses are returned in Server-Sent Events
+                  format, each event is a JSON data block starting with ''data: ''
+                  and ending with ''data: [DONE]''.'
+              examples:
+                streaming-response:
+                  summary: Streaming Response Example
+                  description: Shows events sent sequentially during streaming chat
+                    process.
+                  value: |
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"reasoning_content":"The user has just said \"Hello!\" - a simple greeting. I should respond in a friendly, welcoming manner and offer to help them with whatever they need.\n"},"reasoning_content":"The user has just said \"Hello!\" - a simple greeting. I should respond in a friendly, welcoming manner and offer to help them with whatever they need.\n"}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":"Hello!"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" How are you doing"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" today? Is there"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" something I can help"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" you with?"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"finish_reason":"stop","index":0,"delta":{}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: [DONE]
+        '400':
+          "$ref": "#/components/responses/ErrorResponse"
+        '401':
+          "$ref": "#/components/responses/ErrorResponse"
+        '429':
+          "$ref": "#/components/responses/ErrorResponse"
+  "/v1/completions":
+    post:
+      tags:
+      - completions_minimax
+      summary: Create Text Completion
+      description: Generate one or more completions based on provided prompts. Compatible
+        with OpenAI's Completions API.
+      operationId: createCompletion_minimax
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateCompletionRequest"
+            examples:
+              default:
+                summary: Basic
+                description: A simple text completion example.
+                value:
+                  model: MiniMax-M2.5
+                  prompt: Once upon a time
+                  max_tokens: 50
+                  temperature: 0.7
+                  n: 1
+                  stream: false
+              streaming:
+                summary: Streaming
+                description: 'Enable streaming response by setting stream: true.'
+                value:
+                  model: MiniMax-M2.5
+                  prompt: The future of AI is
+                  max_tokens: 30
+                  temperature: 0.8
+                  stream: true
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CompletionResponse"
+              examples:
+                default-response:
+                  summary: Basic Response
+                  description: Response example for basic text completion request.
+                  value:
+                    id: cmpl-123
+                    object: text_completion
+                    created: 1677652288
+                    model: MiniMax-M2.5
+                    choices:
+                    - text: " in a small village, there lived a young girl named Lily."
+                      index: 0
+                      finish_reason: length
+                    usage:
+                      prompt_tokens: 4
+                      completion_tokens: 12
+                      total_tokens: 16
+            text/event-stream:
+              schema:
+                type: string
+                description: 'Streaming responses are returned in Server-Sent Events
+                  format, each event is a JSON data block starting with ''data: ''
+                  and ending with ''data: [DONE]''.'
+              examples:
+                streaming-response:
+                  summary: Streaming Response Example
+                  description: Shows events sent sequentially during streaming text
+                    completion process.
+                  value: |
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":"The","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" future","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" of","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" AI","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" is","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":" bright","index":0,"finish_reason":null}]}
+                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"MiniMax-M2.5","choices":[{"text":".","index":0,"finish_reason":"length"}]}
+                    data: [DONE]
+        '400':
+          "$ref": "#/components/responses/ErrorResponse"
+        '401':
+          "$ref": "#/components/responses/ErrorResponse"
+        '429':
+          "$ref": "#/components/responses/ErrorResponse"
+components:
+  "$ref": "./_common.yaml#/components"

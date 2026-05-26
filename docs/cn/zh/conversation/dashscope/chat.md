@@ -10,13 +10,12 @@ DashScope 的对话接口能力。
 
 **模型列表：**
 
-* `MiniMax-M2.5`
-* `MiniMax-M2.7`
 * `qwen3.5-flash`
 * `qwen3.5-plus`
 * `qwen3.6-flash`
 * `qwen3.6-max-preview`
 * `qwen3.6-plus`
+* `qwen3.7-max`
 
 
 ### 2. 接口详情

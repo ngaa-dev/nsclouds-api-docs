@@ -85,8 +85,8 @@ paths:
                   max_completion_tokens: 100
                   stream: true
               image_input:
-                summary: 图像输入（多模态）
-                description: 使用支持视觉的模型分析图像。
+                summary: 图像输入（URL）
+                description: 使用 image_url 内容片段分析一个或多个图片 URL。
                 value:
                   model: gpt-5.2
                   messages:
@@ -97,6 +97,20 @@ paths:
                         - type: image_url
                           image_url:
                             url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
+                  max_completion_tokens: 300
+              image_data_url_input:
+                summary: 图像输入（base64）
+                description: 使用 image_url 内容片段分析一个或多个内联图片 data URL。这里以 PNG 格式为例。
+                value:
+                  model: gpt-5.2
+                  messages:
+                    - role: user
+                      content:
+                        - type: image_url
+                          image_url:
+                            url: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=
+                        - type: text
+                          text: What's in this image?
                   max_completion_tokens: 300
               functions:
                 summary: 函数调用
@@ -364,6 +378,59 @@ paths:
                   model: gpt-5.4
                   input: Hello
                   stream: false
+              image_input:
+                summary: 图像输入（URL）
+                description: 使用 input_image 内容片段分析一个或多个图片 URL。
+                value:
+                  model: gpt-5.4
+                  input:
+                    - role: user
+                      content:
+                        - type: input_image
+                          image_url: https://ark-project.tos-cn-beijing.volces.com/doc_image/seedream4_5_imageToimage.png
+                          detail: high
+                        - type: input_text
+                          text: Describe the image and list any visible text.
+                  stream: false
+              image_data_url_input:
+                summary: 图像输入（base64）
+                description: 使用 input_image 内容片段分析一个或多个内联图片 data URL。这里以 PNG 格式为例。
+                value:
+                  model: gpt-5.4
+                  input:
+                    - role: user
+                      content:
+                        - type: input_image
+                          image_url: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=
+                        - type: input_text
+                          text: What's in this image?
+                  stream: false
+              file_url_input:
+                summary: 文件输入（file_url）
+                description: 使用 input_file 内容片段和 file_url 分析可公开访问的文件。支持常见文档和文本格式，这里以 PDF 为例。
+                value:
+                  model: gpt-5.4
+                  stream: true
+                  input:
+                    - role: user
+                      content:
+                        - type: input_file
+                          file_url: https://arxiv.org/pdf/1706.03762v7
+                        - type: input_text
+                          text: Summarize this paper's core idea.
+              file_data_input:
+                summary: 文件输入（file_data）
+                description: 使用 filename 和 base64 data URL 形式的 file_data 分析内联上传文件。支持常见文档和文本格式，这里以 PDF 为例。
+                value:
+                  model: gpt-5.4
+                  input:
+                    - role: user
+                      content:
+                        - type: input_file
+                          filename: 1706.03762v7.pdf
+                          file_data: data:application/pdf;base64,JVBERi0x...
+                        - type: input_text
+                          text: Summarize this paper's core idea.
       responses:
         '200':
           description: 成功响应

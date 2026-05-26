@@ -10,7 +10,7 @@ tags:
   - name: chat_completions
     x-page-title: Chat Completions
     x-page-icon: message
-    description: 'Chat completion related APIs, including chat completions and text completions'
+    description: Chat completion related APIs.
   - name: embeddings
     x-page-title: Embeddings
     x-page-icon: database
@@ -32,11 +32,6 @@ tags:
     x-page-title: DeepSeek
     x-page-icon: brain
     description: DeepSeek's chat completions API
-  - name: completions_deepseek
-    x-parent: chat_completions
-    x-page-title: DeepSeek
-    x-page-icon: brain
-    description: DeepSeek's text completions API
   - name: messages_deepseek
     x-parent: chat_completions
     x-page-title: DeepSeek
@@ -224,86 +219,6 @@ paths:
           $ref: '#/components/responses/ErrorResponse'
         '429':
           $ref: '#/components/responses/ErrorResponse'
-  /v1/completions:
-    post:
-      tags:
-        - completions_deepseek
-      summary: Create text completion
-      description: Generate one or more completions based on the provided prompt. Compatible with OpenAI's Completions API.
-      operationId: createCompletion_deepseek
-      security:
-        - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateCompletionRequest'
-            examples:
-              default:
-                summary: Basic
-                description: A simple text completion example.
-                value:
-                  model: deepseek-r1
-                  prompt: Say this is a test
-                  max_tokens: 7
-                  temperature: 0
-                  'n': 1
-                  stream: false
-              streaming:
-                summary: Streaming
-                description: 'Enable streaming response by setting stream: true.'
-                value:
-                  model: deepseek-r1
-                  prompt: Say this is a test
-                  max_tokens: 7
-                  temperature: 0
-                  stream: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CompletionResponse'
-              examples:
-                default-response:
-                  summary: Basic Response
-                  description: Response example corresponding to basic text completion request.
-                  value:
-                    id: 02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9
-                    object: text_completion
-                    created: 1772861365
-                    model: deepseek-r1
-                    choices:
-                      - text: This is a test.
-                        index: 0
-                        finish_reason: stop
-                    usage:
-                      prompt_tokens: 10
-                      completion_tokens: 6
-                      total_tokens: 16
-            text/event-stream:
-              schema:
-                type: string
-                description: 'Streaming response is returned in Server-Sent Events format, each event is a line of JSON data block starting with ''data: '', ending with ''data: [DONE]''.'
-              examples:
-                streaming-response:
-                  summary: Streaming Response Example
-                  description: Shows events sent sequentially during streaming text completion process.
-                  value: |
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"deepseek-r1","choices":[{"text":"This","index":0,"finish_reason":null}]}
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"deepseek-r1","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"deepseek-r1","choices":[{"text":" a","index":0,"finish_reason":null}]}
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"deepseek-r1","choices":[{"text":" test","index":0,"finish_reason":null}]}
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"deepseek-r1","choices":[{"text":".","index":0,"finish_reason":"stop"}]}
-                    data: [DONE]
-        '400':
-          $ref: '#/components/responses/ErrorResponse'
-        '401':
-          $ref: '#/components/responses/ErrorResponse'
-        '429':
-          $ref: '#/components/responses/ErrorResponse'
   /v1/messages:
     post:
       tags:
@@ -433,12 +348,19 @@ components:
       properties:
         url:
           type: string
-          description: 'Publicly accessible image URL, or a base64 data URL.'
+          description: Publicly accessible image URL or image data URL. Common image formats are supported; PNG may be used in examples.
+        detail:
+          type: string
+          description: Optional image understanding detail level.
+          enum:
+            - auto
+            - low
+            - high
       required:
         - url
     ChatMessageImagePart:
       type: object
-      description: Image input content part.
+      description: Image input content part. Add multiple image_url parts to send multiple images.
       properties:
         type:
           type: string
@@ -468,7 +390,7 @@ components:
             - type: string
               description: Plain text content.
             - type: array
-              description: 'Array of structured content parts, typically used for multimodal input.'
+              description: 'Array of structured content parts, typically used for multimodal input with text and one or more images.'
               items:
                 oneOf:
                   - $ref: '#/components/schemas/ChatMessageTextPart'
@@ -593,78 +515,6 @@ components:
             $ref: '#/components/schemas/ChatCompletionChoice'
         usage:
           $ref: '#/components/schemas/Usage'
-    CreateCompletionRequest:
-      type: object
-      description: Text Completions request body.
-      properties:
-        model:
-          type: string
-          description: Model ID to invoke.
-        prompt:
-          description: Prompt used for text completion. Can be a single string or an array of strings.
-          oneOf:
-            - type: string
-              description: Single prompt string.
-            - type: array
-              description: Multiple prompt strings.
-              items:
-                type: string
-        temperature:
-          type: number
-          description: Sampling temperature. Higher values make output more random.
-          default: 1
-        max_tokens:
-          type: integer
-          description: Maximum number of output tokens.
-        'n':
-          type: integer
-          description: Number of completion candidates to return.
-          default: 1
-        stream:
-          type: boolean
-          description: Whether to return the response as a stream.
-          default: false
-      required:
-        - model
-        - prompt
-    CompletionChoice:
-      type: object
-      description: A single text completion candidate.
-      properties:
-        text:
-          type: string
-          description: Generated text output.
-        index:
-          type: integer
-          description: Zero-based position of this choice in the returned list.
-        finish_reason:
-          description: Reason generation stopped.
-          type:
-            - string
-            - 'null'
-    CompletionResponse:
-      type: object
-      description: Text Completions success response.
-      properties:
-        id:
-          type: string
-          description: Unique response ID.
-        object:
-          type: string
-          description: 'Object type, usually text_completion.'
-        created:
-          type: integer
-          description: Unix timestamp in seconds when the response was created.
-        model:
-          type: string
-          description: Model ID actually used for the request.
-        choices:
-          type: array
-          description: Completion candidates returned by the model.
-          items:
-            $ref: '#/components/schemas/CompletionChoice'
-        usage:
-          $ref: '#/components/schemas/Usage'
     MessageContentPart:
       type: object
       description: Flexible content part used by Messages-compatible protocols.
@@ -774,28 +624,88 @@ components:
         usage:
           $ref: '#/components/schemas/Usage'
       additionalProperties: true
-    ResponseContentPart:
+    ResponseInputTextPart:
       type: object
-      description: Flexible content part used inside Responses input and output items.
+      description: Text input content part for the Responses protocol.
       properties:
         type:
           type: string
-          description: 'Part type, such as input_text, input_image, output_text, or tool_result.'
+          description: Input part type.
+          enum:
+            - input_text
         text:
           type: string
-          description: Text value carried by the part.
+          description: Text input value.
+      required:
+        - type
+        - text
+      additionalProperties: true
+    ResponseInputImagePart:
+      type: object
+      description: Image input content part for the Responses protocol. Add multiple input_image parts to send multiple images.
+      properties:
+        type:
+          type: string
+          description: Input part type.
+          enum:
+            - input_image
         image_url:
           type: string
-          description: Publicly accessible image URL or data URL used by image input parts.
-        file_id:
-          type: string
-          description: Referenced file identifier.
-        file_url:
-          type: string
-          description: Referenced file URL.
+          description: 'Publicly accessible image URL or image data URL. Common image formats are supported; for example, data:image/png;base64,...'
         detail:
           type: string
           description: 'Detail level for image understanding, when supported.'
+          enum:
+            - auto
+            - low
+            - high
+      required:
+        - type
+        - image_url
+      additionalProperties: true
+    ResponseInputFilePart:
+      type: object
+      description: File input content part for the Responses protocol. Common document and text formats are supported; PDF is only one example.
+      properties:
+        type:
+          type: string
+          description: Input part type.
+          enum:
+            - input_file
+        file_url:
+          type: string
+          description: Publicly accessible file URL used by file input parts. Common document and text formats are supported.
+        filename:
+          type: string
+          description: File name used together with file_data for inline file uploads.
+        file_data:
+          type: string
+          description: 'Data URL containing base64-encoded file content, such as data:application/pdf;base64,... or data:text/plain;base64,...'
+      required:
+        - type
+      anyOf:
+        - required:
+            - file_url
+        - required:
+            - filename
+            - file_data
+      additionalProperties: true
+    ResponseInputContentPart:
+      description: 'Responses input content part. Supported input types are input_text, input_image, and input_file.'
+      oneOf:
+        - $ref: '#/components/schemas/ResponseInputTextPart'
+        - $ref: '#/components/schemas/ResponseInputImagePart'
+        - $ref: '#/components/schemas/ResponseInputFilePart'
+    ResponseContentPart:
+      type: object
+      description: Flexible output content part used inside Responses output items.
+      properties:
+        type:
+          type: string
+          description: 'Output part type, such as output_text or tool_result.'
+        text:
+          type: string
+          description: Text value carried by the part.
         annotations:
           type: array
           description: Optional annotations attached to the content part.
@@ -821,7 +731,7 @@ components:
             - type: array
               description: Structured content part array.
               items:
-                $ref: '#/components/schemas/ResponseContentPart'
+                $ref: '#/components/schemas/ResponseInputContentPart'
       additionalProperties: true
     CreateResponseRequest:
       type: object

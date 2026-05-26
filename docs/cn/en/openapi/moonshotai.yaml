@@ -15,11 +15,6 @@ tags:
   x-page-title: Moonshot AI
   x-page-icon: brain
   description: Moonshot AI's chat completions API
-- name: completions_moonshotai
-  x-parent: chat_completions
-  x-page-title: Moonshot AI
-  x-page-icon: brain
-  description: Moonshot AI's text completions API
 - name: messages_moonshotai
   x-parent: chat_completions
   x-page-title: Moonshot AI
@@ -213,92 +208,6 @@ paths:
                     data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"index":0,"delta":{"content":" today"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
                     data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"index":0,"delta":{"content":"?"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
                     data: {"id":"chatcmpl-907c71cf-c857-907c-bfd4-238a07d3888f","object":"chat.completion.chunk","created":1773224832,"model":"kimi-k2.6","choices":[{"finish_reason":"stop","index":0,"delta":{}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
-                    data: [DONE]
-        '400':
-          "$ref": "#/components/responses/ErrorResponse"
-        '401':
-          "$ref": "#/components/responses/ErrorResponse"
-        '429':
-          "$ref": "#/components/responses/ErrorResponse"
-  "/v1/completions":
-    post:
-      tags:
-      - completions_moonshotai
-      summary: Create Text Completion
-      description: Generate one or more completions based on provided prompts. Compatible
-        with OpenAI's Completions API.
-      operationId: createCompletion_moonshotai
-      security:
-      - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/CreateCompletionRequest"
-            examples:
-              default:
-                summary: Basic
-                description: A simple text completion example.
-                value:
-                  model: kimi-k2.6
-                  prompt: Once upon a time
-                  max_tokens: 50
-                  temperature: 0.7
-                  n: 1
-                  stream: false
-              streaming:
-                summary: Streaming
-                description: 'Enable streaming response by setting stream: true.'
-                value:
-                  model: kimi-k2.6
-                  prompt: The future of AI is
-                  max_tokens: 30
-                  temperature: 0.8
-                  stream: true
-      responses:
-        '200':
-          description: Success Response
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/CompletionResponse"
-              examples:
-                default-response:
-                  summary: Basic Response
-                  description: Response example for basic text completion request.
-                  value:
-                    id: cmpl-123
-                    object: text_completion
-                    created: 1677652288
-                    model: kimi-k2.6
-                    choices:
-                    - text: " in a small village, there lived a young girl named Lily."
-                      index: 0
-                      finish_reason: length
-                    usage:
-                      prompt_tokens: 4
-                      completion_tokens: 12
-                      total_tokens: 16
-            text/event-stream:
-              schema:
-                type: string
-                description: 'Streaming responses are returned in Server-Sent Events
-                  format, each event is a JSON data block starting with ''data: ''
-                  and ending with ''data: [DONE]''.'
-              examples:
-                streaming-response:
-                  summary: Streaming Response Example
-                  description: Shows events sent sequentially during streaming text
-                    completion process.
-                  value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"kimi-k2.6","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
         '400':
           "$ref": "#/components/responses/ErrorResponse"

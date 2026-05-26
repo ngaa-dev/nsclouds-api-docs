@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # DeepSeek - Text Completions
 
 ### 1. Overview

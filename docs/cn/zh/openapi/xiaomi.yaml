@@ -15,11 +15,6 @@ tags:
   x-page-title: Xiaomi
   x-page-icon: brain
   description: Xiaomi 的对话生成 API
-- name: completions_xiaomi
-  x-parent: chat_completions
-  x-page-title: Xiaomi
-  x-page-icon: brain
-  description: Xiaomi 的文本补全 API
 paths:
   "/v1/chat/completions":
     post:
@@ -65,8 +60,8 @@ paths:
                   max_completion_tokens: 100
                   stream: true
               image_input:
-                summary: 图像输入（多模态）
-                description: 使用支持视觉的模型分析图像。
+                summary: 图像输入（URL）
+                description: 使用 image_url 内容片段分析一个或多个图片 URL。
                 value:
                   model: mimo-v2.5
                   messages:
@@ -187,89 +182,6 @@ paths:
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"mimo-v2.5","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"mimo-v2.5","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"mimo-v2.5","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
-                    data: [DONE]
-        '400':
-          "$ref": "#/components/responses/ErrorResponse"
-        '401':
-          "$ref": "#/components/responses/ErrorResponse"
-        '429':
-          "$ref": "#/components/responses/ErrorResponse"
-  "/v1/completions":
-    post:
-      tags:
-      - completions_xiaomi
-      summary: 创建文本补全
-      description: 基于提供的提示，生成一个或多个补全结果。与 OpenAI 的 Completions API 兼容。
-      operationId: createCompletion_xiaomi
-      security:
-      - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/CreateCompletionRequest"
-            examples:
-              default:
-                summary: 基础
-                description: 一个简单的文本补全示例。
-                value:
-                  model: mimo-v2.5
-                  prompt: Once upon a time
-                  max_tokens: 50
-                  temperature: 0.7
-                  n: 1
-                  stream: false
-              streaming:
-                summary: 流式
-                description: '通过设置 stream: true 启用流式响应。'
-                value:
-                  model: mimo-v2.5
-                  prompt: The future of AI is
-                  max_tokens: 30
-                  temperature: 0.8
-                  stream: true
-      responses:
-        '200':
-          description: 成功响应
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/CompletionResponse"
-              examples:
-                default-response:
-                  summary: 基础响应
-                  description: 对应基础文本补全请求的响应示例。
-                  value:
-                    id: cmpl-123
-                    object: text_completion
-                    created: 1677652288
-                    model: mimo-v2.5
-                    choices:
-                    - text: " in a small village, there lived a young girl named Lily."
-                      index: 0
-                      finish_reason: length
-                    usage:
-                      prompt_tokens: 4
-                      completion_tokens: 12
-                      total_tokens: 16
-            text/event-stream:
-              schema:
-                type: string
-                description: '流式响应以 Server-Sent Events 格式返回，每个事件是一行以 ''data: '' 开头的
-                  JSON 数据块，最后以 ''data: [DONE]'' 结束。'
-              examples:
-                streaming-response:
-                  summary: 流式响应示例
-                  description: 展示流式文本补全过程中陆续发送的事件。
-                  value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mimo-v2.5","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mimo-v2.5","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mimo-v2.5","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mimo-v2.5","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mimo-v2.5","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mimo-v2.5","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"mimo-v2.5","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
         '400':
           "$ref": "#/components/responses/ErrorResponse"

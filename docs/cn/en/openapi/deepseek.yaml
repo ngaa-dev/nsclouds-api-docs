@@ -15,11 +15,6 @@ tags:
   x-page-title: DeepSeek
   x-page-icon: brain
   description: DeepSeek's chat completions API
-- name: completions_deepseek
-  x-parent: chat_completions
-  x-page-title: DeepSeek
-  x-page-icon: brain
-  description: DeepSeek's text completions API
 - name: messages_deepseek
   x-parent: chat_completions
   x-page-title: DeepSeek
@@ -213,91 +208,6 @@ paths:
                     you today\"}}]}\ndata: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-r1\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"?
                     \U0001F60A\"}}]}\ndata: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-r1\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"delta\":{}}]}\ndata:
                     [DONE]\n"
-        '400':
-          "$ref": "#/components/responses/ErrorResponse"
-        '401':
-          "$ref": "#/components/responses/ErrorResponse"
-        '429':
-          "$ref": "#/components/responses/ErrorResponse"
-  "/v1/completions":
-    post:
-      tags:
-      - completions_deepseek
-      summary: Create text completion
-      description: Generate one or more completions based on the provided prompt.
-        Compatible with OpenAI's Completions API.
-      operationId: createCompletion_deepseek
-      security:
-      - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/CreateCompletionRequest"
-            examples:
-              default:
-                summary: Basic
-                description: A simple text completion example.
-                value:
-                  model: deepseek-r1
-                  prompt: Say this is a test
-                  max_tokens: 7
-                  temperature: 0
-                  n: 1
-                  stream: false
-              streaming:
-                summary: Streaming
-                description: 'Enable streaming response by setting stream: true.'
-                value:
-                  model: deepseek-r1
-                  prompt: Say this is a test
-                  max_tokens: 7
-                  temperature: 0
-                  stream: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/CompletionResponse"
-              examples:
-                default-response:
-                  summary: Basic Response
-                  description: Response example corresponding to basic text completion
-                    request.
-                  value:
-                    id: '02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9'
-                    object: text_completion
-                    created: 1772861365
-                    model: deepseek-r1
-                    choices:
-                    - text: This is a test.
-                      index: 0
-                      finish_reason: stop
-                    usage:
-                      prompt_tokens: 10
-                      completion_tokens: 6
-                      total_tokens: 16
-            text/event-stream:
-              schema:
-                type: string
-                description: 'Streaming response is returned in Server-Sent Events
-                  format, each event is a line of JSON data block starting with ''data:
-                  '', ending with ''data: [DONE]''.'
-              examples:
-                streaming-response:
-                  summary: Streaming Response Example
-                  description: Shows events sent sequentially during streaming text
-                    completion process.
-                  value: |
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"deepseek-r1","choices":[{"text":"This","index":0,"finish_reason":null}]}
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"deepseek-r1","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"deepseek-r1","choices":[{"text":" a","index":0,"finish_reason":null}]}
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"deepseek-r1","choices":[{"text":" test","index":0,"finish_reason":null}]}
-                    data: {"id":"02177286136439468d44c5a45de4f1e59cc8a01ee3524bc4cf5a9","object":"text_completion","created":1772861365,"model":"deepseek-r1","choices":[{"text":".","index":0,"finish_reason":"stop"}]}
-                    data: [DONE]
         '400':
           "$ref": "#/components/responses/ErrorResponse"
         '401':

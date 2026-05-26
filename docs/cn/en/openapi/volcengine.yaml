@@ -15,11 +15,6 @@ tags:
   x-page-title: Volcengine
   x-page-icon: brain
   description: Volcengine's chat completions API
-- name: completions_volcengine
-  x-parent: chat_completions
-  x-page-title: Volcengine
-  x-page-icon: brain
-  description: Volcengine's text completions API
 - name: responses_volcengine
   x-parent: chat_completions
   x-page-title: Volcengine
@@ -266,93 +261,6 @@ paths:
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"doubao-seed-2-0-lite-260215","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"doubao-seed-2-0-lite-260215","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"doubao-seed-2-0-lite-260215","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
-                    data: [DONE]
-        '400':
-          "$ref": "#/components/responses/ErrorResponse"
-        '401':
-          "$ref": "#/components/responses/ErrorResponse"
-        '429':
-          "$ref": "#/components/responses/ErrorResponse"
-  "/v1/completions":
-    post:
-      tags:
-      - completions_volcengine
-      summary: Create text completion
-      description: Generate one or more completions based on the provided prompt.
-        Compatible with OpenAI's Completions API.
-      operationId: createCompletion_volcengine
-      security:
-      - APIKeyHeader: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/CreateCompletionRequest"
-            examples:
-              default:
-                summary: Basic
-                description: A simple text completion example.
-                value:
-                  model: doubao-seed-2-0-lite-260215
-                  prompt: Say this is a test
-                  max_tokens: 7
-                  temperature: 0
-                  n: 1
-                  stream: false
-              streaming:
-                summary: Streaming
-                description: 'Enable streaming response by setting stream: true.'
-                value:
-                  model: doubao-seed-2-0-lite-260215
-                  prompt: The future of AI is
-                  max_tokens: 30
-                  temperature: 0.8
-                  stream: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/CompletionResponse"
-              examples:
-                default-response:
-                  summary: Basic Response
-                  description: Response example corresponding to basic text completion
-                    request.
-                  value:
-                    id: '0217728646073678cf12c1a4b092384500fba0fc49677b04d2fb3'
-                    object: text_completion
-                    created: 1772864610
-                    model: doubao-seed-2-0-lite-260215
-                    choices:
-                    - text: This is a test
-                      index: 0
-                      finish_reason: stop
-                    usage:
-                      prompt_tokens: 53
-                      completion_tokens: 119
-                      total_tokens: 172
-            text/event-stream:
-              schema:
-                type: string
-                description: 'Streaming response is returned in Server-Sent Events
-                  format, each event is a line of JSON data block starting with ''data:
-                  '', ending with ''data: [DONE]''.'
-              examples:
-                streaming-response:
-                  summary: Streaming Response Example
-                  description: Shows events sent continuously during streaming text
-                    completion process.
-                  value: |
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":"The","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":" future","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":" of","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":" AI","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":" is","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":" bright","index":0,"finish_reason":null}]}
-                    data: {"id":"cmpl-789","object":"text_completion","created":1677652300,"model":"doubao-seed-2-0-lite-260215","choices":[{"text":".","index":0,"finish_reason":"length"}]}
                     data: [DONE]
         '400':
           "$ref": "#/components/responses/ErrorResponse"

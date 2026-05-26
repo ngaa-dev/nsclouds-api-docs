@@ -1,34 +1,35 @@
+---
 openapi: 3.1.0
 info:
   title: LiteLLM API Documentation
-  description: Self-hosted LiteLLM gateway API documentation, fully compatible with OpenAI format.
+  description: Self-hosted LiteLLM gateway API documentation, fully compatible with
+    OpenAI format.
   version: 1.11.0
 servers:
-  - url: ${SERVER_URL}
-    description: ${SERVER_DESCRIPTION}
-
+- url: "${SERVER_URL}"
+  description: "${SERVER_DESCRIPTION}"
 tags:
-  - name: chat_completions
-    x-page-title: Chat Completions
-    x-page-icon: message
-    description: Chat completion related APIs, including chat completions and text completions
-  - name: embeddings
-    x-page-title: Embeddings
-    x-page-icon: database
-    description: Embedding related APIs for generating vector representations of text
-  - name: image_generations
-    x-page-title: Image Generations
-    x-page-icon: image
-    description: Image generation related APIs for creating images from text prompts
-  - name: image_edits
-    x-page-title: Image Edits
-    x-page-icon: edit
-    description: Image editing related APIs for creating edited images from original images and prompts
-  - name: audio_transcriptions
-    x-page-title: Audio Transcriptions
-    x-page-icon: microphone
-    description: Audio transcription related APIs for transcribing audio files to text
-
+- name: chat_completions
+  x-page-title: Chat Completions
+  x-page-icon: message
+  description: Chat completion related APIs.
+- name: embeddings
+  x-page-title: Embeddings
+  x-page-icon: database
+  description: Embedding related APIs for generating vector representations of text
+- name: image_generations
+  x-page-title: Image Generations
+  x-page-icon: image
+  description: Image generation related APIs for creating images from text prompts
+- name: image_edits
+  x-page-title: Image Edits
+  x-page-icon: edit
+  description: Image editing related APIs for creating edited images from original
+    images and prompts
+- name: audio_transcriptions
+  x-page-title: Audio Transcriptions
+  x-page-icon: microphone
+  description: Audio transcription related APIs for transcribing audio files to text
 components:
   schemas:
     ChatMessageTextPart:
@@ -39,39 +40,45 @@ components:
           type: string
           description: Part type.
           enum:
-            - text
+          - text
         text:
           type: string
           description: Text content.
       required:
-        - type
-        - text
-
+      - type
+      - text
     ChatMessageImageUrl:
       type: object
       description: Image URL payload.
       properties:
         url:
           type: string
-          description: Publicly accessible image URL, or a base64 data URL.
+          description: Publicly accessible image URL or image data URL. Common image
+            formats are supported; PNG may be used in examples.
+        detail:
+          type: string
+          description: Optional image understanding detail level.
+          enum:
+          - auto
+          - low
+          - high
       required:
-        - url
-
+      - url
     ChatMessageImagePart:
       type: object
-      description: Image input content part.
+      description: Image input content part. Add multiple image_url parts to send
+        multiple images.
       properties:
         type:
           type: string
           description: Part type.
           enum:
-            - image_url
+          - image_url
         image_url:
-          $ref: '#/components/schemas/ChatMessageImageUrl'
+          "$ref": "#/components/schemas/ChatMessageImageUrl"
       required:
-        - type
-        - image_url
-
+      - type
+      - image_url
     ChatMessage:
       type: object
       description: Chat message object.
@@ -80,25 +87,26 @@ components:
           type: string
           description: Role of the message sender.
           enum:
-            - system
-            - user
-            - assistant
-            - tool
+          - system
+          - user
+          - assistant
+          - tool
         content:
-          description: Message content, either plain text or structured multimodal parts.
+          description: Message content, either plain text or structured multimodal
+            parts.
           oneOf:
-            - type: string
-              description: Plain text content.
-            - type: array
-              description: Array of structured content parts, typically used for multimodal input.
-              items:
-                oneOf:
-                  - $ref: '#/components/schemas/ChatMessageTextPart'
-                  - $ref: '#/components/schemas/ChatMessageImagePart'
+          - type: string
+            description: Plain text content.
+          - type: array
+            description: Array of structured content parts, typically used for multimodal
+              input with text and one or more images.
+            items:
+              oneOf:
+              - "$ref": "#/components/schemas/ChatMessageTextPart"
+              - "$ref": "#/components/schemas/ChatMessageImagePart"
       required:
-        - role
-        - content
-
+      - role
+      - content
     Usage:
       type: object
       description: Token usage summary.
@@ -114,17 +122,20 @@ components:
           description: Total number of tokens consumed.
         input_tokens:
           type: integer
-          description: Number of input tokens consumed for protocols that expose this field.
+          description: Number of input tokens consumed for protocols that expose this
+            field.
         output_tokens:
           type: integer
-          description: Number of output tokens consumed for protocols that expose this field.
+          description: Number of output tokens consumed for protocols that expose
+            this field.
         completion_tokens_details:
           type: object
           description: Optional breakdown of completion token usage.
           properties:
             reasoning_tokens:
               type: integer
-              description: Tokens consumed by reasoning or chain-of-thought style generation.
+              description: Tokens consumed by reasoning or chain-of-thought style
+                generation.
           additionalProperties: true
         input_tokens_details:
           type: object
@@ -137,7 +148,6 @@ components:
               type: integer
               description: Input tokens attributed to images.
           additionalProperties: true
-
     CreateChatCompletionRequest:
       type: object
       description: Chat Completions request body.
@@ -149,7 +159,7 @@ components:
           type: array
           description: Ordered conversation history sent to the model.
           items:
-            $ref: '#/components/schemas/ChatMessage'
+            "$ref": "#/components/schemas/ChatMessage"
         temperature:
           type: number
           description: Sampling temperature. Higher values make output more random.
@@ -166,9 +176,8 @@ components:
           description: Whether to return the response as a stream.
           default: false
       required:
-        - model
-        - messages
-
+      - model
+      - messages
     ChatCompletionResponseMessage:
       type: object
       description: A generated message in a chat completion.
@@ -179,9 +188,8 @@ components:
         content:
           description: Generated message text. May be null in some tool-calling flows.
           type:
-            - string
-            - 'null'
-
+          - string
+          - 'null'
     ChatCompletionChoice:
       type: object
       description: A single chat completion candidate.
@@ -190,13 +198,12 @@ components:
           type: integer
           description: Zero-based position of this choice in the returned list.
         message:
-          $ref: '#/components/schemas/ChatCompletionResponseMessage'
+          "$ref": "#/components/schemas/ChatCompletionResponseMessage"
         finish_reason:
           description: Reason generation stopped, such as stop, length, or tool_calls.
           type:
-            - string
-            - 'null'
-
+          - string
+          - 'null'
     ChatCompletionResponse:
       type: object
       description: Chat Completions success response.
@@ -217,85 +224,9 @@ components:
           type: array
           description: Candidate outputs returned by the model.
           items:
-            $ref: '#/components/schemas/ChatCompletionChoice'
+            "$ref": "#/components/schemas/ChatCompletionChoice"
         usage:
-          $ref: '#/components/schemas/Usage'
-
-    CreateCompletionRequest:
-      type: object
-      description: Text Completions request body.
-      properties:
-        model:
-          type: string
-          description: Model ID to invoke.
-        prompt:
-          description: Prompt used for text completion. Can be a single string or an array of strings.
-          oneOf:
-            - type: string
-              description: Single prompt string.
-            - type: array
-              description: Multiple prompt strings.
-              items:
-                type: string
-        temperature:
-          type: number
-          description: Sampling temperature. Higher values make output more random.
-          default: 1
-        max_tokens:
-          type: integer
-          description: Maximum number of output tokens.
-        n:
-          type: integer
-          description: Number of completion candidates to return.
-          default: 1
-        stream:
-          type: boolean
-          description: Whether to return the response as a stream.
-          default: false
-      required:
-        - model
-        - prompt
-
-    CompletionChoice:
-      type: object
-      description: A single text completion candidate.
-      properties:
-        text:
-          type: string
-          description: Generated text output.
-        index:
-          type: integer
-          description: Zero-based position of this choice in the returned list.
-        finish_reason:
-          description: Reason generation stopped.
-          type:
-            - string
-            - 'null'
-
-    CompletionResponse:
-      type: object
-      description: Text Completions success response.
-      properties:
-        id:
-          type: string
-          description: Unique response ID.
-        object:
-          type: string
-          description: Object type, usually text_completion.
-        created:
-          type: integer
-          description: Unix timestamp in seconds when the response was created.
-        model:
-          type: string
-          description: Model ID actually used for the request.
-        choices:
-          type: array
-          description: Completion candidates returned by the model.
-          items:
-            $ref: '#/components/schemas/CompletionChoice'
-        usage:
-          $ref: '#/components/schemas/Usage'
-
+          "$ref": "#/components/schemas/Usage"
     MessageContentPart:
       type: object
       description: Flexible content part used by Messages-compatible protocols.
@@ -325,38 +256,39 @@ components:
           description: Tool input payload or other structured arguments.
           additionalProperties: true
         content:
-          description: Nested content carried by some protocols, often for tool_result blocks.
+          description: Nested content carried by some protocols, often for tool_result
+            blocks.
           oneOf:
-            - type: string
-              description: Plain text nested content.
-            - type: array
-              description: Nested structured content parts.
-              items:
-                type: object
-                additionalProperties: true
+          - type: string
+            description: Plain text nested content.
+          - type: array
+            description: Nested structured content parts.
+            items:
+              type: object
+              additionalProperties: true
       additionalProperties: true
-
     MessagesRequestMessage:
       type: object
       description: A single input message for Messages-compatible protocols.
       properties:
         role:
           type: string
-          description: Message role. Different vendors may support different role names.
+          description: Message role. Different vendors may support different role
+            names.
         content:
-          description: Message content, either plain text or an array of vendor-specific content parts.
+          description: Message content, either plain text or an array of vendor-specific
+            content parts.
           oneOf:
-            - type: string
-              description: Plain text content.
-            - type: array
-              description: Structured content part array.
-              items:
-                $ref: '#/components/schemas/MessageContentPart'
+          - type: string
+            description: Plain text content.
+          - type: array
+            description: Structured content part array.
+            items:
+              "$ref": "#/components/schemas/MessageContentPart"
       required:
-        - role
-        - content
+      - role
+      - content
       additionalProperties: true
-
     CreateMessagesRequest:
       type: object
       description: Messages protocol request body.
@@ -366,9 +298,10 @@ components:
           description: Model ID to invoke.
         messages:
           type: array
-          description: Input message list. Content parts are intentionally permissive to preserve vendor compatibility.
+          description: Input message list. Content parts are intentionally permissive
+            to preserve vendor compatibility.
           items:
-            $ref: '#/components/schemas/MessagesRequestMessage'
+            "$ref": "#/components/schemas/MessagesRequestMessage"
         max_tokens:
           type: integer
           description: Maximum number of output tokens.
@@ -377,10 +310,9 @@ components:
           description: Whether to return the response as a stream.
           default: false
       required:
-        - model
-        - messages
+      - model
+      - messages
       additionalProperties: true
-
     MessageResponse:
       type: object
       description: Messages protocol success response.
@@ -399,38 +331,104 @@ components:
           description: Model ID actually used for the request.
         content:
           type: array
-          description: Returned content parts. Vendors may include text, tool calls, citations, or reasoning blocks.
+          description: Returned content parts. Vendors may include text, tool calls,
+            citations, or reasoning blocks.
           items:
-            $ref: '#/components/schemas/MessageContentPart'
+            "$ref": "#/components/schemas/MessageContentPart"
         stop_reason:
           type: string
           description: Reason generation stopped.
         usage:
-          $ref: '#/components/schemas/Usage'
+          "$ref": "#/components/schemas/Usage"
       additionalProperties: true
-
-    ResponseContentPart:
+    ResponseInputTextPart:
       type: object
-      description: Flexible content part used inside Responses input and output items.
+      description: Text input content part for the Responses protocol.
       properties:
         type:
           type: string
-          description: Part type, such as input_text, input_image, output_text, or tool_result.
+          description: Input part type.
+          enum:
+          - input_text
         text:
           type: string
-          description: Text value carried by the part.
+          description: Text input value.
+      required:
+      - type
+      - text
+      additionalProperties: true
+    ResponseInputImagePart:
+      type: object
+      description: Image input content part for the Responses protocol. Add multiple
+        input_image parts to send multiple images.
+      properties:
+        type:
+          type: string
+          description: Input part type.
+          enum:
+          - input_image
         image_url:
           type: string
-          description: Publicly accessible image URL or data URL used by image input parts.
-        file_id:
-          type: string
-          description: Referenced file identifier.
-        file_url:
-          type: string
-          description: Referenced file URL.
+          description: Publicly accessible image URL or image data URL. Common image
+            formats are supported; for example, data:image/png;base64,...
         detail:
           type: string
           description: Detail level for image understanding, when supported.
+          enum:
+          - auto
+          - low
+          - high
+      required:
+      - type
+      - image_url
+      additionalProperties: true
+    ResponseInputFilePart:
+      type: object
+      description: File input content part for the Responses protocol. Common document
+        and text formats are supported; PDF is only one example.
+      properties:
+        type:
+          type: string
+          description: Input part type.
+          enum:
+          - input_file
+        file_url:
+          type: string
+          description: Publicly accessible file URL used by file input parts. Common
+            document and text formats are supported.
+        filename:
+          type: string
+          description: File name used together with file_data for inline file uploads.
+        file_data:
+          type: string
+          description: Data URL containing base64-encoded file content, such as data:application/pdf;base64,...
+            or data:text/plain;base64,...
+      required:
+      - type
+      anyOf:
+      - required:
+        - file_url
+      - required:
+        - filename
+        - file_data
+      additionalProperties: true
+    ResponseInputContentPart:
+      description: Responses input content part. Supported input types are input_text,
+        input_image, and input_file.
+      oneOf:
+      - "$ref": "#/components/schemas/ResponseInputTextPart"
+      - "$ref": "#/components/schemas/ResponseInputImagePart"
+      - "$ref": "#/components/schemas/ResponseInputFilePart"
+    ResponseContentPart:
+      type: object
+      description: Flexible output content part used inside Responses output items.
+      properties:
+        type:
+          type: string
+          description: Output part type, such as output_text or tool_result.
+        text:
+          type: string
+          description: Text value carried by the part.
         annotations:
           type: array
           description: Optional annotations attached to the content part.
@@ -438,7 +436,6 @@ components:
             type: object
             additionalProperties: true
       additionalProperties: true
-
     ResponseInputItem:
       type: object
       description: Structured input item for the Responses protocol.
@@ -452,14 +449,13 @@ components:
         content:
           description: Input content, either plain text or structured parts.
           oneOf:
-            - type: string
-              description: Plain text input.
-            - type: array
-              description: Structured content part array.
-              items:
-                $ref: '#/components/schemas/ResponseContentPart'
+          - type: string
+            description: Plain text input.
+          - type: array
+            description: Structured content part array.
+            items:
+              "$ref": "#/components/schemas/ResponseInputContentPart"
       additionalProperties: true
-
     CreateResponseRequest:
       type: object
       description: Responses protocol request body.
@@ -468,23 +464,23 @@ components:
           type: string
           description: Model ID to invoke.
         input:
-          description: Input payload, either plain text or an array of structured items.
+          description: Input payload, either plain text or an array of structured
+            items.
           oneOf:
-            - type: string
-              description: Plain text input.
-            - type: array
-              description: Structured input array.
-              items:
-                $ref: '#/components/schemas/ResponseInputItem'
+          - type: string
+            description: Plain text input.
+          - type: array
+            description: Structured input array.
+            items:
+              "$ref": "#/components/schemas/ResponseInputItem"
         stream:
           type: boolean
           description: Whether to return the response as a stream.
           default: false
       required:
-        - model
-        - input
+      - model
+      - input
       additionalProperties: true
-
     ResponseOutputItem:
       type: object
       description: A single item in a Responses output array.
@@ -505,9 +501,8 @@ components:
           type: array
           description: Structured output content parts.
           items:
-            $ref: '#/components/schemas/ResponseContentPart'
+            "$ref": "#/components/schemas/ResponseContentPart"
       additionalProperties: true
-
     ResponseObject:
       type: object
       description: Responses protocol success response.
@@ -529,28 +524,29 @@ components:
           description: Unix timestamp in seconds when the response was created.
         output_text:
           type: string
-          description: Convenience text output aggregated from output content, when provided.
+          description: Convenience text output aggregated from output content, when
+            provided.
         output:
           type: array
-          description: Generated output items. Vendors may include messages, tool calls, reasoning, or other structured records.
+          description: Generated output items. Vendors may include messages, tool
+            calls, reasoning, or other structured records.
           items:
-            $ref: '#/components/schemas/ResponseOutputItem'
+            "$ref": "#/components/schemas/ResponseOutputItem"
         error:
           type:
-            - object
-            - 'null'
+          - object
+          - 'null'
           description: Error information when response generation fails.
           additionalProperties: true
         incomplete_details:
           type:
-            - object
-            - 'null'
+          - object
+          - 'null'
           description: Details explaining why a response is incomplete.
           additionalProperties: true
         usage:
-          $ref: '#/components/schemas/Usage'
+          "$ref": "#/components/schemas/Usage"
       additionalProperties: true
-
     CreateEmbeddingRequest:
       type: object
       description: Embeddings request body.
@@ -561,26 +557,26 @@ components:
         input:
           description: Text input to embed. Can be one string or multiple strings.
           oneOf:
-            - type: string
-              description: Single input string.
-            - type: array
-              description: Multiple input strings.
-              items:
-                type: string
+          - type: string
+            description: Single input string.
+          - type: array
+            description: Multiple input strings.
+            items:
+              type: string
         encoding_format:
           type: string
           description: Encoding format for the returned vectors.
           enum:
-            - float
-            - base64
+          - float
+          - base64
           default: float
         dimensions:
           type: integer
-          description: Requested output vector dimensions. Supported only by some models.
+          description: Requested output vector dimensions. Supported only by some
+            models.
       required:
-        - model
-        - input
-
+      - model
+      - input
     EmbeddingDataItem:
       type: object
       description: A single embedding result.
@@ -589,16 +585,16 @@ components:
           type: string
           description: Object type, usually embedding.
         embedding:
-          description: Vector value, returned either as a float array or a base64 string.
+          description: Vector value, returned either as a float array or a base64
+            string.
           oneOf:
-            - type: array
-              items:
-                type: number
-            - type: string
+          - type: array
+            items:
+              type: number
+          - type: string
         index:
           type: integer
           description: Zero-based position of this result in the input list.
-
     EmbeddingResponse:
       type: object
       description: Embeddings success response.
@@ -610,13 +606,12 @@ components:
           type: array
           description: Embedding result list.
           items:
-            $ref: '#/components/schemas/EmbeddingDataItem'
+            "$ref": "#/components/schemas/EmbeddingDataItem"
         model:
           type: string
           description: Model ID actually used for the request.
         usage:
-          $ref: '#/components/schemas/Usage'
-
+          "$ref": "#/components/schemas/Usage"
     CreateImageGenerationRequest:
       type: object
       description: Image generation request body.
@@ -639,20 +634,19 @@ components:
           type: string
           description: Requested image quality level.
           enum:
-            - standard
-            - hd
+          - standard
+          - hd
           default: standard
         response_format:
           type: string
           description: Format used to return the image payload.
           enum:
-            - url
-            - b64_json
+          - url
+          - b64_json
           default: url
       required:
-        - model
-        - prompt
-
+      - model
+      - prompt
     CreateImageEditRequest:
       type: object
       description: Image editing request body.
@@ -662,7 +656,9 @@ components:
           description: Model ID to invoke.
         image:
           type: array
-          description: Input image file(s) to edit. Use the image parameter; when sending multiple files with raw multipart/curl, send repeated image[] parts.
+          description: Input image file(s) to edit. Use the image parameter; when
+            sending multiple files with raw multipart/curl, send repeated image[]
+            parts.
           items:
             type: string
             format: binary
@@ -685,14 +681,13 @@ components:
           type: string
           description: Format used to return the image payload.
           enum:
-            - url
-            - b64_json
+          - url
+          - b64_json
           default: url
       required:
-        - model
-        - image
-        - prompt
-
+      - model
+      - image
+      - prompt
     ImageDataItem:
       type: object
       description: A single generated image result.
@@ -706,7 +701,6 @@ components:
         revised_prompt:
           type: string
           description: Prompt actually used or revised by the model.
-
     ImageUsage:
       type: object
       description: Resource usage summary for image generation.
@@ -731,7 +725,6 @@ components:
               type: integer
               description: Input tokens attributed to images.
           additionalProperties: true
-
     ImageResponse:
       type: object
       description: Image generation or edit success response.
@@ -743,7 +736,7 @@ components:
           type: array
           description: Generated image results.
           items:
-            $ref: '#/components/schemas/ImageDataItem'
+            "$ref": "#/components/schemas/ImageDataItem"
         background:
           type: string
           description: Background type used for the generated image.
@@ -757,8 +750,7 @@ components:
           type: string
           description: Final returned image size.
         usage:
-          $ref: '#/components/schemas/ImageUsage'
-
+          "$ref": "#/components/schemas/ImageUsage"
     CreateTranscriptionRequest:
       type: object
       description: Audio transcription request body.
@@ -780,11 +772,11 @@ components:
           type: string
           description: Response format for the transcription result.
           enum:
-            - json
-            - text
-            - srt
-            - verbose_json
-            - vtt
+          - json
+          - text
+          - srt
+          - verbose_json
+          - vtt
           default: json
         temperature:
           type: number
@@ -792,16 +784,16 @@ components:
           default: 0
         timestamp_granularities:
           type: array
-          description: Timestamp granularities to include when response_format is verbose_json.
+          description: Timestamp granularities to include when response_format is
+            verbose_json.
           items:
             type: string
             enum:
-              - word
-              - segment
+            - word
+            - segment
       required:
-        - model
-        - file
-
+      - model
+      - file
     TranscriptionResponse:
       type: object
       description: JSON transcription response.
@@ -809,7 +801,6 @@ components:
         text:
           type: string
           description: Transcribed text content.
-
     ErrorDetail:
       type: object
       description: Error detail object.
@@ -823,31 +814,28 @@ components:
         param:
           description: Parameter associated with the error, if any.
           type:
-            - string
-            - 'null'
+          - string
+          - 'null'
         code:
           description: Machine-readable error code, if any.
           type:
-            - string
-            - 'null'
-
+          - string
+          - 'null'
     ErrorResponse:
       type: object
       description: Error response payload.
       properties:
         error:
-          $ref: '#/components/schemas/ErrorDetail'
-
+          "$ref": "#/components/schemas/ErrorDetail"
   securitySchemes:
     APIKeyHeader:
       type: http
       scheme: bearer
-      description: "Authenticate using Bearer token format: 'Bearer YOUR_SECRET_TOKEN'"
-
+      description: 'Authenticate using Bearer token format: ''Bearer YOUR_SECRET_TOKEN'''
   responses:
     ErrorResponse:
       description: Error response
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            "$ref": "#/components/schemas/ErrorResponse"

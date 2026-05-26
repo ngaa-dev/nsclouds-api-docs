@@ -29,7 +29,7 @@ NEW_OPENAPI_VENDORS = {
     "xiaomi": "Xiaomi",
 }
 VENDOR_ORDER = {
-    "cn": ["dashscope", "deepseek", "volcengine", "zai", "xiaomi"],
+    "cn": ["dashscope", "minimax", "deepseek", "volcengine", "zai", "xiaomi"],
     "global": [
         "anthropic",
         "openai",
@@ -37,6 +37,7 @@ VENDOR_ORDER = {
         "deepseek",
         "volcengine",
         "dashscope",
+        "minimax",
         "zai",
         "moonshotai",
         "xai",
@@ -47,6 +48,7 @@ BRAND_NAMES = {
     "dashscope": "DashScope",
     "deepseek": "DeepSeek",
     "google": "Google",
+    "minimax": "MiniMax",
     "moonshotai": "Moonshot AI",
     "openai": "OpenAI",
     "volcengine": "Volcengine",
@@ -54,6 +56,11 @@ BRAND_NAMES = {
     "xiaomi": "Xiaomi",
     "zai": "Z.AI",
 }
+
+# Keep Text Completions pages generated but hidden from top-level navigation.
+# Flip this to true if the legacy /v1/completions docs need to be exposed again.
+SHOW_TEXT_COMPLETIONS = False
+
 @dataclass(frozen=True)
 class ModelRecord:
     vendor: str
@@ -323,6 +330,10 @@ def success_hint(text: str) -> str:
     return f'{{% hint style="success" %}}\n{text}\n{{% endhint %}}\n'
 
 
+def hidden_frontmatter(content: str) -> str:
+    return f"---\nhidden: true\n---\n\n{content}"
+
+
 def capability_title(capability: str, lang: str) -> str:
     cfg = LANG_CONFIG[lang]
     return {
@@ -552,7 +563,8 @@ def render_env(env: str) -> None:
                 stale_landing.unlink()
 
         write_text(base / "conversation" / "SUMMARY.md", build_chat_directory_summary(lang, env_index["chat_vendors"]))
-        write_text(base / "completions" / "SUMMARY.md", build_category_directory_summary(lang, "completions", env_index["completion_vendors"]))
+        if SHOW_TEXT_COMPLETIONS:
+            write_text(base / "completions" / "SUMMARY.md", build_category_directory_summary(lang, "completions", env_index["completion_vendors"]))
         write_text(
             base / "image-generations" / "SUMMARY.md",
             build_category_directory_summary(lang, "image_generations", env_index["image_gen_vendors"]),
@@ -585,13 +597,15 @@ def render_env(env: str) -> None:
                     build_capability_page(env, lang, vendor, capability, models_for_capability(env_index, vendor, capability)),
                 )
 
-        summary_lines.append(f"* [{cfg['completions_root']}]({category_summary_target('completions')})")
+        if SHOW_TEXT_COMPLETIONS:
+            summary_lines.append(f"* [{cfg['completions_root']}]({category_summary_target('completions')})")
         for vendor in env_index["completion_vendors"]:
-            summary_lines.append(f"  * [{vendor_name(vendor)}](completions/{vendor}.md)")
-            write_text(
-                base / "completions" / f"{vendor}.md",
-                build_capability_page(env, lang, vendor, "completions", models_for_capability(env_index, vendor, "completions")),
-            )
+            page = build_capability_page(env, lang, vendor, "completions", models_for_capability(env_index, vendor, "completions"))
+            if SHOW_TEXT_COMPLETIONS:
+                summary_lines.append(f"  * [{vendor_name(vendor)}](completions/{vendor}.md)")
+            else:
+                page = hidden_frontmatter(page)
+            write_text(base / "completions" / f"{vendor}.md", page)
 
         summary_lines.append(f"* [{cfg['image_gen_root']}]({category_summary_target('image_generations')})")
         for vendor in env_index["image_gen_vendors"]:

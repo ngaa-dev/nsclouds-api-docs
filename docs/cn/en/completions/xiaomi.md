@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Xiaomi - Text Completions
 
 ### 1. Overview

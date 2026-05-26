@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Volcengine - 文本补全
 
 ### 1. 概述

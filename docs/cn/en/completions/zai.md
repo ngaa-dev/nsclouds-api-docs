@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Z.AI - Text Completions
 
 ### 1. Overview

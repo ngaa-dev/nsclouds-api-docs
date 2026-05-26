@@ -1,0 +1,1000 @@
+openapi: 3.1.0
+info:
+  title: LiteLLM API 文档
+  description: 自建 LiteLLM 网关的 API 文档，完全兼容 OpenAI 格式。
+  version: 1.11.0
+servers:
+  - url: 'https://aillm.nsclouds.com'
+    description: 国内服务器
+tags:
+  - name: chat_completions
+    x-page-title: 对话生成
+    x-page-icon: message
+    description: 对话生成相关的 API。
+  - name: embeddings
+    x-page-title: 向量嵌入
+    x-page-icon: database
+    description: 向量嵌入相关的 API，用于生成文本的向量表示
+  - name: image_generations
+    x-page-title: 图片生成
+    x-page-icon: image
+    description: 图片生成相关的 API，根据文本提示生成图像
+  - name: image_edits
+    x-page-title: 图片编辑
+    x-page-icon: edit
+    description: 图片编辑相关的 API，根据原始图像和提示创建编辑后的图像
+  - name: audio_transcriptions
+    x-page-title: 音频转录
+    x-page-icon: microphone
+    description: 音频转录相关的 API，将音频文件转录为文本
+  - name: chat_completions_minimax
+    x-parent: chat_completions
+    x-page-title: MiniMax
+    x-page-icon: brain
+    description: MiniMax 的对话生成 API
+paths:
+  /v1/chat/completions:
+    post:
+      tags:
+        - chat_completions_minimax
+      summary: 创建聊天补全
+      description: 基于输入的消息，生成模型回复。与 OpenAI 的 Chat API 完全兼容。
+      operationId: createChatCompletion_minimax
+      security:
+        - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatCompletionRequest'
+            examples:
+              default:
+                summary: 基础
+                description: 一个简单的对话示例，包含系统提示和用户消息。
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                    - role: system
+                      content: You are a helpful assistant.
+                    - role: user
+                      content: Hello!
+                  temperature: 1
+                  max_completion_tokens: 50
+                  'n': 1
+                  stream: false
+              streaming:
+                summary: 流式
+                description: '通过设置 stream: true 启用流式响应。'
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                    - role: system
+                      content: You are a helpful assistant.
+                    - role: user
+                      content: Tell me a story.
+                  temperature: 0.7
+                  max_completion_tokens: 100
+                  stream: true
+              image_input:
+                summary: 图像输入（多模态）
+                description: 使用支持视觉的模型分析图像。
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                    - role: user
+                      content:
+                        - type: text
+                          text: What's in this image?
+                        - type: image_url
+                          image_url:
+                            url: 'https://example.com/cat.jpg'
+                  max_completion_tokens: 300
+              functions:
+                summary: 函数调用
+                description: 定义工具（函数）并让模型决定是否调用。
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                    - role: user
+                      content: What's the weather in Boston?
+                  tools:
+                    - type: function
+                      function:
+                        name: get_current_weather
+                        description: Get the current weather in a given location
+                        parameters:
+                          type: object
+                          properties:
+                            location:
+                              type: string
+                              description: 'The city and state, e.g. San Francisco, CA'
+                            unit:
+                              type: string
+                              enum:
+                                - celsius
+                                - fahrenheit
+                          required:
+                            - location
+                  tool_choice: auto
+                  max_completion_tokens: 150
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+              examples:
+                default-response:
+                  summary: 基础响应
+                  description: 对应基础聊天请求的响应示例。
+                  value:
+                    id: chatcmpl-5f8c2c44-08dd-98f7-b111-c18d6281f6ee
+                    object: chat.completion
+                    created: 1773225557
+                    model: MiniMax-M2.5
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: Hello! How can I help you today?
+                          reasoning_content: The user has sent a simple greeting. I should respond in a friendly and helpful manner.
+                        finish_reason: stop
+                        provider_specific_fields: {}
+                    usage:
+                      prompt_tokens: 40
+                      completion_tokens: 31
+                      total_tokens: 71
+                      completion_tokens_details:
+                        reasoning_tokens: 17
+                      prompt_tokens_details:
+                        cached_tokens: 0
+                image_input-response:
+                  summary: 图像输入响应
+                  description: 模型根据图像内容生成的描述。
+                  value:
+                    id: chatcmpl-789
+                    object: chat.completion
+                    created: 1677652300
+                    model: MiniMax-M2.5
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: 'The image shows a cute cat sitting on a windowsill, looking outside.'
+                        finish_reason: stop
+                    usage:
+                      prompt_tokens: 123
+                      completion_tokens: 15
+                      total_tokens: 138
+                functions-response:
+                  summary: 函数调用响应
+                  description: 模型返回一个函数调用请求。
+                  value:
+                    id: chatcmpl-abc
+                    object: chat.completion
+                    created: 1677652310
+                    model: MiniMax-M2.5
+                    choices:
+                      - index: 0
+                        message:
+                          role: assistant
+                          content: null
+                          tool_calls:
+                            - id: call_123
+                              type: function
+                              function:
+                                name: get_current_weather
+                                arguments: '{"location": "Boston, MA", "unit": "fahrenheit"}'
+                        finish_reason: tool_calls
+                    usage:
+                      prompt_tokens: 50
+                      completion_tokens: 20
+                      total_tokens: 70
+            text/event-stream:
+              schema:
+                type: string
+                description: '流式响应以 Server-Sent Events 格式返回，每个事件是一行以 ''data: '' 开头的 JSON 数据块，最后以 ''data: [DONE]'' 结束。'
+              examples:
+                streaming-response:
+                  summary: 流式响应示例
+                  description: 展示流式聊天过程中陆续发送的事件。
+                  value: |
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"reasoning_content":"The user has just said \"Hello!\" - a simple greeting. I should respond in a friendly, welcoming manner and offer to help them with whatever they need.\n"},"reasoning_content":"The user has just said \"Hello!\" - a simple greeting. I should respond in a friendly, welcoming manner and offer to help them with whatever they need.\n"}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":"Hello!"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" How are you doing"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" today? Is there"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" something I can help"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" you with?"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"finish_reason":"stop","index":0,"delta":{}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
+                    data: [DONE]
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+components:
+  schemas:
+    ChatMessageTextPart:
+      type: object
+      description: 文本内容片段。
+      properties:
+        type:
+          type: string
+          description: 内容片段类型。
+          enum:
+            - text
+        text:
+          type: string
+          description: 文本内容。
+      required:
+        - type
+        - text
+    ChatMessageImageUrl:
+      type: object
+      description: 图片 URL 对象。
+      properties:
+        url:
+          type: string
+          description: 可公开访问的图片 URL 或图片 data URL。支持常见图片格式，示例中可使用 PNG。
+        detail:
+          type: string
+          description: 可选的图片理解细节等级。
+          enum:
+            - auto
+            - low
+            - high
+      required:
+        - url
+    ChatMessageImagePart:
+      type: object
+      description: 图片输入内容片段。可添加多个 image_url 内容片段来发送多张图片。
+      properties:
+        type:
+          type: string
+          description: 内容片段类型。
+          enum:
+            - image_url
+        image_url:
+          $ref: '#/components/schemas/ChatMessageImageUrl'
+      required:
+        - type
+        - image_url
+    ChatMessage:
+      type: object
+      description: 聊天消息对象。
+      properties:
+        role:
+          type: string
+          description: 消息发送方角色。
+          enum:
+            - system
+            - user
+            - assistant
+            - tool
+        content:
+          description: 消息内容，可以是纯文本，也可以是多段结构化内容。
+          oneOf:
+            - type: string
+              description: 纯文本内容。
+            - type: array
+              description: 多段结构化内容数组，常用于包含文本和一张或多张图片的多模态输入。
+              items:
+                oneOf:
+                  - $ref: '#/components/schemas/ChatMessageTextPart'
+                  - $ref: '#/components/schemas/ChatMessageImagePart'
+      required:
+        - role
+        - content
+    Usage:
+      type: object
+      description: Token 使用量统计。
+      properties:
+        prompt_tokens:
+          type: integer
+          description: 输入消耗的 token 数。
+        completion_tokens:
+          type: integer
+          description: 输出消耗的 token 数。
+        total_tokens:
+          type: integer
+          description: 总 token 数。
+        input_tokens:
+          type: integer
+          description: 输入消耗的 token 数，部分协议使用该字段。
+        output_tokens:
+          type: integer
+          description: 输出消耗的 token 数，部分协议使用该字段。
+        completion_tokens_details:
+          type: object
+          description: 输出 token 使用明细。
+          properties:
+            reasoning_tokens:
+              type: integer
+              description: 推理类输出消耗的 token 数。
+          additionalProperties: true
+        input_tokens_details:
+          type: object
+          description: 输入 token 使用明细。
+          properties:
+            text_tokens:
+              type: integer
+              description: 文本输入消耗的 token 数。
+            image_tokens:
+              type: integer
+              description: 图片输入消耗的 token 数。
+          additionalProperties: true
+    CreateChatCompletionRequest:
+      type: object
+      description: Chat Completions 请求体。
+      properties:
+        model:
+          type: string
+          description: 要调用的模型 ID。
+        messages:
+          type: array
+          description: 对话历史消息列表，按顺序传入。
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+        temperature:
+          type: number
+          description: 采样温度，值越高结果越随机。
+          default: 1
+        max_completion_tokens:
+          type: integer
+          description: 允许生成的最大输出 token 数。
+        'n':
+          type: integer
+          description: 为同一请求生成的候选回复数量。
+          default: 1
+        stream:
+          type: boolean
+          description: 是否以流式方式返回响应。
+          default: false
+      required:
+        - model
+        - messages
+    ChatCompletionResponseMessage:
+      type: object
+      description: 聊天补全中的单条消息。
+      properties:
+        role:
+          type: string
+          description: 生成消息的角色，通常为 assistant。
+        content:
+          description: 模型生成的消息文本，部分场景下可能为 null。
+          type:
+            - string
+            - 'null'
+    ChatCompletionChoice:
+      type: object
+      description: 单个候选回复。
+      properties:
+        index:
+          type: integer
+          description: 候选结果在返回数组中的序号。
+        message:
+          $ref: '#/components/schemas/ChatCompletionResponseMessage'
+        finish_reason:
+          description: 生成结束原因，例如 stop、length、tool_calls。
+          type:
+            - string
+            - 'null'
+    ChatCompletionResponse:
+      type: object
+      description: Chat Completions 成功响应。
+      properties:
+        id:
+          type: string
+          description: 本次响应的唯一 ID。
+        object:
+          type: string
+          description: 对象类型，通常为 chat.completion。
+        created:
+          type: integer
+          description: 响应创建时间戳（Unix 秒）。
+        model:
+          type: string
+          description: 实际使用的模型 ID。
+        choices:
+          type: array
+          description: 模型返回的候选结果列表。
+          items:
+            $ref: '#/components/schemas/ChatCompletionChoice'
+        usage:
+          $ref: '#/components/schemas/Usage'
+    MessageContentPart:
+      type: object
+      description: Messages 兼容协议使用的宽松内容片段结构。
+      properties:
+        type:
+          type: string
+          description: 内容片段类型，例如 text、image、tool_use、tool_result。
+        text:
+          type: string
+          description: 文本内容。
+        image_url:
+          type: object
+          description: OpenAI 风格的图片 URL 结构。
+          additionalProperties: true
+        source:
+          type: object
+          description: Anthropic 风格的媒体来源结构。
+          additionalProperties: true
+        id:
+          type: string
+          description: 内容块或工具调用的标识符。
+        name:
+          type: string
+          description: 工具、函数或内容块名称。
+        input:
+          type: object
+          description: 工具输入参数或其他结构化内容。
+          additionalProperties: true
+        content:
+          description: 某些协议会在内容片段内部嵌套的内容，例如 tool_result。
+          oneOf:
+            - type: string
+              description: 纯文本嵌套内容。
+            - type: array
+              description: 嵌套的结构化内容数组。
+              items:
+                type: object
+                additionalProperties: true
+      additionalProperties: true
+    MessagesRequestMessage:
+      type: object
+      description: Messages 兼容协议中的单条输入消息。
+      properties:
+        role:
+          type: string
+          description: 消息角色，不同厂商支持的角色名可能不同。
+        content:
+          description: 消息内容，可以是纯文本，也可以是厂商自定义的内容片段数组。
+          oneOf:
+            - type: string
+              description: 纯文本内容。
+            - type: array
+              description: 结构化内容片段数组。
+              items:
+                $ref: '#/components/schemas/MessageContentPart'
+      required:
+        - role
+        - content
+      additionalProperties: true
+    CreateMessagesRequest:
+      type: object
+      description: Messages 协议请求体。
+      properties:
+        model:
+          type: string
+          description: 要调用的模型 ID。
+        messages:
+          type: array
+          description: 输入消息列表。这里对内容片段保持宽松，以兼容不同厂商的协议扩展。
+          items:
+            $ref: '#/components/schemas/MessagesRequestMessage'
+        max_tokens:
+          type: integer
+          description: 最大输出 token 数。
+        stream:
+          type: boolean
+          description: 是否以流式方式返回响应。
+          default: false
+      required:
+        - model
+        - messages
+      additionalProperties: true
+    MessageResponse:
+      type: object
+      description: Messages 协议成功响应。
+      properties:
+        id:
+          type: string
+          description: 响应唯一 ID。
+        type:
+          type: string
+          description: 对象类型，通常为 message。
+        role:
+          type: string
+          description: 返回消息的角色，通常为 assistant。
+        model:
+          type: string
+          description: 实际使用的模型 ID。
+        content:
+          type: array
+          description: 返回的内容片段列表，可能包含文本、工具调用、引用或 reasoning 块。
+          items:
+            $ref: '#/components/schemas/MessageContentPart'
+        stop_reason:
+          type: string
+          description: 生成停止原因。
+        usage:
+          $ref: '#/components/schemas/Usage'
+      additionalProperties: true
+    ResponseInputTextPart:
+      type: object
+      description: Responses 协议的文本输入内容片段。
+      properties:
+        type:
+          type: string
+          description: 输入内容片段类型。
+          enum:
+            - input_text
+        text:
+          type: string
+          description: 文本输入值。
+      required:
+        - type
+        - text
+      additionalProperties: true
+    ResponseInputImagePart:
+      type: object
+      description: Responses 协议的图片输入内容片段。可添加多个 input_image 内容片段来发送多张图片。
+      properties:
+        type:
+          type: string
+          description: 输入内容片段类型。
+          enum:
+            - input_image
+        image_url:
+          type: string
+          description: '可公开访问的图片 URL 或图片 data URL。支持常见图片格式，例如 data:image/png;base64,...。'
+        detail:
+          type: string
+          description: 支持时用于控制图片理解的细节等级。
+          enum:
+            - auto
+            - low
+            - high
+      required:
+        - type
+        - image_url
+      additionalProperties: true
+    ResponseInputFilePart:
+      type: object
+      description: Responses 协议的文件输入内容片段。支持常见文档和文本格式，PDF 只是其中一种示例。
+      properties:
+        type:
+          type: string
+          description: 输入内容片段类型。
+          enum:
+            - input_file
+        file_url:
+          type: string
+          description: 文件输入内容片段使用的可公开访问文件 URL。支持常见文档和文本格式。
+        filename:
+          type: string
+          description: 与 file_data 内联文件上传一起使用的文件名。
+        file_data:
+          type: string
+          description: '包含 base64 编码文件内容的 data URL，例如 data:application/pdf;base64,... 或 data:text/plain;base64,...。'
+      required:
+        - type
+      anyOf:
+        - required:
+            - file_url
+        - required:
+            - filename
+            - file_data
+      additionalProperties: true
+    ResponseInputContentPart:
+      description: Responses 输入内容片段。支持的输入类型包括 input_text、input_image 和 input_file。
+      oneOf:
+        - $ref: '#/components/schemas/ResponseInputTextPart'
+        - $ref: '#/components/schemas/ResponseInputImagePart'
+        - $ref: '#/components/schemas/ResponseInputFilePart'
+    ResponseContentPart:
+      type: object
+      description: Responses 输出项中使用的宽松输出内容片段。
+      properties:
+        type:
+          type: string
+          description: 输出内容片段类型，例如 output_text 或 tool_result。
+        text:
+          type: string
+          description: 内容片段携带的文本值。
+        annotations:
+          type: array
+          description: 附加标注信息。
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+    ResponseInputItem:
+      type: object
+      description: Responses 协议中的结构化输入项。
+      properties:
+        type:
+          type: string
+          description: 输入项类型，例如 message。
+        role:
+          type: string
+          description: 输入项角色。
+        content:
+          description: 输入内容，可以是纯文本，也可以是结构化内容片段数组。
+          oneOf:
+            - type: string
+              description: 纯文本输入。
+            - type: array
+              description: 结构化内容片段数组。
+              items:
+                $ref: '#/components/schemas/ResponseInputContentPart'
+      additionalProperties: true
+    CreateResponseRequest:
+      type: object
+      description: Responses 协议请求体。
+      properties:
+        model:
+          type: string
+          description: 要调用的模型 ID。
+        input:
+          description: 输入内容，可以是纯文本，也可以是结构化输入数组。
+          oneOf:
+            - type: string
+              description: 纯文本输入。
+            - type: array
+              description: 结构化输入数组。
+              items:
+                $ref: '#/components/schemas/ResponseInputItem'
+        stream:
+          type: boolean
+          description: 是否以流式方式返回响应。
+          default: false
+      required:
+        - model
+        - input
+      additionalProperties: true
+    ResponseOutputItem:
+      type: object
+      description: Responses 输出数组中的单项。
+      properties:
+        id:
+          type: string
+          description: 输出项唯一 ID。
+        type:
+          type: string
+          description: 输出项类型，例如 message、tool_call。
+        role:
+          type: string
+          description: 输出项关联角色。
+        status:
+          type: string
+          description: 输出项处理状态。
+        content:
+          type: array
+          description: 结构化输出内容片段。
+          items:
+            $ref: '#/components/schemas/ResponseContentPart'
+      additionalProperties: true
+    ResponseObject:
+      type: object
+      description: Responses 协议成功响应。
+      properties:
+        id:
+          type: string
+          description: 响应唯一 ID。
+        object:
+          type: string
+          description: 对象类型，通常为 response。
+        model:
+          type: string
+          description: 实际使用的模型 ID。
+        status:
+          type: string
+          description: 响应处理状态，例如 completed、failed 或 incomplete。
+        created_at:
+          type: integer
+          description: 响应创建时间戳（Unix 秒）。
+        output_text:
+          type: string
+          description: 从 output 内容聚合出的便捷文本输出。
+        output:
+          type: array
+          description: 生成结果列表，可能包含消息、工具调用、reasoning 或其他结构化记录。
+          items:
+            $ref: '#/components/schemas/ResponseOutputItem'
+        error:
+          type:
+            - object
+            - 'null'
+          description: 响应生成失败时的错误信息。
+          additionalProperties: true
+        incomplete_details:
+          type:
+            - object
+            - 'null'
+          description: 响应未完成时的原因详情。
+          additionalProperties: true
+        usage:
+          $ref: '#/components/schemas/Usage'
+      additionalProperties: true
+    CreateEmbeddingRequest:
+      type: object
+      description: Embeddings 请求体。
+      properties:
+        model:
+          type: string
+          description: 要调用的模型 ID。
+        input:
+          description: 需要生成向量的输入文本，可以是一条或多条。
+          oneOf:
+            - type: string
+              description: 单条输入文本。
+            - type: array
+              description: 多条输入文本。
+              items:
+                type: string
+        encoding_format:
+          type: string
+          description: 返回向量的编码格式。
+          enum:
+            - float
+            - base64
+          default: float
+        dimensions:
+          type: integer
+          description: 指定输出向量维度，仅部分模型支持。
+      required:
+        - model
+        - input
+    EmbeddingDataItem:
+      type: object
+      description: 单条嵌入结果。
+      properties:
+        object:
+          type: string
+          description: 对象类型，通常为 embedding。
+        embedding:
+          description: 向量值，可能是浮点数组或 base64 字符串。
+          oneOf:
+            - type: array
+              items:
+                type: number
+            - type: string
+        index:
+          type: integer
+          description: 结果在输入数组中的序号。
+    EmbeddingResponse:
+      type: object
+      description: Embeddings 成功响应。
+      properties:
+        object:
+          type: string
+          description: 对象类型，通常为 list。
+        data:
+          type: array
+          description: 嵌入结果列表。
+          items:
+            $ref: '#/components/schemas/EmbeddingDataItem'
+        model:
+          type: string
+          description: 实际使用的模型 ID。
+        usage:
+          $ref: '#/components/schemas/Usage'
+    CreateImageGenerationRequest:
+      type: object
+      description: 图像生成请求体。
+      properties:
+        model:
+          type: string
+          description: 要调用的模型 ID。
+        prompt:
+          type: string
+          description: 图像生成提示词。
+        'n':
+          type: integer
+          description: 期望生成的图片数量。
+          default: 1
+        size:
+          type: string
+          description: 输出图片尺寸。
+          default: 1024x1024
+        quality:
+          type: string
+          description: 图像质量等级。
+          enum:
+            - standard
+            - hd
+          default: standard
+        response_format:
+          type: string
+          description: 图片返回格式。
+          enum:
+            - url
+            - b64_json
+          default: url
+      required:
+        - model
+        - prompt
+    CreateImageEditRequest:
+      type: object
+      description: 图像编辑请求体。
+      properties:
+        model:
+          type: string
+          description: 要调用的模型 ID。
+        image:
+          type: array
+          description: '要编辑的一张或多张输入图片文件。请求参数名为 image；使用原始 multipart/curl 上传多文件时，可重复发送 image[] 表单项。'
+          items:
+            type: string
+            format: binary
+        mask:
+          type: string
+          format: binary
+          description: 可选蒙版文件，用于指定可编辑区域。
+        prompt:
+          type: string
+          description: 图像编辑提示词。
+        'n':
+          type: integer
+          description: 期望生成的图片数量。
+          default: 1
+        size:
+          type: string
+          description: 输出图片尺寸。
+          default: 1024x1024
+        response_format:
+          type: string
+          description: 图片返回格式。
+          enum:
+            - url
+            - b64_json
+          default: url
+      required:
+        - model
+        - image
+        - prompt
+    ImageDataItem:
+      type: object
+      description: 单张生成图片的返回对象。
+      properties:
+        url:
+          type: string
+          description: 图片访问 URL，response_format=url 时返回。
+        b64_json:
+          type: string
+          description: Base64 编码的图片数据，response_format=b64_json 时返回。
+        revised_prompt:
+          type: string
+          description: 模型实际使用或修正后的提示词。
+    ImageUsage:
+      type: object
+      description: 图像生成的资源使用统计。
+      properties:
+        total_tokens:
+          type: integer
+          description: 总 token 数。
+        input_tokens:
+          type: integer
+          description: 输入 token 数。
+        output_tokens:
+          type: integer
+          description: 输出 token 数。
+        input_tokens_details:
+          type: object
+          description: 输入 token 使用明细。
+          properties:
+            text_tokens:
+              type: integer
+              description: 文本提示消耗的 token 数。
+            image_tokens:
+              type: integer
+              description: 图片输入消耗的 token 数。
+          additionalProperties: true
+    ImageResponse:
+      type: object
+      description: 图像生成或编辑成功响应。
+      properties:
+        created:
+          type: integer
+          description: 响应创建时间戳（Unix 秒）。
+        data:
+          type: array
+          description: 图片结果列表。
+          items:
+            $ref: '#/components/schemas/ImageDataItem'
+        background:
+          type: string
+          description: 生成图像的背景类型。
+        output_format:
+          type: string
+          description: 输出图片格式，例如 png。
+        quality:
+          type: string
+          description: 实际使用的图像质量等级。
+        size:
+          type: string
+          description: 实际返回的图像尺寸。
+        usage:
+          $ref: '#/components/schemas/ImageUsage'
+    CreateTranscriptionRequest:
+      type: object
+      description: 音频转录请求体。
+      properties:
+        model:
+          type: string
+          description: 要调用的模型 ID。
+        file:
+          type: string
+          format: binary
+          description: 待转录的音频文件。
+        language:
+          type: string
+          description: 音频语言代码，可选。
+        prompt:
+          type: string
+          description: 可选提示词，用于约束转录风格或术语。
+        response_format:
+          type: string
+          description: 转录结果返回格式。
+          enum:
+            - json
+            - text
+            - srt
+            - verbose_json
+            - vtt
+          default: json
+        temperature:
+          type: number
+          description: 采样温度。
+          default: 0
+        timestamp_granularities:
+          type: array
+          description: response_format 为 verbose_json 时返回的时间戳粒度。
+          items:
+            type: string
+            enum:
+              - word
+              - segment
+      required:
+        - model
+        - file
+    TranscriptionResponse:
+      type: object
+      description: JSON 格式的转录响应。
+      properties:
+        text:
+          type: string
+          description: 转录后的文本内容。
+    ErrorDetail:
+      type: object
+      description: 错误详情对象。
+      properties:
+        message:
+          type: string
+          description: 错误说明。
+        type:
+          type: string
+          description: 错误类型。
+        param:
+          description: 与错误相关的参数名。
+          type:
+            - string
+            - 'null'
+        code:
+          description: 错误码。
+          type:
+            - string
+            - 'null'
+    ErrorResponse:
+      type: object
+      description: 错误响应。
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorDetail'
+  securitySchemes:
+    APIKeyHeader:
+      type: http
+      scheme: bearer
+      description: 使用 Bearer 令牌进行认证，格式：'Bearer YOUR_SECRET_TOKEN'
+  responses:
+    ErrorResponse:
+      description: 错误响应
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

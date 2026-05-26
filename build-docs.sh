@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # 构建脚本：根据目标环境生成不同域名的文档
 # 使用方法：
@@ -7,6 +8,14 @@
 #   bash build-docs.sh global  # 只生成国际版本
 
 # 生成 bundled 文件的函数
+run_swagger_cli() {
+  if command -v swagger-cli >/dev/null 2>&1; then
+    swagger-cli "$@"
+  else
+    npx --yes @apidevtools/swagger-cli "$@"
+  fi
+}
+
 generate_bundled() {
   local env=$1
   local output_prefix=$2
@@ -41,16 +50,16 @@ generate_bundled() {
   for spec in "$temp_dir"/zh/openapi/*.yaml; do
     vendor=$(basename "$spec" .yaml)
     if [ "$vendor" != "_common" ]; then
-      swagger-cli bundle "$spec" -o docs/bundled/${output_prefix}zh/${vendor}.bundled.yaml -t yaml
-      swagger-cli validate docs/bundled/${output_prefix}zh/${vendor}.bundled.yaml
+      run_swagger_cli bundle "$spec" -o docs/bundled/${output_prefix}zh/${vendor}.bundled.yaml -t yaml
+      run_swagger_cli validate docs/bundled/${output_prefix}zh/${vendor}.bundled.yaml
     fi
   done
 
   for spec in "$temp_dir"/en/openapi/*.yaml; do
     vendor=$(basename "$spec" .yaml)
     if [ "$vendor" != "_common" ]; then
-      swagger-cli bundle "$spec" -o docs/bundled/${output_prefix}en/${vendor}.bundled.yaml -t yaml
-      swagger-cli validate docs/bundled/${output_prefix}en/${vendor}.bundled.yaml
+      run_swagger_cli bundle "$spec" -o docs/bundled/${output_prefix}en/${vendor}.bundled.yaml -t yaml
+      run_swagger_cli validate docs/bundled/${output_prefix}en/${vendor}.bundled.yaml
     fi
   done
   

@@ -53,13 +53,20 @@ components:
       properties:
         url:
           type: string
-          description: 可公开访问的图片 URL，或 base64 data URL。
+          description: 可公开访问的图片 URL 或图片 data URL。支持常见图片格式，示例中可使用 PNG。
+        detail:
+          type: string
+          description: 可选的图片理解细节等级。
+          enum:
+            - auto
+            - low
+            - high
       required:
         - url
 
     ChatMessageImagePart:
       type: object
-      description: 图片输入内容片段。
+      description: 图片输入内容片段。可添加多个 image_url 内容片段来发送多张图片。
       properties:
         type:
           type: string
@@ -90,7 +97,7 @@ components:
             - type: string
               description: 纯文本内容。
             - type: array
-              description: 多段内容数组，常用于多模态输入。
+              description: 多段结构化内容数组，常用于包含文本和一张或多张图片的多模态输入。
               items:
                 oneOf:
                   - $ref: '#/components/schemas/ChatMessageTextPart'
@@ -409,28 +416,92 @@ components:
           $ref: '#/components/schemas/Usage'
       additionalProperties: true
 
-    ResponseContentPart:
+    ResponseInputTextPart:
       type: object
-      description: Responses 协议输入输出中使用的宽松内容片段结构。
+      description: Responses 协议的文本输入内容片段。
       properties:
         type:
           type: string
-          description: 内容片段类型，例如 input_text、input_image、output_text、tool_result。
+          description: 输入内容片段类型。
+          enum:
+            - input_text
         text:
           type: string
-          description: 文本值。
+          description: 文本输入值。
+      required:
+        - type
+        - text
+      additionalProperties: true
+
+    ResponseInputImagePart:
+      type: object
+      description: Responses 协议的图片输入内容片段。可添加多个 input_image 内容片段来发送多张图片。
+      properties:
+        type:
+          type: string
+          description: 输入内容片段类型。
+          enum:
+            - input_image
         image_url:
           type: string
-          description: 图片输入使用的可公开访问 URL 或 data URL。
-        file_id:
-          type: string
-          description: 文件 ID。
-        file_url:
-          type: string
-          description: 文件 URL。
+          description: 可公开访问的图片 URL 或图片 data URL。支持常见图片格式，例如 data:image/png;base64,...。
         detail:
           type: string
-          description: 图片理解细节等级等扩展参数。
+          description: 支持时用于控制图片理解的细节等级。
+          enum:
+            - auto
+            - low
+            - high
+      required:
+        - type
+        - image_url
+      additionalProperties: true
+
+    ResponseInputFilePart:
+      type: object
+      description: Responses 协议的文件输入内容片段。支持常见文档和文本格式，PDF 只是其中一种示例。
+      properties:
+        type:
+          type: string
+          description: 输入内容片段类型。
+          enum:
+            - input_file
+        file_url:
+          type: string
+          description: 文件输入内容片段使用的可公开访问文件 URL。支持常见文档和文本格式。
+        filename:
+          type: string
+          description: 与 file_data 内联文件上传一起使用的文件名。
+        file_data:
+          type: string
+          description: 包含 base64 编码文件内容的 data URL，例如 data:application/pdf;base64,... 或 data:text/plain;base64,...。
+      required:
+        - type
+      anyOf:
+        - required:
+            - file_url
+        - required:
+            - filename
+            - file_data
+      additionalProperties: true
+
+    ResponseInputContentPart:
+      description: Responses 输入内容片段。支持的输入类型包括 input_text、input_image 和 input_file。
+      oneOf:
+        - $ref: '#/components/schemas/ResponseInputTextPart'
+        - $ref: '#/components/schemas/ResponseInputImagePart'
+        - $ref: '#/components/schemas/ResponseInputFilePart'
+
+    ResponseContentPart:
+      type: object
+      description: Responses 输出项中使用的宽松输出内容片段。
+      properties:
+        type:
+          type: string
+          description: 输出内容片段类型，例如 output_text 或 tool_result。
+        text:
+          type: string
+          description: 内容片段携带的文本值。
         annotations:
           type: array
           description: 附加标注信息。
@@ -457,7 +528,7 @@ components:
             - type: array
               description: 结构化内容片段数组。
               items:
-                $ref: '#/components/schemas/ResponseContentPart'
+                $ref: '#/components/schemas/ResponseInputContentPart'
       additionalProperties: true
 
     CreateResponseRequest:

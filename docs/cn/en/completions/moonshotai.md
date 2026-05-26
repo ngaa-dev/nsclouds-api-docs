@@ -1,3 +1,7 @@
+---
+hidden: true
+---
+
 # Moonshot AI - Text Completions
 
 ### 1. Overview
