@@ -2,6 +2,12 @@
 
 本文档说明当前仓库的 API 文档生成方式，以及新增厂家、更新模型、验证接口时应遵循的维护流程。
 
+## 过渡期仓库与 GitBook 协作
+
+当前个人 GitHub/GitBook 仍承担预览与调试用途，公司 GitHub 已存在，但公司 GitBook 尚未准备好。过渡期的 remote、预览发布、正式发布规划见：
+
+- `scripts/REPOSITORY_AND_GITBOOK_TRANSITION.md`
+
 ## 当前生成链路
 
 - 入口脚本：`build-docs.sh`
