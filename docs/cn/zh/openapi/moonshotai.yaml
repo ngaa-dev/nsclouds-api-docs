@@ -49,7 +49,7 @@ paths:
                     content: Hello!
                   temperature: 1
                   max_completion_tokens: 50
-                  n: 1
+                  "n": 1
                   stream: false
               streaming:
                 summary: 流式
@@ -170,7 +170,7 @@ paths:
                     - index: 0
                       message:
                         role: assistant
-                        content: 
+                        content:
                         tool_calls:
                         - id: call_123
                           type: function

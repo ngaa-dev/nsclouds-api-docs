@@ -10,11 +10,9 @@ DeepSeek 在当前环境中提供的对话生成能力。
 
 **模型列表：**
 
-* `deepseek-r1`
 * `deepseek-v3.2`
 * `deepseek-v4-flash`
 * `deepseek-v4-pro`
-* `volcengine/deepseek-v3-2-251201`
 
 
 ### 2. 接口详情

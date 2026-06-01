@@ -63,7 +63,7 @@ paths:
                 summary: Basic
                 description: A simple conversation example with system prompt and user message.
                 value:
-                  model: deepseek-r1
+                  model: deepseek-v3.2
                   messages:
                     - role: system
                       content: You are a helpful assistant.
@@ -77,7 +77,7 @@ paths:
                 summary: Streaming
                 description: 'Enable streaming response by setting stream: true.'
                 value:
-                  model: deepseek-r1
+                  model: deepseek-v3.2
                   messages:
                     - role: user
                       content: Hello!
@@ -86,7 +86,7 @@ paths:
                 summary: Image Input (Multimodal)
                 description: Use vision-enabled model to analyze images.
                 value:
-                  model: deepseek-r1
+                  model: deepseek-v3.2
                   messages:
                     - role: user
                       content:
@@ -100,7 +100,7 @@ paths:
                 summary: Function Calling
                 description: Define tools (functions) and let the model decide whether to call them.
                 value:
-                  model: deepseek-r1
+                  model: deepseek-v3.2
                   messages:
                     - role: user
                       content: What is the weather in Boston?
@@ -139,7 +139,7 @@ paths:
                     id: chatcmpl-cdc11700-f52c-99a3-866c-cfac2a0b254c
                     object: chat.completion
                     created: 1772859125
-                    model: deepseek-r1
+                    model: deepseek-v3.2
                     choices:
                       - index: 0
                         message:
@@ -157,7 +157,7 @@ paths:
                     id: chatcmpl-856cd72d-f840-92da-a0b3-65f0061ac378
                     object: chat.completion
                     created: 1772861532
-                    model: deepseek-r1
+                    model: deepseek-v3.2
                     choices:
                       - index: 0
                         message:
@@ -187,7 +187,7 @@ paths:
                     id: chatcmpl-7709ac0a-5dc2-9791-81ef-1364bf331761
                     object: chat.completion
                     created: 1772861551
-                    model: deepseek-r1
+                    model: deepseek-v3.2
                     choices:
                       - index: 0
                         message:
@@ -212,7 +212,7 @@ paths:
                 streaming-response:
                   summary: Streaming Response Example
                   description: Shows events sent sequentially during streaming chat process.
-                  value: "data: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-r1\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\",\"role\":\"assistant\"}}]}\ndata: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-r1\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"! How\"}}]}\ndata: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-r1\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" can I help\"}}]}\ndata: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-r1\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" you today\"}}]}\ndata: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-r1\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"? \U0001F60A\"}}]}\ndata: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-r1\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"delta\":{}}]}\ndata: [DONE]\n"
+                  value: "data: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\",\"role\":\"assistant\"}}]}\ndata: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"! How\"}}]}\ndata: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" can I help\"}}]}\ndata: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" you today\"}}]}\ndata: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"? \U0001F60A\"}}]}\ndata: {\"id\":\"chatcmpl-2e08cd46-ddf8-9aef-bce0-f94395447528\",\"object\":\"chat.completion.chunk\",\"created\":1772861378,\"model\":\"deepseek-v3.2\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"delta\":{}}]}\ndata: [DONE]\n"
         '400':
           $ref: '#/components/responses/ErrorResponse'
         '401':

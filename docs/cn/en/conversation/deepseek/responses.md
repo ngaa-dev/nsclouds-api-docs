@@ -11,7 +11,6 @@ This endpoint provides an OpenAI-compatible Responses path. Actual parameter sup
 **Supported models：**
 
 * `deepseek-v3.2`
-* `volcengine/deepseek-v3-2-251201`
 
 
 ### 2. API Details

@@ -15,6 +15,11 @@ tags:
   x-page-title: MiniMax
   x-page-icon: brain
   description: MiniMax's chat completions API
+- name: messages_minimax
+  x-parent: chat_completions
+  x-page-title: MiniMax
+  x-page-icon: brain
+  description: MiniMax's Messages protocol API
 paths:
   "/v1/chat/completions":
     post:
@@ -46,7 +51,7 @@ paths:
                     content: Hello!
                   temperature: 1
                   max_completion_tokens: 50
-                  n: 1
+                  "n": 1
                   stream: false
               streaming:
                 summary: Streaming
@@ -168,7 +173,7 @@ paths:
                     - index: 0
                       message:
                         role: assistant
-                        content: 
+                        content:
                         tool_calls:
                         - id: call_123
                           type: function
@@ -200,6 +205,58 @@ paths:
                     data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" you with?"}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
                     data: {"id":"chatcmpl-dfa65e7d-7c0e-9fe2-9fb6-88e76061dd4a","object":"chat.completion.chunk","created":1773225567,"model":"MiniMax-M2.5","choices":[{"finish_reason":"stop","index":0,"delta":{}}],"usage":{"completion_tokens":0,"prompt_tokens":0,"total_tokens":0}}
                     data: [DONE]
+        '400':
+          "$ref": "#/components/responses/ErrorResponse"
+        '401':
+          "$ref": "#/components/responses/ErrorResponse"
+        '429':
+          "$ref": "#/components/responses/ErrorResponse"
+  "/v1/messages":
+    post:
+      tags:
+      - messages_minimax
+      summary: Create Message
+      description: Provides an Anthropic Messages-compatible endpoint.
+      operationId: createMessage_minimax
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateMessagesRequest"
+            examples:
+              default:
+                summary: Basic
+                value:
+                  model: MiniMax-M2.5
+                  messages:
+                  - role: user
+                    content: Hello
+                  max_tokens: 128
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageResponse"
+              examples:
+                default:
+                  summary: Basic Response
+                  value:
+                    id: msg_123
+                    type: message
+                    role: assistant
+                    model: MiniMax-M2.5
+                    content:
+                    - type: text
+                      text: Hello! How can I help you today?
+                    stop_reason: end_turn
+                    usage:
+                      input_tokens: 12
+                      output_tokens: 9
         '400':
           "$ref": "#/components/responses/ErrorResponse"
         '401':

@@ -650,7 +650,7 @@ components:
         max_completion_tokens:
           type: integer
           description: Maximum number of output tokens the model may generate.
-        n:
+        "n":
           type: integer
           description: Number of candidate completions to generate.
           default: 1
@@ -1204,7 +1204,7 @@ components:
         prompt:
           type: string
           description: Prompt used to generate the image.
-        n:
+        "n":
           type: integer
           description: Number of images to generate.
           default: 1
@@ -1251,7 +1251,7 @@ components:
         prompt:
           type: string
           description: Prompt used to guide image editing.
-        n:
+        "n":
           type: integer
           description: Number of images to generate.
           default: 1

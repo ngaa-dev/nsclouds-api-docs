@@ -15,6 +15,11 @@ tags:
   x-page-title: DashScope
   x-page-icon: brain
   description: DashScope's chat completions API
+- name: messages_dashscope
+  x-parent: chat_completions
+  x-page-title: DashScope
+  x-page-icon: brain
+  description: DashScope's Messages protocol API
 - name: responses_dashscope
   x-parent: chat_completions
   x-page-title: DashScope
@@ -66,7 +71,7 @@ paths:
                     content: Hello!
                   temperature: 1
                   max_completion_tokens: 50
-                  n: 1
+                  "n": 1
                   stream: false
               streaming:
                 summary: Streaming
@@ -124,6 +129,58 @@ paths:
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.5-flash","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
                     data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.5-flash","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
                     data: [DONE]
+        '400':
+          "$ref": "#/components/responses/ErrorResponse"
+        '401':
+          "$ref": "#/components/responses/ErrorResponse"
+        '429':
+          "$ref": "#/components/responses/ErrorResponse"
+  "/v1/messages":
+    post:
+      tags:
+      - messages_dashscope
+      summary: Create Message
+      description: Provides an Anthropic Messages-compatible endpoint.
+      operationId: createMessage_dashscope
+      security:
+      - APIKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateMessagesRequest"
+            examples:
+              default:
+                summary: Basic
+                value:
+                  model: qwen3.6-flash
+                  messages:
+                  - role: user
+                    content: Hello
+                  max_tokens: 128
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/MessageResponse"
+              examples:
+                default:
+                  summary: Basic Response
+                  value:
+                    id: msg_123
+                    type: message
+                    role: assistant
+                    model: qwen3.6-flash
+                    content:
+                    - type: text
+                      text: Hello! How can I help you today?
+                    stop_reason: end_turn
+                    usage:
+                      input_tokens: 12
+                      output_tokens: 9
         '400':
           "$ref": "#/components/responses/ErrorResponse"
         '401':
@@ -236,7 +293,7 @@ paths:
                 value:
                   model: qwen-image-2.0
                   prompt: A cute cat sitting on a windowsill
-                  n: 1
+                  "n": 1
                   size: 1024x1024
               hd-quality:
                 summary: HD Quality
@@ -244,7 +301,7 @@ paths:
                 value:
                   model: qwen-image-2.0
                   prompt: A futuristic cityscape at sunset
-                  n: 1
+                  "n": 1
                   quality: hd
                   size: 1792x1024
               b64-json:
@@ -253,7 +310,7 @@ paths:
                 value:
                   model: qwen-image-2.0
                   prompt: A beautiful landscape
-                  n: 2
+                  "n": 2
                   size: 512x512
                   response_format: b64_json
       responses:
@@ -342,7 +399,7 @@ paths:
                   - "@person.png"
                   mask: "@mask.png"
                   prompt: Add a hat to the person
-                  n: 1
+                  "n": 1
                   size: 1024x1024
               no-mask:
                 summary: Without Mask
@@ -352,7 +409,7 @@ paths:
                   image:
                   - "@body-lotion.png"
                   prompt: Change the background to a beach
-                  n: 1
+                  "n": 1
                   size: 1024x1024
       responses:
         '200':

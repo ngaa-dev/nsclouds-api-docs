@@ -11,7 +11,6 @@ This endpoint provides an OpenAI-compatible Images path. Actual capabilities may
 **Supported models：**
 
 * `cogview-4-250304`
-* `zai/cogview-4-250304`
 
 
 ### 2. API Details

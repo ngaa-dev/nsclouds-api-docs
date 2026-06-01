@@ -11,7 +11,6 @@ DeepSeek 在当前环境中提供的 Responses 协议能力。
 **模型列表：**
 
 * `deepseek-v3.2`
-* `volcengine/deepseek-v3-2-251201`
 
 
 ### 2. 接口详情
