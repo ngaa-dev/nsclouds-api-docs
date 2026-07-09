@@ -1,4 +1,4 @@
-# Z.AI - Chat Completions
+# Chat Completions
 
 ### 1. 概述
 
@@ -15,10 +15,10 @@ Z.AI 在当前环境中提供的对话生成能力。
 * `glm-4.7`
 * `glm-5`
 * `glm-5.1`
-
+* `glm-5.2`
 
 ### 2. 接口详情
 
 {% openapi-operation spec="zai-zh-cn" path="/v1/chat/completions" method="post" %}
-[OpenAPI Z.AI](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/cn/zh/zai.bundled.yaml)
+[OpenAPI zai-zh-cn](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/csy-api-docs/docs/bundled/cn/zh/zai.bundled.yaml)
 {% endopenapi-operation %}
