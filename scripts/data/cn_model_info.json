@@ -7677,6 +7677,30 @@
       }
     },
     {
+      "model_name": "glm-5.2",
+      "litellm_params": {
+        "api_base": "https://open.bigmodel.cn/api/paas/v4",
+        "custom_llm_provider": "zai",
+        "model": "zai/glm-5.2"
+      },
+      "model_info": {
+        "key": "zai/glm-5.2",
+        "litellm_provider": "zai",
+        "mode": "chat",
+        "supported_modalities": [
+          "text"
+        ],
+        "supported_output_modalities": [
+          "text"
+        ],
+        "supported_endpoints": [
+          "/v1/chat/completions"
+        ],
+        "original_provider": "zai",
+        "source": "https://open.bigmodel.cn/pricing"
+      }
+    },
+    {
       "model_name": "glm-5.1",
       "litellm_params": {
         "api_base": "https://dashscope.aliyuncs.com/compatible-mode/v1",
