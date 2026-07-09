@@ -1,4 +1,4 @@
-# Z.AI - Chat Completions
+# Chat Completions
 
 ### 1. Overview
 
@@ -15,10 +15,10 @@ This endpoint provides an OpenAI-compatible Chat Completions path. Actual parame
 * `glm-4.7`
 * `glm-5`
 * `glm-5.1`
-
+* `glm-5.2`
 
 ### 2. API Details
 
 {% openapi-operation spec="zai-en-cn" path="/v1/chat/completions" method="post" %}
-[OpenAPI Z.AI](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/cn/en/zai.bundled.yaml)
+[OpenAPI zai-en-cn](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/csy-api-docs/docs/bundled/cn/en/zai.bundled.yaml)
 {% endopenapi-operation %}
