@@ -1,0 +1,21 @@
+# Volcengine - 图像编辑
+
+### 1. 概述
+
+Volcengine 在当前环境中提供的图像编辑能力。
+
+{% hint style="success" %}
+本接口提供与 OpenAI Images 兼容的请求路径。不同厂家和模型的实际能力可能不同。
+{% endhint %}
+
+**模型列表：**
+
+* `doubao-seedream-4-5-251128`
+* `doubao-seedream-5-0-260128`
+
+
+### 2. 接口详情
+
+{% openapi-operation spec="volcengine-zh-cn" path="/v1/images/edits" method="post" %}
+[OpenAPI Volcengine](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/cn/zh/volcengine.bundled.yaml)
+{% endopenapi-operation %}
