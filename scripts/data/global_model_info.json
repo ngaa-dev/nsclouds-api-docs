@@ -14386,6 +14386,123 @@
       }
     },
     {
+      "model_name": "gpt-image-2-oai",
+      "litellm_params": {
+        "api_base": "https://api.novita.ai/openai/v1",
+        "custom_llm_provider": "ppio",
+        "model": "ppio/gpt-image-2",
+        "weight": 1
+      },
+      "model_info": {
+        "key": "ppio/gpt-image-2-oai",
+        "litellm_provider": "ppio",
+        "mode": "image_generation",
+        "supported_endpoints": ["/v1/images/generations", "/v1/images/edits"],
+        "model_details": "GPT Image 2 with token billing; the legacy gpt-image-2 model retains per-image billing by pixel count and quality tier.",
+        "original_provider": "openai"
+      }
+    },
+    {
+      "model_name": "gpt-image-2.5-flare",
+      "litellm_params": {
+        "api_base": "https://api.novita.ai/openai",
+        "custom_llm_provider": "ppio",
+        "model": "ppio/gpt-image-2.5-flare",
+        "weight": 1
+      },
+      "model_info": {
+        "key": "ppio/gpt-image-2.5-flare",
+        "input_cost_per_token": 0.000005,
+        "cache_read_input_token_cost": 0.00000125,
+        "input_cost_per_image_token": 0.000008,
+        "cache_read_input_image_token_cost": 0.000002,
+        "output_cost_per_image_token": 0.00003,
+        "litellm_provider": "ppio",
+        "mode": "image_generation",
+        "supports_vision": true,
+        "supported_modalities": ["text", "image"],
+        "supported_output_modalities": ["image"],
+        "supported_endpoints": ["/v1/images/generations", "/v1/images/edits"],
+        "model_details": "GPT Image 2.5 Flare is the fast image generation model served by PPIO overseas.",
+        "original_provider": "openai"
+      }
+    },
+    {
+      "model_name": "gpt-image-2.5-flare-oai",
+      "litellm_params": {
+        "api_base": "https://api.novita.ai/openai",
+        "custom_llm_provider": "ppio",
+        "model": "ppio/gpt-image-2.5-flare-oai",
+        "weight": 1
+      },
+      "model_info": {
+        "key": "ppio/gpt-image-2.5-flare-oai",
+        "input_cost_per_token": 0.000005,
+        "cache_read_input_token_cost": 0.00000125,
+        "input_cost_per_image_token": 0.000008,
+        "cache_read_input_image_token_cost": 0.000002,
+        "output_cost_per_image_token": 0.00003,
+        "litellm_provider": "ppio",
+        "mode": "image_generation",
+        "supports_vision": true,
+        "supported_modalities": ["text", "image"],
+        "supported_output_modalities": ["image"],
+        "supported_endpoints": ["/v1/images/generations", "/v1/images/edits"],
+        "model_details": "GPT Image 2.5 Flare OAI is the fast image generation model served by PPIO overseas.",
+        "original_provider": "openai"
+      }
+    },
+    {
+      "model_name": "gpt-image-2.5-sunburst",
+      "litellm_params": {
+        "api_base": "https://api.novita.ai/openai",
+        "custom_llm_provider": "ppio",
+        "model": "ppio/gpt-image-2.5-sunburst",
+        "weight": 1
+      },
+      "model_info": {
+        "key": "ppio/gpt-image-2.5-sunburst",
+        "input_cost_per_token": 0.000005,
+        "cache_read_input_token_cost": 0.00000125,
+        "input_cost_per_image_token": 0.000008,
+        "cache_read_input_image_token_cost": 0.000002,
+        "output_cost_per_image_token": 0.00003,
+        "litellm_provider": "ppio",
+        "mode": "image_generation",
+        "supports_vision": true,
+        "supported_modalities": ["text", "image"],
+        "supported_output_modalities": ["image"],
+        "supported_endpoints": ["/v1/images/generations", "/v1/images/edits"],
+        "model_details": "GPT Image 2.5 Sunburst is the detailed image editing model served by PPIO overseas.",
+        "original_provider": "openai"
+      }
+    },
+    {
+      "model_name": "gpt-image-2.5-sunburst-oai",
+      "litellm_params": {
+        "api_base": "https://api.novita.ai/openai",
+        "custom_llm_provider": "ppio",
+        "model": "ppio/gpt-image-2.5-sunburst-oai",
+        "weight": 1
+      },
+      "model_info": {
+        "key": "ppio/gpt-image-2.5-sunburst-oai",
+        "input_cost_per_token": 0.000005,
+        "cache_read_input_token_cost": 0.00000125,
+        "input_cost_per_image_token": 0.000008,
+        "cache_read_input_image_token_cost": 0.000002,
+        "output_cost_per_image_token": 0.00003,
+        "litellm_provider": "ppio",
+        "mode": "image_generation",
+        "supports_vision": true,
+        "supported_modalities": ["text", "image"],
+        "supported_output_modalities": ["image"],
+        "supported_endpoints": ["/v1/images/generations", "/v1/images/edits"],
+        "model_details": "GPT Image 2.5 Sunburst OAI is the detailed image editing model served by PPIO overseas.",
+        "original_provider": "openai"
+      }
+    },
+    {
       "model_name": "qwen-image-2.0",
       "litellm_params": {
         "api_base": "https://dashscope.aliyuncs.com/compatible-mode/v1",

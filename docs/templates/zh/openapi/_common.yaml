@@ -1400,6 +1400,20 @@ components:
             image_tokens:
               type: integer
               description: 图片输入消耗的 token 数。
+            cached_tokens:
+              type: integer
+              description: 文本和图片模态的聚合缓存输入 token 数。
+          additionalProperties: true
+        output_tokens_details:
+          type: object
+          description: 图片输出 token 使用明细。
+          properties:
+            text_tokens:
+              type: integer
+              description: 文本输出 token 数。
+            image_tokens:
+              type: integer
+              description: 生成图片输出 token 数。
           additionalProperties: true
 
     ImageResponse:

@@ -487,11 +487,21 @@ paths:
           application/json:
             schema:
               type: object
-              description: gpt-image-2 图像生成请求体。
+              description: GPT Image 2 与 GPT Image 2.5 图像生成请求体。
               properties:
                 model:
                   type: string
-                  description: 要调用的模型 ID。
+                  description: 要调用的模型 ID。gpt-image-2-oai 按实际 usage Token 计费；原 gpt-image-2
+                    按图像张数计费，单张价格由像素规模和生成质量 quality 档位确定。 带 -oai 后缀的模型使用 OpenAI 直连资源，不带后缀使用
+                    AWS 资源。GPT Image 2.5 全系列（包括 gpt-image-2.5-sunburst-oai）仅支持 Token
+                    计费。
+                  enum:
+                  - gpt-image-2
+                  - gpt-image-2-oai
+                  - gpt-image-2.5-flare
+                  - gpt-image-2.5-flare-oai
+                  - gpt-image-2.5-sunburst
+                  - gpt-image-2.5-sunburst-oai
                 prompt:
                   type: string
                   maxLength: 32000
@@ -528,17 +538,21 @@ paths:
                   default: 1024x1024
                 quality:
                   type: string
-                  description: 请求的图像质量等级。
+                  description: 请求的图像质量等级。GPT Image 2.5 额外支持 xhigh、max 和 auto，默认使用
+                    auto。
                   enum:
                   - low
                   - medium
                   - high
-                  default: high
+                  - xhigh
+                  - max
+                  - auto
                 background:
                   type: string
                   description: 背景处理模式。
                   enum:
                   - opaque
+                  - transparent
                   - auto
                 moderation:
                   type: string
@@ -552,6 +566,7 @@ paths:
                   enum:
                   - png
                   - jpeg
+                  - webp
                   default: png
                 output_compression:
                   type: integer
@@ -604,7 +619,7 @@ paths:
             application/json:
               schema:
                 type: object
-                description: gpt-image-2 图像生成响应。
+                description: GPT Image 2 与 GPT Image 2.5 图像生成响应。
                 properties:
                   created:
                     type: integer
@@ -630,6 +645,9 @@ paths:
                         url:
                           type: string
                           description: 生成图片 URL。
+                        b64_json:
+                          type: string
+                          description: Base64 编码的生成图像。
                         revised_prompt:
                           type: string
                           description: 模型实际使用或修正后的提示词。
@@ -697,11 +715,21 @@ paths:
           multipart/form-data:
             schema:
               type: object
-              description: gpt-image-2 图像编辑请求体。
+              description: GPT Image 2 与 GPT Image 2.5 图像编辑请求体。
               properties:
                 model:
                   type: string
-                  description: 要调用的模型 ID。
+                  description: 要调用的模型 ID。gpt-image-2-oai 按实际 usage Token 计费；原 gpt-image-2
+                    按图像张数计费，单张价格由像素规模和生成质量 quality 档位确定。 带 -oai 后缀的模型使用 OpenAI 直连资源，不带后缀使用
+                    AWS 资源。GPT Image 2.5 全系列（包括 gpt-image-2.5-sunburst-oai）仅支持 Token
+                    计费。
+                  enum:
+                  - gpt-image-2
+                  - gpt-image-2-oai
+                  - gpt-image-2.5-flare
+                  - gpt-image-2.5-flare-oai
+                  - gpt-image-2.5-sunburst
+                  - gpt-image-2.5-sunburst-oai
                 image:
                   description: 输入的一张或多张图片，支持文件上传、URL、base64 字符串和 data URI。
                   anyOf:
@@ -757,17 +785,27 @@ paths:
                   default: 1024x1024
                 quality:
                   type: string
-                  description: 请求的图像质量等级。
+                  description: 请求的图像质量等级。GPT Image 2.5 额外支持 xhigh、max 和 auto，默认使用
+                    auto。
                   enum:
                   - low
                   - medium
                   - high
-                  default: high
+                  - xhigh
+                  - max
+                  - auto
                 background:
                   type: string
                   description: 背景处理模式。
                   enum:
                   - opaque
+                  - transparent
+                  - auto
+                moderation:
+                  type: string
+                  description: GPT Image 2.5 图像编辑的内容审核强度。
+                  enum:
+                  - low
                   - auto
                 output_format:
                   type: string
@@ -775,6 +813,7 @@ paths:
                   enum:
                   - png
                   - jpeg
+                  - webp
                   default: png
               required:
               - model
@@ -820,7 +859,7 @@ paths:
             application/json:
               schema:
                 type: object
-                description: gpt-image-2 图像编辑响应。
+                description: GPT Image 2 与 GPT Image 2.5 图像编辑响应。
                 properties:
                   created:
                     type: integer
@@ -846,6 +885,9 @@ paths:
                         url:
                           type: string
                           description: 编辑图片 URL。
+                        b64_json:
+                          type: string
+                          description: Base64 编码的编辑图像。
                         revised_prompt:
                           type: string
                           description: 模型实际使用或修正后的提示词。

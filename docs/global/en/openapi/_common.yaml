@@ -1306,6 +1306,20 @@ components:
             image_tokens:
               type: integer
               description: Input tokens attributed to images.
+            cached_tokens:
+              type: integer
+              description: Cached input tokens across text and image modalities.
+          additionalProperties: true
+        output_tokens_details:
+          type: object
+          description: Optional breakdown of image output token usage.
+          properties:
+            text_tokens:
+              type: integer
+              description: Output tokens attributed to text.
+            image_tokens:
+              type: integer
+              description: Output tokens attributed to generated images.
           additionalProperties: true
     ImageResponse:
       type: object

@@ -496,11 +496,18 @@ paths:
           application/json:
             schema:
               type: object
-              description: gpt-image-2 image generation request body.
+              description: GPT Image 2 and GPT Image 2.5 image generation request body.
               properties:
                 model:
                   type: string
-                  description: Model ID to invoke.
+                  description: 'Model ID to invoke. gpt-image-2-oai is billed by actual usage tokens; legacy gpt-image-2 is billed per image, with the unit price determined by pixel count and quality tier. Models with the -oai suffix use direct OpenAI resources; models without it use AWS resources. All GPT Image 2.5 variants, including gpt-image-2.5-sunburst-oai, support token billing only.'
+                  enum:
+                    - gpt-image-2
+                    - gpt-image-2-oai
+                    - gpt-image-2.5-flare
+                    - gpt-image-2.5-flare-oai
+                    - gpt-image-2.5-sunburst
+                    - gpt-image-2.5-sunburst-oai
                 prompt:
                   type: string
                   maxLength: 32000
@@ -537,17 +544,20 @@ paths:
                   default: 1024x1024
                 quality:
                   type: string
-                  description: Requested image quality level.
+                  description: 'Requested image quality. GPT Image 2.5 also supports xhigh, max, and auto, with auto as its default.'
                   enum:
                     - low
                     - medium
                     - high
-                  default: high
+                    - xhigh
+                    - max
+                    - auto
                 background:
                   type: string
                   description: Background handling mode.
                   enum:
                     - opaque
+                    - transparent
                     - auto
                 moderation:
                   type: string
@@ -561,6 +571,7 @@ paths:
                   enum:
                     - png
                     - jpeg
+                    - webp
                   default: png
                 output_compression:
                   type: integer
@@ -613,7 +624,7 @@ paths:
             application/json:
               schema:
                 type: object
-                description: gpt-image-2 image generation response.
+                description: GPT Image 2 and GPT Image 2.5 image generation response.
                 properties:
                   created:
                     type: integer
@@ -639,6 +650,9 @@ paths:
                         url:
                           type: string
                           description: Generated image URL.
+                        b64_json:
+                          type: string
+                          description: Base64-encoded generated image.
                         revised_prompt:
                           type: string
                           description: Prompt actually used or revised by the model.
@@ -704,11 +718,18 @@ paths:
           multipart/form-data:
             schema:
               type: object
-              description: gpt-image-2 image editing request body.
+              description: GPT Image 2 and GPT Image 2.5 image editing request body.
               properties:
                 model:
                   type: string
-                  description: Model ID to invoke.
+                  description: 'Model ID to invoke. gpt-image-2-oai is billed by actual usage tokens; legacy gpt-image-2 is billed per image, with the unit price determined by pixel count and quality tier. Models with the -oai suffix use direct OpenAI resources; models without it use AWS resources. All GPT Image 2.5 variants, including gpt-image-2.5-sunburst-oai, support token billing only.'
+                  enum:
+                    - gpt-image-2
+                    - gpt-image-2-oai
+                    - gpt-image-2.5-flare
+                    - gpt-image-2.5-flare-oai
+                    - gpt-image-2.5-sunburst
+                    - gpt-image-2.5-sunburst-oai
                 image:
                   description: 'Input image or images. Supports file uploads, URLs, base64 strings, and data URIs.'
                   anyOf:
@@ -764,17 +785,26 @@ paths:
                   default: 1024x1024
                 quality:
                   type: string
-                  description: Requested image quality level.
+                  description: 'Requested image quality. GPT Image 2.5 also supports xhigh, max, and auto, with auto as its default.'
                   enum:
                     - low
                     - medium
                     - high
-                  default: high
+                    - xhigh
+                    - max
+                    - auto
                 background:
                   type: string
                   description: Background handling mode.
                   enum:
                     - opaque
+                    - transparent
+                    - auto
+                moderation:
+                  type: string
+                  description: Moderation strictness for GPT Image 2.5 image editing.
+                  enum:
+                    - low
                     - auto
                 output_format:
                   type: string
@@ -782,6 +812,7 @@ paths:
                   enum:
                     - png
                     - jpeg
+                    - webp
                   default: png
               required:
                 - model
@@ -827,7 +858,7 @@ paths:
             application/json:
               schema:
                 type: object
-                description: gpt-image-2 image edit response.
+                description: GPT Image 2 and GPT Image 2.5 image edit response.
                 properties:
                   created:
                     type: integer
@@ -853,6 +884,9 @@ paths:
                         url:
                           type: string
                           description: Edited image URL.
+                        b64_json:
+                          type: string
+                          description: Base64-encoded edited image.
                         revised_prompt:
                           type: string
                           description: Prompt actually used or revised by the model.
@@ -2123,6 +2157,20 @@ components:
             image_tokens:
               type: integer
               description: Input tokens attributed to images.
+            cached_tokens:
+              type: integer
+              description: Cached input tokens across text and image modalities.
+          additionalProperties: true
+        output_tokens_details:
+          type: object
+          description: Optional breakdown of image output token usage.
+          properties:
+            text_tokens:
+              type: integer
+              description: Output tokens attributed to text.
+            image_tokens:
+              type: integer
+              description: Output tokens attributed to generated images.
           additionalProperties: true
     ImageResponse:
       type: object
