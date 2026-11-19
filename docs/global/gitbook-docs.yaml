@@ -1,0 +1,17 @@
+$schema: https://api.gitbook.com/gitbook-docs.yaml
+site:
+  title: ngaa.com.en
+  structure:
+    - type: space
+      key: space-1
+      title: en
+      path: documentation
+      default: true
+      content:
+        directory: ./documentation
+    - type: space
+      key: space-2
+      title: cn
+      path: en
+      content:
+        directory: ./documentation
