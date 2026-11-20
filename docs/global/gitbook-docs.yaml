@@ -8,10 +8,10 @@ site:
       path: documentation
       default: true
       content:
-        directory: ./documentation
+        directory: ./docs/cn/en
     - type: space
       key: space-2
       title: cn
       path: en
       content:
-        directory: ./documentation
+        directory: ./docs/cn/en
