@@ -5,7 +5,7 @@ site:
     - type: space
       key: space-1
       title: English
-      path: documentation
+      path: api-reference-en
       default: true
       content:
         directory: ./docs/global/en
@@ -13,7 +13,7 @@ site:
     - type: space
       key: space-2
       title: 中文
-      path: en
+      path: api-reference-cn
       content:
         directory: ./docs/global/zh
         language: zh
