@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import subprocess
 from collections import defaultdict
 from dataclasses import dataclass
@@ -332,10 +331,6 @@ def success_hint(text: str) -> str:
     return f'{{% hint style="success" %}}\n{text}\n{{% endhint %}}\n'
 
 
-def hidden_frontmatter(content: str) -> str:
-    return f"---\nhidden: true\n---\n\n{content}"
-
-
 def capability_title(capability: str, lang: str) -> str:
     cfg = LANG_CONFIG[lang]
     return {
@@ -347,15 +342,6 @@ def capability_title(capability: str, lang: str) -> str:
         "image_generations": cfg["image_gen_root"],
         "image_edits": cfg["image_edit_root"],
         "audio_transcriptions": cfg["audio_root"],
-    }[capability]
-
-
-def capability_filename(capability: str) -> str:
-    return {
-        "chat": "chat-completions.md",
-        "messages": "messages.md",
-        "responses": "responses.md",
-        "gemini": "gemini-native.md",
     }[capability]
 
 
@@ -643,75 +629,6 @@ def build_vendor_landing(lang: str, vendor: str, capabilities: list[str]) -> str
     return f"{title}\n\n{capability_lines}\n"
 
 
-def category_vendor_target(category_key: str, vendor: str) -> str:
-    if category_key == "chat":
-        return f"conversation/{chat_vendor_summary_target(vendor)}"
-    if category_key == "completions":
-        return f"completions/{vendor}.md"
-    if category_key == "image_generations":
-        return f"image-generations/{vendor}.md"
-    if category_key == "image_edits":
-        return f"image-edits/{vendor}.md"
-    if category_key == "audio_transcriptions":
-        return f"audio-transcriptions/{vendor}.md"
-    return f"{vendor}.md"
-
-
-def category_landing_filename(category_key: str) -> str:
-    return {
-        "chat": "conversation.md",
-        "completions": "completions.md",
-        "image_generations": "image-generations.md",
-        "image_edits": "image-edits.md",
-        "audio_transcriptions": "audio-transcriptions.md",
-    }[category_key]
-
-
-def category_summary_target(category_key: str) -> str:
-    return {
-        "chat": "conversation/README.md",
-        "completions": "completions/README.md",
-        "image_generations": "image-generations/README.md",
-        "image_edits": "image-edits/README.md",
-        "audio_transcriptions": "audio-transcriptions/README.md",
-    }[category_key]
-
-
-def build_category_landing(lang: str, category_key: str, vendors: list[str]) -> str:
-    cfg = LANG_CONFIG[lang]
-    title_map = {
-        "chat": cfg["chat_root"],
-        "completions": cfg["completions_root"],
-        "image_generations": cfg["image_gen_root"],
-        "image_edits": cfg["image_edit_root"],
-        "audio_transcriptions": cfg["audio_root"],
-    }
-    vendor_lines = (
-        "\n".join(f"- [{vendor_name(vendor)}]({category_vendor_target(category_key, vendor)})" for vendor in vendors)
-        if vendors
-        else cfg["none"]
-    )
-    return f"# {title_map[category_key]}\n\n{vendor_lines}\n"
-
-
-def build_chat_directory_summary(lang: str, vendors: list[str]) -> str:
-    cfg = LANG_CONFIG[lang]
-    vendor_lines = "\n".join(f"- [{vendor_name(vendor)}]({chat_vendor_summary_target(vendor)})" for vendor in vendors) if vendors else cfg["none"]
-    return f"# {cfg['chat_root']}\n\n{vendor_lines}\n"
-
-
-def build_category_directory_summary(lang: str, category_key: str, vendors: list[str]) -> str:
-    cfg = LANG_CONFIG[lang]
-    title_map = {
-        "completions": cfg["completions_root"],
-        "image_generations": cfg["image_gen_root"],
-        "image_edits": cfg["image_edit_root"],
-        "audio_transcriptions": cfg["audio_root"],
-    }
-    vendor_lines = "\n".join(f"- [{vendor_name(vendor)}]({vendor}.md)" for vendor in vendors) if vendors else cfg["none"]
-    return f"# {title_map[category_key]}\n\n{vendor_lines}\n"
-
-
 def render_env(env: str) -> None:
     env_index = build_env_index(env)
     for lang in LANGS:
@@ -751,22 +668,6 @@ def render_env(env: str) -> None:
             stale_landing = base / landing_file
             if stale_landing.exists():
                 stale_landing.unlink()
-
-        write_text(base / "conversation" / "README.md", build_chat_directory_summary(lang, env_index["chat_vendors"]))
-        if SHOW_TEXT_COMPLETIONS:
-            write_text(base / "completions" / "README.md", build_category_directory_summary(lang, "completions", env_index["completion_vendors"]))
-        write_text(
-            base / "image-generations" / "README.md",
-            build_category_directory_summary(lang, "image_generations", env_index["image_gen_vendors"]),
-        )
-        write_text(
-            base / "image-edits" / "README.md",
-            build_category_directory_summary(lang, "image_edits", env_index["image_edit_vendors"]),
-        )
-        write_text(
-            base / "audio-transcriptions" / "README.md",
-            build_category_directory_summary(lang, "audio_transcriptions", env_index["audio_vendors"]),
-        )
 
         summary_lines = [
             cfg["summary_title"],

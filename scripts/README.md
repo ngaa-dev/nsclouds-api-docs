@@ -2,11 +2,15 @@
 
 本文档说明当前仓库的 API 文档生成方式，以及新增厂家、更新模型、验证接口时应遵循的维护流程。
 
-## 过渡期仓库与 GitBook 协作
+## 仓库与站点同步
 
-当前个人 GitHub 继续作为文档内容源，GitBook space 暂时继续使用已共享出来的个人 GitBook。过渡期的 remote、发布、同步规划见：
-
-- `scripts/REPOSITORY_AND_GITBOOK_TRANSITION.md`
+- 当前发布源：个人 GitHub `liujia-hbu/nsclouds-api-docs` 的 `main` 分支。
+- 公司仓库 `ngaa-dev/nsclouds-api-docs` 保留协作历史；需要同步公司更新时，先对比提交再合并到个人仓库。
+- 国内站 `aillm.nsclouds.com` 和国际站 `aillm.nscloud.ai` 分别通过站点级 Git Sync 读取各自环境目录，推送 `main` 后自动同步页面和导航。
+- GitBook 首次导入以 GitHub → GitBook 为方向；后续 GitBook 编辑也可能写回仓库，因此开始修改前先拉取远程更新。
+- OpenAPI spec 的发布另走下面的同步脚本；仅调整导航无需重新导入 OpenAPI。
+- 若以后切换发布仓库，需一起核对 GitBook GitHub App 授权、Git Sync 的仓库/分支/目录以及 OpenAPI raw URL，不能只改 Git remote。
+- 接口验证通过环境变量传入密钥；已验证的适配限制保留在正式接口说明中，不长期维护临时测试记录。
 
 ## 当前生成链路
 
@@ -17,7 +21,7 @@
   - 国内：`scripts/data/cn_model_info.json`
   - 国际：`scripts/data/global_model_info.json`
 
-构建时会生成两类产物：
+构建时会生成三类产物：
 
 - 页面文档：`docs/{cn,global}/{zh,en}/`
 - GitBook 导入用 OpenAPI：`docs/{cn,global}/{zh,en}/openapi/`
@@ -25,7 +29,7 @@
 
 ## 维护原则
 
-- 不要手工维护 `docs/cn/`、`docs/global/`、`docs/bundled/` 下的生成结果，这些都应通过脚本重建。
+- `docs/{cn,global}/{en,zh}/` 和 `docs/bundled/` 是生成结果，应通过脚本重建；两个环境根目录下的 `gitbook-docs.yaml` 是手工维护的站点配置。
 - 左侧导航、厂家显隐、能力显隐，统一由 `scripts/data/global_model_info.json` / `scripts/data/cn_model_info.json` 决定。
 - 公开能力必须按 `model_info.supported_endpoints` 判定，不按 `mode` 单独猜测。
 - `Text Completions` 当前通过生成脚本开关隐藏；如需恢复，再让其跟随 `/v1/chat/completions` 展示。
@@ -40,7 +44,8 @@
 - 分组下直接列出厂家，对话厂家的接口作为子页面，不再增加可点击的分类父页面。
 - 中英文采用相同英文目录：`conversation`、`image-generations`、`image-edits`、`audio-transcriptions`。
 - 厂家目录使用内部标识，例如 `moonshotai`、`zai`；导航显示名称仍为 Moonshot AI、Z.AI。
-- 页面入口使用实际存在的 `README.md`，仅环境/语言根目录使用 `SUMMARY.md` 定义导航。
+- 厂家页面入口使用实际存在的 `README.md`，仅环境/语言根目录使用 `SUMMARY.md` 定义导航；分组标题没有对应分类入口页。
+- `docs/templates/{en,zh}/README.md` 是首页模板，`docs/templates/{en,zh}/openapi/` 是协议模板。接口 Markdown 直接由生成器创建，不再保留旧接口页面模板。
 - 导航由 `scripts/generate_env_docs.py` 生成。不要在 GitBook 中另建拼音或重复英文路径；构建会清理旧的拼音目录和 `conversation-apis`。
 
 ## GitBook OpenAPI 同步
@@ -48,7 +53,7 @@
 当前页面里的：
 
 ```md
-{% openapi-operation spec="dashscope-en-global" path="/v1/completions" method="post" %}
+{% openapi-operation spec="dashscope-en-global" path="/v1/chat/completions" method="post" %}
 ```
 
 要求 GitBook 组织内已经存在对应的 OpenAPI spec slug。单纯在 Markdown 里写 raw GitHub URL，不会自动完成 GitBook 侧导入。
@@ -183,7 +188,7 @@ bash build-docs.sh global
 至少检查以下内容：
 
 - `docs/{env}/{lang}/SUMMARY.md` 是否符合预期导航
-- `docs/{env}/{lang}/chat-completion/` 下厂家与能力是否正确
+- `docs/{env}/{lang}/conversation/` 下厂家与能力是否正确
 - `docs/{env}/{lang}/openapi/*.yaml` 是否包含正确 path、tags、examples
 - `docs/bundled/{env}/{lang}/*.bundled.yaml` 是否生成成功
 

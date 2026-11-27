@@ -98,13 +98,9 @@ generate_docs() {
   
   echo "Generating docs for ${env} environment..."
   
-  # 复制模板并替换占位符
-  if [ -d "docs/templates/zh" ]; then
-    cp -r docs/templates/zh/* docs/${env}/zh/
-  fi
-  if [ -d "docs/templates/en" ]; then
-    cp -r docs/templates/en/* docs/${env}/en/
-  fi
+  # 首页来自模板；导航和接口页面由生成器创建，OpenAPI 由 Ruby 脚本生成。
+  cp docs/templates/zh/README.md "docs/${env}/zh/README.md"
+  cp docs/templates/en/README.md "docs/${env}/en/README.md"
   
   # 替换占位符
   while IFS= read -r -d '' file; do
