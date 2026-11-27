@@ -16,5 +16,5 @@ This endpoint provides an OpenAI-compatible Audio Transcriptions path. Actual ca
 ### 2. API Details
 
 {% openapi-operation spec="zai-en-global" path="/v1/audio/transcriptions" method="post" %}
-[OpenAPI Z.AI](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/en/zai.bundled.yaml)
+[OpenAPI Z.AI](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/global/en/zai.bundled.yaml)
 {% endopenapi-operation %}

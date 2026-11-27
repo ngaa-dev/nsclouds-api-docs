@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLED_ROOT = ROOT / "docs" / "bundled"
-DEFAULT_RAW_BASE = "https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled"
+DEFAULT_RAW_BASE = "https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled"
 API_BASE = "https://api.gitbook.com/v1"
 
 

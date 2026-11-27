@@ -17,5 +17,5 @@ This endpoint provides an Anthropic Messages-compatible path. Actual behavior de
 ### 2. API Details
 
 {% openapi-operation spec="deepseek-en-cn" path="/v1/messages" method="post" %}
-[OpenAPI DeepSeek](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/cn/en/deepseek.bundled.yaml)
+[OpenAPI DeepSeek](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/cn/en/deepseek.bundled.yaml)
 {% endopenapi-operation %}

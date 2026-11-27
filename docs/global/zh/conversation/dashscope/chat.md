@@ -21,5 +21,5 @@ DashScope 在当前环境中提供的对话生成能力。
 ### 2. 接口详情
 
 {% openapi-operation spec="dashscope-zh-global" path="/v1/chat/completions" method="post" %}
-[OpenAPI DashScope](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/zh/dashscope.bundled.yaml)
+[OpenAPI DashScope](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/global/zh/dashscope.bundled.yaml)
 {% endopenapi-operation %}

@@ -4,9 +4,9 @@
 
 ## 仓库与站点同步
 
-- 当前发布源：个人 GitHub `liujia-hbu/nsclouds-api-docs` 的 `main` 分支。
-- 公司仓库 `ngaa-dev/nsclouds-api-docs` 保留协作历史；需要同步公司更新时，先对比提交再合并到个人仓库。
-- 国内站 `aillm.nsclouds.com` 和国际站 `aillm.nscloud.ai` 分别通过站点级 Git Sync 读取各自环境目录，推送 `main` 后自动同步页面和导航。
+- 正式发布源：公司 GitHub `ngaa-dev/nsclouds-api-docs` 的 `main` 分支。
+- 个人仓库仅作为备份；同步备份前先比较提交，避免覆盖双方更新。
+- 国内站 `aillm.nsclouds.com` 和国际站 `aillm.nscloud.ai` 分别通过站点级 Git Sync 读取各自环境目录；迁移时将两个站点都绑定到公司仓库的 `main`，绑定完成后推送该分支自动同步页面和导航。
 - GitBook 首次导入以 GitHub → GitBook 为方向；后续 GitBook 编辑也可能写回仓库，因此开始修改前先拉取远程更新。
 - OpenAPI spec 的发布另走下面的同步脚本；仅调整导航无需重新导入 OpenAPI。
 - 若以后切换发布仓库，需一起核对 GitBook GitHub App 授权、Git Sync 的仓库/分支/目录以及 OpenAPI raw URL，不能只改 Git remote。
@@ -81,8 +81,8 @@
 
 - `GITBOOK_RAW_BASE`
   - 默认值：
-    - `https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled`
-  - 如果后续仓库地址或分支变了，可以覆盖这个值
+    - `https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled`
+  - 如果后续仓库地址或分支变了，可以覆盖这个值；若本机已设置此环境变量，需确认它未继续指向旧仓库
 
 ### 常用命令
 
@@ -92,13 +92,13 @@
 bash build-docs.sh
 ```
 
-提交本地更新，并先推送到个人 GitHub。GitBook OpenAPI 会从个人 GitHub raw URL 拉取文件，因此同步前远端必须已有最新 `docs/bundled`：
+提交本地更新，并先推送到公司 GitHub。GitBook OpenAPI 会从公司 GitHub raw URL 拉取文件，因此同步前远端必须已有最新 `docs/bundled`。下面使用明确的公司仓库地址，避免本地 `origin` 仍指向个人仓库时推错：
 
 ```bash
-git push origin main
+git push git@github.com:ngaa-dev/nsclouds-api-docs.git main
 ```
 
-个人 GitHub 推送完成后，先做 dry-run 看将要同步哪些 spec：
+公司 GitHub 推送完成后，先做 dry-run 看将要同步哪些 spec：
 
 ```bash
 export GITBOOK_TOKEN=...
@@ -126,9 +126,9 @@ python3 scripts/sync_gitbook_openapi.py --env global --lang en --vendor dashscop
 
 1. 更新 `scripts/data/*.json`
 2. 运行 `bash build-docs.sh`
-3. 提交本地更新，并推送到个人 GitHub
+3. 提交本地更新，并推送到公司 GitHub
 4. 运行 `python3 scripts/sync_gitbook_openapi.py --dry-run`
-5. 确认 dry-run URL 指向 `liujia-hbu/nsclouds-api-docs` 后，运行 `python3 scripts/sync_gitbook_openapi.py --wait`
+5. 确认 dry-run URL 指向 `ngaa-dev/nsclouds-api-docs` 后，运行 `python3 scripts/sync_gitbook_openapi.py --wait`
 
 这样就不需要再去 GitBook 页面里逐个导入 `dashscope-en-global`、`openai-zh-global` 之类的 spec。
 

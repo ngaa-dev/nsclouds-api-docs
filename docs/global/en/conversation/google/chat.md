@@ -18,5 +18,5 @@ This endpoint provides an OpenAI-compatible Chat Completions path. Actual parame
 ### 2. API Details
 
 {% openapi-operation spec="google-en-global" path="/v1/chat/completions" method="post" %}
-[OpenAPI Google](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/en/google.bundled.yaml)
+[OpenAPI Google](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/global/en/google.bundled.yaml)
 {% endopenapi-operation %}

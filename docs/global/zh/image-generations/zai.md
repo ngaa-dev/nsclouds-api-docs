@@ -16,5 +16,5 @@ Z.AI 在当前环境中提供的图像生成能力。
 ### 2. 接口详情
 
 {% openapi-operation spec="zai-zh-global" path="/v1/images/generations" method="post" %}
-[OpenAPI Z.AI](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/zh/zai.bundled.yaml)
+[OpenAPI Z.AI](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/global/zh/zai.bundled.yaml)
 {% endopenapi-operation %}

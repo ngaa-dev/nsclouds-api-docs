@@ -17,5 +17,5 @@ This endpoint provides an OpenAI-compatible Responses path. Actual parameter sup
 ### 2. API Details
 
 {% openapi-operation spec="volcengine-en-cn" path="/v1/responses" method="post" %}
-[OpenAPI Volcengine](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/cn/en/volcengine.bundled.yaml)
+[OpenAPI Volcengine](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/cn/en/volcengine.bundled.yaml)
 {% endopenapi-operation %}

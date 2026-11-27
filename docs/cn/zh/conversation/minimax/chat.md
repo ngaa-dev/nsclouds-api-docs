@@ -17,5 +17,5 @@ MiniMax 在当前环境中提供的对话生成能力。
 ### 2. 接口详情
 
 {% openapi-operation spec="minimax-zh-cn" path="/v1/chat/completions" method="post" %}
-[OpenAPI MiniMax](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/cn/zh/minimax.bundled.yaml)
+[OpenAPI MiniMax](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/cn/zh/minimax.bundled.yaml)
 {% endopenapi-operation %}

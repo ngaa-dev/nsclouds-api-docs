@@ -23,5 +23,5 @@ This endpoint provides an OpenAI-compatible Chat Completions path. Actual parame
 ### 2. API Details
 
 {% openapi-operation spec="anthropic-en-global" path="/v1/chat/completions" method="post" %}
-[OpenAPI Anthropic](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/en/anthropic.bundled.yaml)
+[OpenAPI Anthropic](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/global/en/anthropic.bundled.yaml)
 {% endopenapi-operation %}

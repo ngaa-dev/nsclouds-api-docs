@@ -16,5 +16,5 @@ xAI 在当前环境中提供的对话生成能力。
 ### 2. 接口详情
 
 {% openapi-operation spec="xai-zh-global" path="/v1/chat/completions" method="post" %}
-[OpenAPI xAI](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/zh/xai.bundled.yaml)
+[OpenAPI xAI](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/global/zh/xai.bundled.yaml)
 {% endopenapi-operation %}

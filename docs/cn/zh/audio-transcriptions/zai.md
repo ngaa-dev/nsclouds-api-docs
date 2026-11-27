@@ -16,5 +16,5 @@ Z.AI 在当前环境中提供的音频转写能力。
 ### 2. 接口详情
 
 {% openapi-operation spec="zai-zh-cn" path="/v1/audio/transcriptions" method="post" %}
-[OpenAPI Z.AI](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/cn/zh/zai.bundled.yaml)
+[OpenAPI Z.AI](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/cn/zh/zai.bundled.yaml)
 {% endopenapi-operation %}

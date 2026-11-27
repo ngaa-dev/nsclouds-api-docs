@@ -17,5 +17,5 @@ This endpoint provides an OpenAI-compatible Images path. Actual capabilities may
 ### 2. API Details
 
 {% openapi-operation spec="dashscope-en-global" path="/v1/images/edits" method="post" %}
-[OpenAPI DashScope](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/en/dashscope.bundled.yaml)
+[OpenAPI DashScope](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/global/en/dashscope.bundled.yaml)
 {% endopenapi-operation %}

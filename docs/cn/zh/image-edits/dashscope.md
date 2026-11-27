@@ -17,5 +17,5 @@ DashScope 在当前环境中提供的图像编辑能力。
 ### 2. 接口详情
 
 {% openapi-operation spec="dashscope-zh-cn" path="/v1/images/edits" method="post" %}
-[OpenAPI DashScope](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/cn/zh/dashscope.bundled.yaml)
+[OpenAPI DashScope](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/cn/zh/dashscope.bundled.yaml)
 {% endopenapi-operation %}

@@ -18,5 +18,5 @@ DashScope 在当前环境中提供的 Messages 协议能力。
 ### 2. 接口详情
 
 {% openapi-operation spec="dashscope-zh-cn" path="/v1/messages" method="post" %}
-[OpenAPI DashScope](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/cn/zh/dashscope.bundled.yaml)
+[OpenAPI DashScope](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/cn/zh/dashscope.bundled.yaml)
 {% endopenapi-operation %}

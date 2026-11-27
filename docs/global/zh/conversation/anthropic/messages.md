@@ -23,5 +23,5 @@ Anthropic 在当前环境中提供的 Messages 协议能力。
 ### 2. 接口详情
 
 {% openapi-operation spec="anthropic-zh-global" path="/v1/messages" method="post" %}
-[OpenAPI Anthropic](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/zh/anthropic.bundled.yaml)
+[OpenAPI Anthropic](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/global/zh/anthropic.bundled.yaml)
 {% endopenapi-operation %}

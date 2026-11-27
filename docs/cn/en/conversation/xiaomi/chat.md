@@ -16,5 +16,5 @@ This endpoint provides an OpenAI-compatible Chat Completions path. Actual parame
 ### 2. API Details
 
 {% openapi-operation spec="xiaomi-en-cn" path="/v1/chat/completions" method="post" %}
-[OpenAPI Xiaomi](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/cn/en/xiaomi.bundled.yaml)
+[OpenAPI Xiaomi](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/cn/en/xiaomi.bundled.yaml)
 {% endopenapi-operation %}

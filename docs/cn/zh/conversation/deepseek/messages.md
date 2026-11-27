@@ -17,5 +17,5 @@ DeepSeek 在当前环境中提供的 Messages 协议能力。
 ### 2. 接口详情
 
 {% openapi-operation spec="deepseek-zh-cn" path="/v1/messages" method="post" %}
-[OpenAPI DeepSeek](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/cn/zh/deepseek.bundled.yaml)
+[OpenAPI DeepSeek](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/cn/zh/deepseek.bundled.yaml)
 {% endopenapi-operation %}

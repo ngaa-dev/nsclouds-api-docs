@@ -17,5 +17,5 @@ Volcengine 在当前环境中提供的对话生成能力。
 ### 2. 接口详情
 
 {% openapi-operation spec="volcengine-zh-global" path="/v1/chat/completions" method="post" %}
-[OpenAPI Volcengine](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/zh/volcengine.bundled.yaml)
+[OpenAPI Volcengine](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/global/zh/volcengine.bundled.yaml)
 {% endopenapi-operation %}

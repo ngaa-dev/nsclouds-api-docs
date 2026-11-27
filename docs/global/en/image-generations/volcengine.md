@@ -17,5 +17,5 @@ This endpoint provides an OpenAI-compatible Images path. Actual capabilities may
 ### 2. API Details
 
 {% openapi-operation spec="volcengine-en-global" path="/v1/images/generations" method="post" %}
-[OpenAPI Volcengine](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/en/volcengine.bundled.yaml)
+[OpenAPI Volcengine](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/global/en/volcengine.bundled.yaml)
 {% endopenapi-operation %}

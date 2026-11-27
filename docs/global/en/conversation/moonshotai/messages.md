@@ -16,5 +16,5 @@ This endpoint provides an Anthropic Messages-compatible path. Actual behavior de
 ### 2. API Details
 
 {% openapi-operation spec="moonshotai-en-global" path="/v1/messages" method="post" %}
-[OpenAPI Moonshot AI](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/global/en/moonshotai.bundled.yaml)
+[OpenAPI Moonshot AI](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/global/en/moonshotai.bundled.yaml)
 {% endopenapi-operation %}

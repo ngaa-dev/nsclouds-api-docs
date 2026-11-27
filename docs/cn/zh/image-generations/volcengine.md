@@ -17,5 +17,5 @@ Volcengine 在当前环境中提供的图像生成能力。
 ### 2. 接口详情
 
 {% openapi-operation spec="volcengine-zh-cn" path="/v1/images/generations" method="post" %}
-[OpenAPI Volcengine](https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/cn/zh/volcengine.bundled.yaml)
+[OpenAPI Volcengine](https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/cn/zh/volcengine.bundled.yaml)
 {% endopenapi-operation %}

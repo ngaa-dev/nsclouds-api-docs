@@ -311,7 +311,7 @@ def models_for_capability(env_index: dict, vendor: str, capability: str) -> list
 
 def build_openapi_block(spec_vendor: str, env: str, lang: str, path: str, label: str) -> str:
     spec_name = f"{spec_vendor}-{lang}-{env}"
-    raw_url = f"https://raw.githubusercontent.com/liujia-hbu/nsclouds-api-docs/main/docs/bundled/{env}/{lang}/{spec_vendor}.bundled.yaml"
+    raw_url = f"https://raw.githubusercontent.com/ngaa-dev/nsclouds-api-docs/main/docs/bundled/{env}/{lang}/{spec_vendor}.bundled.yaml"
     return (
         f'{{% openapi-operation spec="{spec_name}" path="{path}" method="post" %}}\n'
         f"[OpenAPI {label}]({raw_url})\n"
