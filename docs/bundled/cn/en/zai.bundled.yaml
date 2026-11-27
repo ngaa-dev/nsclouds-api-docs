@@ -220,7 +220,7 @@ paths:
     post:
       tags:
         - image_generations_zai
-      summary: Create Image
+      summary: Create image
       description: Provides an OpenAI-compatible Images generation endpoint. Supported capabilities may vary by model.
       operationId: createImageGeneration_zai
       security:
@@ -242,7 +242,7 @@ paths:
                   size: 1024x1024
               hd-quality:
                 summary: HD Quality
-                description: Generate high-definition quality images.
+                description: Generate high-definition quality image.
                 value:
                   model: cogview-4-250304
                   prompt: A futuristic cityscape at sunset
@@ -260,7 +260,7 @@ paths:
                   response_format: b64_json
       responses:
         '200':
-          description: Success Response
+          description: Successful response
           content:
             application/json:
               schema:
@@ -268,7 +268,7 @@ paths:
               examples:
                 default-response:
                   summary: Basic Response
-                  description: Complete response containing image URL and optional fields.
+                  description: Complete response including image URL and optional fields.
                   value:
                     created: 1680000000
                     background: opaque

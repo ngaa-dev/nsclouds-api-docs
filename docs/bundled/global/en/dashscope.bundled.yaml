@@ -225,7 +225,7 @@ paths:
     post:
       tags:
         - image_generations_dashscope
-      summary: Create Image
+      summary: Create image
       description: Provides an OpenAI-compatible Images generation endpoint. Supported capabilities may vary by model.
       operationId: createImageGeneration_dashscope
       security:
@@ -247,7 +247,7 @@ paths:
                   size: 1024x1024
               hd-quality:
                 summary: HD Quality
-                description: Generate high-definition quality images.
+                description: Generate high-definition quality image.
                 value:
                   model: qwen-image-2.0
                   prompt: A futuristic cityscape at sunset
@@ -265,7 +265,7 @@ paths:
                   response_format: b64_json
       responses:
         '200':
-          description: Success Response
+          description: Successful response
           content:
             application/json:
               schema:
@@ -273,7 +273,7 @@ paths:
               examples:
                 default-response:
                   summary: Basic Response
-                  description: Complete response containing image URL and optional fields.
+                  description: Complete response including image URL and optional fields.
                   value:
                     created: 1680000000
                     background: opaque
@@ -320,7 +320,7 @@ paths:
     post:
       tags:
         - image_edits_dashscope
-      summary: Edit Image
+      summary: Edit image
       description: Provides an OpenAI-compatible Images editing endpoint. Supported capabilities may vary by model.
       operationId: createImageEdit_dashscope
       security:
@@ -359,7 +359,7 @@ paths:
                   size: 1024x1024
       responses:
         '200':
-          description: Success Response
+          description: Successful response
           content:
             application/json:
               schema:

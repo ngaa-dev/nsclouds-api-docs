@@ -170,6 +170,8 @@ python3 scripts/sync_gitbook_openapi.py --env global --lang en --vendor dashscop
 
 OpenAPI 生成脚本会按能力选择合适的基础模板，并自动把 examples 里的 `model` / `modelVersion` 替换成当前环境真实可用的示例模型。
 
+图像接口优先使用厂家自己的模板；没有厂家模板时使用 `example.yaml` 中的兼容接口。OpenAI 的 `gpt-image-2` 专用参数和示例只用于 OpenAI，不能作为其他厂家的默认图像接口。可运行 `python3 scripts/test_render_env_openapi.py` 检查这一规则。
+
 ### 3. 重建文档
 
 ```bash

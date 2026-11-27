@@ -66,7 +66,7 @@ paths:
                     content: Hello!
                   temperature: 1
                   max_completion_tokens: 50
-                  n: 1
+                  "n": 1
                   stream: false
               streaming:
                 summary: Streaming
@@ -217,7 +217,7 @@ paths:
     post:
       tags:
       - image_generations_dashscope
-      summary: Create Image
+      summary: Create image
       description: Provides an OpenAI-compatible Images generation endpoint. Supported
         capabilities may vary by model.
       operationId: createImageGeneration_dashscope
@@ -236,15 +236,15 @@ paths:
                 value:
                   model: qwen-image-2.0
                   prompt: A cute cat sitting on a windowsill
-                  n: 1
+                  "n": 1
                   size: 1024x1024
               hd-quality:
                 summary: HD Quality
-                description: Generate high-definition quality images.
+                description: Generate high-definition quality image.
                 value:
                   model: qwen-image-2.0
                   prompt: A futuristic cityscape at sunset
-                  n: 1
+                  "n": 1
                   quality: hd
                   size: 1792x1024
               b64-json:
@@ -253,12 +253,12 @@ paths:
                 value:
                   model: qwen-image-2.0
                   prompt: A beautiful landscape
-                  n: 2
+                  "n": 2
                   size: 512x512
                   response_format: b64_json
       responses:
         '200':
-          description: Success Response
+          description: Successful response
           content:
             application/json:
               schema:
@@ -266,7 +266,7 @@ paths:
               examples:
                 default-response:
                   summary: Basic Response
-                  description: Complete response containing image URL and optional
+                  description: Complete response including image URL and optional
                     fields.
                   value:
                     created: 1680000000
@@ -316,7 +316,7 @@ paths:
     post:
       tags:
       - image_edits_dashscope
-      summary: Edit Image
+      summary: Edit image
       description: Provides an OpenAI-compatible Images editing endpoint. Supported
         capabilities may vary by model.
       operationId: createImageEdit_dashscope
@@ -342,7 +342,7 @@ paths:
                   - "@person.png"
                   mask: "@mask.png"
                   prompt: Add a hat to the person
-                  n: 1
+                  "n": 1
                   size: 1024x1024
               no-mask:
                 summary: Without Mask
@@ -352,11 +352,11 @@ paths:
                   image:
                   - "@body-lotion.png"
                   prompt: Change the background to a beach
-                  n: 1
+                  "n": 1
                   size: 1024x1024
       responses:
         '200':
-          description: Success Response
+          description: Successful response
           content:
             application/json:
               schema:

@@ -53,7 +53,7 @@ paths:
                     content: Hello!
                   max_completion_tokens: 50
                   temperature: 0.7
-                  n: 1
+                  "n": 1
                   stream: false
               streaming:
                 summary: Streaming
@@ -369,7 +369,7 @@ paths:
                 value:
                   model: doubao-seedream-4-5-251128
                   prompt: A cat wearing a hat
-                  n: 1
+                  "n": 1
                   size: 1024x1024
       responses:
         '200':

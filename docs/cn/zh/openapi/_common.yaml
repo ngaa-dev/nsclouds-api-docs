@@ -637,7 +637,7 @@ components:
         max_completion_tokens:
           type: integer
           description: 允许生成的最大输出 token 数。
-        n:
+        "n":
           type: integer
           description: 为同一请求生成的候选回复数量。
           default: 1
@@ -1172,7 +1172,7 @@ components:
         prompt:
           type: string
           description: 图像生成提示词。
-        n:
+        "n":
           type: integer
           description: 期望生成的图片数量。
           default: 1
@@ -1218,7 +1218,7 @@ components:
         prompt:
           type: string
           description: 图像编辑提示词。
-        n:
+        "n":
           type: integer
           description: 期望生成的图片数量。
           default: 1

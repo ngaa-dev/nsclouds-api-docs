@@ -56,14 +56,14 @@ CAPABILITY_CONFIG = {
     icon: "brain",
   },
   "image_generations" => {
-    default_source: "openai",
+    default_source: "example",
     path: "/v1/images/generations",
     tag_name: "image_generations",
     x_parent: "image_generations",
     icon: "image",
   },
   "image_edits" => {
-    default_source: "openai",
+    default_source: "example",
     path: "/v1/images/edits",
     tag_name: "image_edits",
     x_parent: "image_edits",
@@ -373,6 +373,10 @@ def rewrite_operation(operation, capability, vendor, example_model, source_vendo
   apply_example_model!(new_operation, example_model) unless vendor == "openai"
   trim_generic_chat_examples!(new_operation) if capability == "chat" && source_vendor == "example"
   trim_generic_response_examples!(new_operation) if capability == "responses" && vendor != "openai"
+  if %w[image_generations image_edits].include?(capability) && source_vendor == "example"
+    # A shared template's streaming example does not establish provider support.
+    new_operation.dig("responses", "200", "content")&.delete("text/event-stream")
+  end
   new_operation
 end
 

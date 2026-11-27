@@ -65,7 +65,7 @@ paths:
                     content: Hello!
                   temperature: 1
                   max_completion_tokens: 50
-                  n: 1
+                  "n": 1
                   stream: false
               streaming:
                 summary: Streaming
@@ -509,7 +509,7 @@ paths:
                   type: string
                   maxLength: 32000
                   description: Prompt used to generate the image.
-                n:
+                "n":
                   type: integer
                   minimum: 1
                   maximum: 10
@@ -583,7 +583,7 @@ paths:
                 value:
                   model: gpt-image-2
                   prompt: A cute cat sitting on a windowsill
-                  n: 1
+                  "n": 1
                   quality: low
                   size: 1024x1024
                   background: opaque
@@ -595,7 +595,7 @@ paths:
                 value:
                   model: gpt-image-2
                   prompt: A futuristic cityscape at sunset
-                  n: 1
+                  "n": 1
                   quality: high
                   size: 2048x1152
                   background: auto
@@ -608,7 +608,7 @@ paths:
                 value:
                   model: gpt-image-2
                   prompt: A beautiful landscape
-                  n: 2
+                  "n": 2
                   quality: medium
                   size: 1536x1024
                   output_format: png
@@ -745,7 +745,7 @@ paths:
                   - type: string
                     format: binary
                   - type: string
-                n:
+                "n":
                   type: integer
                   minimum: 1
                   maximum: 10
@@ -815,7 +815,7 @@ paths:
                   - "@person.png"
                   mask: "@mask.png"
                   prompt: Add a hat to the person
-                  n: 1
+                  "n": 1
                   size: 1024x1024
                   quality: medium
                   background: auto
@@ -829,7 +829,7 @@ paths:
                   - "@body-lotion.png"
                   - https://example.com/images/reference.png
                   prompt: Change the background to a beach
-                  n: 1
+                  "n": 1
                   size: 2048x1152
                   quality: high
                   background: opaque
