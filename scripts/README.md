@@ -34,6 +34,8 @@
 
 ## GitBook 导航与路径约定
 
+- 站点级 Git Sync 配置按环境存放：国际站使用 `docs/global/gitbook-docs.yaml`，Project directory 为 `./docs/global`；国内站使用 `docs/cn/gitbook-docs.yaml`，Project directory 为 `./docs/cn`。仓库根目录不放站点配置。
+- 配置内的 `content.directory` 使用 `./en`、`./zh`，相对于各站点的 Project directory 解析；`path` 是站点 URL 的 Slug，不是仓库目录，不应随文件搬迁修改。
 - 四个版本统一使用 `SUMMARY.md` 中的 `##` 分组标题：概况、对话接口、图像生成、图像编辑、音频转录；英文使用对应英文标题。
 - 分组下直接列出厂家，对话厂家的接口作为子页面，不再增加可点击的分类父页面。
 - 中英文采用相同英文目录：`conversation`、`image-generations`、`image-edits`、`audio-transcriptions`。

@@ -8,12 +8,12 @@ site:
       path: api-reference-en
       default: true
       content:
-        directory: ./docs/global/en
+        directory: ./en
         language: en
     - type: space
       key: space-2
       title: 中文
       path: api-reference-cn
       content:
-        directory: ./docs/global/zh
+        directory: ./zh
         language: zh
