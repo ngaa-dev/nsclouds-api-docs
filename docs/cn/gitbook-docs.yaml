@@ -1,0 +1,19 @@
+$schema: https://api.gitbook.com/gitbook-docs.yaml
+site:
+  title: aillm.nsclouds.com
+  structure:
+    - type: space
+      key: space-cn-zh
+      title: 中文
+      path: api-reference-zh
+      default: true
+      content:
+        directory: ./zh
+        language: zh
+    - type: space
+      key: space-cn-en
+      title: English
+      path: api-reference-en
+      content:
+        directory: ./en
+        language: en
