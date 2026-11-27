@@ -10,8 +10,6 @@ This endpoint provides an OpenAI-compatible Chat Completions path. Actual parame
 
 **Supported models：**
 
-* `MiniMax-M2.5`
-* `MiniMax-M2.7`
 * `qwen3.6-flash`
 * `qwen3.6-max-preview`
 * `qwen3.6-plus`

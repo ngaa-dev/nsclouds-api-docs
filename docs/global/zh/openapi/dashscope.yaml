@@ -56,7 +56,7 @@ paths:
                 summary: 基础
                 description: 一个简单的对话示例，包含系统提示和用户消息。
                 value:
-                  model: MiniMax-M2.5
+                  model: qwen3.6-flash
                   messages:
                   - role: system
                     content: You are a helpful assistant.
@@ -70,7 +70,7 @@ paths:
                 summary: 流式
                 description: '通过设置 stream: true 启用流式响应。'
                 value:
-                  model: MiniMax-M2.5
+                  model: qwen3.6-flash
                   messages:
                   - role: system
                     content: You are a helpful assistant.
@@ -94,7 +94,7 @@ paths:
                     id: chatcmpl-123
                     object: chat.completion
                     created: 1677652288
-                    model: MiniMax-M2.5
+                    model: qwen3.6-flash
                     choices:
                     - index: 0
                       message:
@@ -115,10 +115,10 @@ paths:
                   summary: 流式响应示例
                   description: 展示流式聊天过程中陆续发送的事件。
                   value: |
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.6-flash","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.6-flash","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.6-flash","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.6-flash","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
                     data: [DONE]
         '400':
           "$ref": "#/components/responses/ErrorResponse"

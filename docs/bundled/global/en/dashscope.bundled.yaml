@@ -73,7 +73,7 @@ paths:
                 summary: Basic
                 description: A simple conversation example with system prompt and user message.
                 value:
-                  model: MiniMax-M2.5
+                  model: qwen3.6-flash
                   messages:
                     - role: system
                       content: You are a helpful assistant.
@@ -87,7 +87,7 @@ paths:
                 summary: Streaming
                 description: 'Enable streaming response by setting stream: true.'
                 value:
-                  model: MiniMax-M2.5
+                  model: qwen3.6-flash
                   messages:
                     - role: system
                       content: You are a helpful assistant.
@@ -111,7 +111,7 @@ paths:
                     id: chatcmpl-123
                     object: chat.completion
                     created: 1677652288
-                    model: MiniMax-M2.5
+                    model: qwen3.6-flash
                     choices:
                       - index: 0
                         message:
@@ -131,10 +131,10 @@ paths:
                   summary: Streaming Response Example
                   description: Shows events sent continuously during streaming chat process.
                   value: |
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
-                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"MiniMax-M2.5","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.6-flash","choices":[{"index":0,"delta":{"role":"assistant"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.6-flash","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.6-flash","choices":[{"index":0,"delta":{"content":" there!"},"finish_reason":null}]}
+                    data: {"id":"chatcmpl-123","object":"chat.completion.chunk","created":1677652288,"model":"qwen3.6-flash","choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}
                     data: [DONE]
         '400':
           $ref: '#/components/responses/ErrorResponse'

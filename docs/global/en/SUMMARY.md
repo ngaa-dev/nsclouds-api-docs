@@ -24,6 +24,8 @@
 * [DashScope](conversation/dashscope/README.md)
   * [Chat Completions](conversation/dashscope/chat.md)
   * [Responses](conversation/dashscope/responses.md)
+* [MiniMax](conversation/minimax/README.md)
+  * [Chat Completions](conversation/minimax/chat.md)
 * [Z.AI](conversation/zai/README.md)
   * [Chat Completions](conversation/zai/chat.md)
   * [Responses](conversation/zai/responses.md)
