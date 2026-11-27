@@ -32,6 +32,15 @@
 - `Messages`、`Responses`、`Gemini Native` 只在 `supported_endpoints` 命中时展示。
 - 国内与国际环境分别只展示各自真实公开可用的厂家与能力。
 
+## GitBook 导航与路径约定
+
+- 四个版本统一使用 `SUMMARY.md` 中的 `##` 分组标题：概况、对话接口、图像生成、图像编辑、音频转录；英文使用对应英文标题。
+- 分组下直接列出厂家，对话厂家的接口作为子页面，不再增加可点击的分类父页面。
+- 中英文采用相同英文目录：`conversation`、`image-generations`、`image-edits`、`audio-transcriptions`。
+- 厂家目录使用内部标识，例如 `moonshotai`、`zai`；导航显示名称仍为 Moonshot AI、Z.AI。
+- 页面入口使用实际存在的 `README.md`，仅环境/语言根目录使用 `SUMMARY.md` 定义导航。
+- 导航由 `scripts/generate_env_docs.py` 生成。不要在 GitBook 中另建拼音或重复英文路径；构建会清理旧的拼音目录和 `conversation-apis`。
+
 ## GitBook OpenAPI 同步
 
 当前页面里的：
